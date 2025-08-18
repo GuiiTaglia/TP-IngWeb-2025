@@ -26,6 +26,8 @@ __pycache__/
 *.pyo
 *.pyd
 
+staticfiles/
+
 # Base de datos Django
 db.sqlite3
 
