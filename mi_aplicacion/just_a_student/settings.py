@@ -88,9 +88,11 @@ WSGI_APPLICATION = 'just_a_student.wsgi.application'
     #}
 #}
 
+import dj_database_url
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}"
+        default="postgresql://just_a_student_database_user:EB8BWe6CshrP3CJZa2KmPudjuxI0G0lP@dpg-d2iera0gjchc73co2a50-a/just_a_student_database"
     )
 }
 
