@@ -8,4 +8,4 @@ uv sync
 cd $(dirname $(find . | grep manage.py$))
 uv run ./manage.py collectstatic --no-input
 uv run ./manage.py migrate
-uv run ./manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true
+uv run ./manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true    

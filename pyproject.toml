@@ -1,0 +1,13 @@
+[project]
+name = "mi_aplicacion"
+version = "0.1.0"
+description = "Proyecto Django para Ingeniería Web"
+requires-python = ">=3.10"
+
+dependencies = [
+    "django",
+    "dj-database-url",
+    "psycopg2-binary",
+    "whitenoise[brotli]",
+    "gunicorn",
+]
