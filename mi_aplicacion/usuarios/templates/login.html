@@ -2,5 +2,13 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Enviar">
+    <input type="submit" value="Enviar" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">
+
+    <p></p>
+    <div>
+  <a href="{% url 'registro' %}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">
+    Registrarse
+  </a>
+</div>
+
 </form>
