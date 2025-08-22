@@ -12,5 +12,5 @@ class Journal(models.Model):
     exercise = models.BooleanField(default=False)
     image = models.ImageField(upload_to='journal_images/', null=True, blank=True)
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.title} - {self.user.username}"

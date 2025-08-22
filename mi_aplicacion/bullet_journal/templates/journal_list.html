@@ -1,0 +1,11 @@
+<h1>Mis Journals</h1>
+<ul>
+{% for journal in journals %}
+    <li>
+        <a href="{% url 'journal_detail' journal.pk %}">{{ journal.date }} - {{ journal.title }}</a>
+    </li>
+{% empty %}
+    <li>No hay journals.</li>
+{% endfor %}
+</ul>
+<a href="{% url 'journal_create' %}">Crear Journal</a>
