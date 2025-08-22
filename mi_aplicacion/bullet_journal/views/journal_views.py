@@ -1,6 +1,6 @@
+from bullet_journal.models import Journal
+from bullet_journal.forms import JournalForm
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Journal
-from .forms import JournalForm
 from django.contrib.auth.decorators import login_required
 
 # Listado de journals del usuario
