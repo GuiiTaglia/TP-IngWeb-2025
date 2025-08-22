@@ -146,15 +146,24 @@ LOGOUT_REDIRECT_URL = 'inicio'
 
 
 # code needed to deploy in Render.com:
-import os
-import dj_database_url
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'just_a_student_database',
+        'USER': 'just_a_student_database_user',
+        'PASSWORD': 'EB8BWe6CshrP3CJZa2KmPudjuxI0G0lP',
+        'HOST': 'dpg-d2iera0gjchc73co2a50-a.render.com',
+        'PORT': '5432',
+    }
+}
+
 
 if 'RENDER' in os.environ:
     print("USING RENDER.COM SETTINGS!")
     DEBUG = False
     ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
-    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
+    # DATABASES ya está configurado arriba
     MIDDLEWARE.insert(MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
-                      'whitenoise.middleware.WhiteNoiseMiddleware')
+                     'whitenoise.middleware.WhiteNoiseMiddleware')
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
