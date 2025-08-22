@@ -145,18 +145,6 @@ LOGIN_REDIRECT_URL = 'pagina_secundaria'
 LOGOUT_REDIRECT_URL = 'inicio'
 
 
-# code needed to deploy in Render.com:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'just_a_student_database',
-        'USER': 'just_a_student_database_user',
-        'PASSWORD': 'EB8BWe6CshrP3CJZa2KmPudjuxI0G0lP',
-        'HOST': 'dpg-d2iera0gjchc73co2a50-a.render.com',
-        'PORT': '5432',
-    }
-}
-
 
 if 'RENDER' in os.environ:
     print("USING RENDER.COM SETTINGS!")
