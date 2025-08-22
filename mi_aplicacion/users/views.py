@@ -14,8 +14,8 @@ def registro(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            usuario = form.save()
-            login(request, usuario)
+            user = form.save()
+            login(request, user)
             return redirect('pagina_secundaria')
     else:
         form = UserCreationForm()
