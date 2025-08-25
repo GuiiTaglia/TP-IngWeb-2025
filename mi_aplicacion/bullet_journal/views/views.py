@@ -42,3 +42,15 @@ def journal_create(request):
     return render(request, 'bullet_journal/journal/form.html', {'form': form})
 
 
+def journal_edit(request, pk):
+    journal = get_object_or_404(Journal, pk=pk)
+    
+    if request.method == "POST":
+        form = JournalForm(request.POST, request.FILES, instance=journal)
+        if form.is_valid():
+            form.save()
+            return redirect('journal_detail', pk=journal.pk)
+    else:
+        form = JournalForm(instance=journal)
+    
+    return render(request, 'bullet_journal/journal/edit_journal.html', {'form': form, 'journal': journal})

@@ -1,0 +1,33 @@
+<h1>{{ journal.title }}</h1>
+
+<p><strong>Fecha:</strong> {{ journal.date }}</p>
+<p><strong>Usuario:</strong> {{ journal.user.username }}</p>
+
+<hr>
+
+<p><strong>Contenido:</strong></p>
+<p>{{ journal.content }}</p>
+
+{% if journal.mood %}
+<p><strong>Estado de ánimo:</strong> {{ journal.mood }}</p>
+{% endif %}
+
+{% if journal.sleep_hours %}
+<p><strong>Horas de sueño:</strong> {{ journal.sleep_hours }}</p>
+{% endif %}
+
+{% if journal.water_glasses %}
+<p><strong>Vasos de agua:</strong> {{ journal.water_glasses }}</p>
+{% endif %}
+
+<p><strong>Ejercicio:</strong> {% if journal.exercise %}Sí{% else %}No{% endif %}</p>
+
+{% if journal.image %}
+<p><strong>Imagen:</strong></p>
+<img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 400px;">
+{% endif %}
+
+<br>
+<a href="{% url 'journal_list' %}">Volver a la lista de Journals</a>
+
+<a href="{% url 'journal_edit' journal.pk %}">Editar Journal</a>

@@ -1,0 +1,9 @@
+<h1>Editar Journal: {{ journal.title }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar cambios</button>
+</form>
+
+<a href="{% url 'journal_detail' journal.pk %}">Volver al detalle</a>
