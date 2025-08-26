@@ -4,7 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-# Listado de journals del usuario
+def home(request):
+    return render(request, 'home.html')
+
+
 @login_required 
 def journal_list(request):
     journals = Journal.objects.filter(user=request.user).order_by('-date')

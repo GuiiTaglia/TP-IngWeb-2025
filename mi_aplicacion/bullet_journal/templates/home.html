@@ -1,0 +1,43 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block subtitulo %}
+    <h1>Hola Luisi &#x2665</h1>
+{% endblock %}
+
+{% block contenido %}
+    <p class="bienvenida">¡Esperamos tengas un hermoso día!</p>
+    
+    <!-- Post-it con frase motivadora -->
+    <div class="postit" id="postit"></div>
+
+    <!-- Script para elegir frase aleatoria -->
+    <script>
+    const frases = [
+        "Hoy es un nuevo día lleno de oportunidades, ¡aprovéchalas todas!",
+        "Cada amanecer es una nueva página en tu historia. ¡Haz que valga la pena!",
+        "Levántate con determinación y acuéstate con satisfacción.",
+        "Lo que hagas hoy puede cambiar tu mañana.",
+        "Sonríe, respira y recuerda que tienes todo lo necesario para lograrlo.",
+        "No importa cuántas veces caigas, lo importante es levantarse una vez más.",
+        "El éxito no es para los que nunca fallan, sino para los que nunca se rinden.",
+        "Confía en tu proceso: cada paso, aunque pequeño, te acerca a tu meta.",
+        "Tú eres más fuerte de lo que crees y capaz de más de lo que imaginas.",
+        "Hoy es un buen día para empezar a construir la vida que sueñas."
+    ];
+
+    const postit = document.getElementById("postit");
+    const randomIndex = Math.floor(Math.random() * frases.length);
+    postit.textContent = frases[randomIndex];
+    </script>
+{% endblock %}
+
+

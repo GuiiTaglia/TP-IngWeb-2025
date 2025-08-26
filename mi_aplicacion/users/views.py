@@ -3,8 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
-def inicio(request):
-    return render(request, 'inicio.html')
+
 
 @login_required
 def pagina_secundaria(request):
