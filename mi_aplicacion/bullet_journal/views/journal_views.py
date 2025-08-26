@@ -2,11 +2,13 @@ from bullet_journal.models import Journal
 from bullet_journal.forms import JournalForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Listado de journals del usuario
-@login_required
+@login_required 
 def journal_list(request):
     journals = Journal.objects.filter(user=request.user).order_by('-date')
+
     # Filtros opcionales: por fecha, estado de ánimo, ejercicio
     date_filter = request.GET.get('date')
     mood_filter = request.GET.get('mood')
@@ -19,7 +21,13 @@ def journal_list(request):
     if exercise_filter in ['true', 'false']:
         journals = journals.filter(exercise=(exercise_filter == 'true'))
 
-    return render(request, 'bullet_journal/journal/list.html', {'journals': journals})
+    # Obtener moods únicos de los journals de este usuario para el filtro dinámico
+    moods_disponibles = Journal.objects.filter(user=request.user).values_list('mood', flat=True).distinct()
+
+    return render(request, 'bullet_journal/journal/list.html', {
+        'journals': journals,
+        'moods_disponibles': moods_disponibles,
+    })
 
 # Detalle de un journal
 @login_required
@@ -36,14 +44,15 @@ def journal_create(request):
             journal = form.save(commit=False)
             journal.user = request.user
             journal.save()
+            messages.success(request, "Journal creado correctamente 🎉")
             return redirect('journal_list')
     else:
         form = JournalForm()
     return render(request, 'bullet_journal/journal/form.html', {'form': form})
 
-
+@login_required
 def journal_edit(request, pk):
-    journal = get_object_or_404(Journal, pk=pk)
+    journal = get_object_or_404(Journal, pk=pk, user=request.user)
     
     if request.method == "POST":
         form = JournalForm(request.POST, request.FILES, instance=journal)
@@ -54,3 +63,5 @@ def journal_edit(request, pk):
         form = JournalForm(instance=journal)
     
     return render(request, 'bullet_journal/journal/edit_journal.html', {'form': form, 'journal': journal})
+
+

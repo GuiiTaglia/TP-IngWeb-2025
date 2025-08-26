@@ -1,11 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h1>Mis Journals</h1>
+
+<!-- FORMULARIO DE FILTROS -->
+<form method="get">
+    <!-- Filtro por fecha -->
+    <label for="date">Fecha:</label>
+    <input type="date" id="date" name="date" value="{{ request.GET.date }}">
+
+    <!-- Filtro por estado de ánimo (moods dinámicos) -->
+    <label for="mood">Estado de ánimo:</label>
+    <select id="mood" name="mood">
+        <option value="">Todos</option>
+        {% for mood in moods_disponibles %}
+            <option value="{{ mood }}" {% if mood == request.GET.mood %}selected{% endif %}>{{ mood }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Filtro por ejercicio -->
+    <label for="exercise">Hizo ejercicio:</label>
+    <select id="exercise" name="exercise">
+        <option value="">Todos</option>
+        <option value="true" {% if request.GET.exercise == "true" %}selected{% endif %}>Sí</option>
+        <option value="false" {% if request.GET.exercise == "false" %}selected{% endif %}>No</option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+    <a href="{% url 'journal_list' %}">Quitar filtros</a>
+</form>
+
+<!-- LISTA DE JOURNALS -->
 <ul>
 {% for journal in journals %}
     <li>
-        <a href="{% url 'journal_detail' journal.pk %}">{{ journal.date }} - {{ journal.title }}</a>
+        <a href="{% url 'journal_detail' journal.pk %}">
+            {{ journal.date }} - {{ journal.title }}
+        </a>
     </li>
 {% empty %}
     <li>No hay journals.</li>
 {% endfor %}
 </ul>
+
 <a href="{% url 'journal_create' %}">Crear Journal</a>
+{% endblock %}
