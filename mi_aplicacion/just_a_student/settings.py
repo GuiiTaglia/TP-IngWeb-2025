@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'just_a_student.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-
+import dj_database_url
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -96,7 +96,7 @@ DATABASES = {
     }
 }
 
-#import dj_database_url
+#
 
 #DATABASES = {
    # 'default': dj_database_url.config(
@@ -154,7 +154,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'inicio'
 
 #MEDIA_URL = '/media/' 
-MEDIA_URL = 'media/journal_images/'
+MEDIA_URL = '/media/journal_images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

@@ -10,4 +10,6 @@ dependencies = [
     "psycopg2-binary",
     "whitenoise[brotli]",
     "gunicorn",
+    "django-cloudinary-storage>=0.3.0",
+    "pillow>=11.3.0",
 ]
