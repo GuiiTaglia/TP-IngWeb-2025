@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 
 class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
-    title = models.CharField(max_length=200)
-    content = models.TextField()
+    date = models.DateField(blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True)
+    content = models.TextField(blank=True, null=True)
     mood = models.CharField(max_length=50, blank=True)
     sleep_hours = models.FloatField(null=True, blank=True)
     water_glasses = models.IntegerField(null=True, blank=True)
