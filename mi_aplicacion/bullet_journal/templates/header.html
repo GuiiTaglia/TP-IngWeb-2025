@@ -6,14 +6,15 @@
     <title>{% block title %}Bullet Journal{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
 
     {% block extra_head %}{% endblock %}
 </head>
 <body>
 
 <header>
-    <a href="home.html" class="logo">
-        <img src="{% static 'bullet_journal/images/logo.png' %}" alt="Logo" class="logo-img">
+    <a href="\home.html" class="logo">
+        <img src="{% static 'bullet_journal/images/logo1.png' %}" alt="Logo" class="logo-img">
     </a>
     <nav>
         <ul class="nav-links">
@@ -21,8 +22,14 @@
             <li><a href="#">To do list</a></li>
             <li><a href="#">Bullet Journal</a></li>
             <li><a href="#">Estadísticas</a></li>
-            <li><a href="#">Hola Luisi</a></li>
-        </ul>
+            <li class="menuperfil">
+            <a href="#">Hola {{ user.username }}</a>
+            <ul class="menuperfil-content">
+                <li><a href="#">Mi perfil</a></li>
+                <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+            </ul>
+            <li><a ></a></li>
+        </li>
     </nav>
 </header>
 

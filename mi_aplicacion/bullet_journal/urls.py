@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('home/', home, name='home'),
     path('journals/', journal_list, name='journal_list'),
     path('journals/<int:pk>/', journal_detail, name='journal_detail'),
     path('journals/create/', journal_create, name='journal_create'),

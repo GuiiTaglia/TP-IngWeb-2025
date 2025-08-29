@@ -10,16 +10,14 @@
 {% endblock %}
 
 {% block subtitulo %}
-    <h1>Hola Luisi &#x2665</h1>
+    <h1>Hola {{ user.username }} &#x2665</h1>
 {% endblock %}
 
 {% block contenido %}
     <p class="bienvenida">¡Esperamos tengas un hermoso día!</p>
     
-    <!-- Post-it con frase motivadora -->
     <div class="postit" id="postit"></div>
 
-    <!-- Script para elegir frase aleatoria -->
     <script>
     const frases = [
         "Hoy es un nuevo día lleno de oportunidades, ¡aprovéchalas todas!",
