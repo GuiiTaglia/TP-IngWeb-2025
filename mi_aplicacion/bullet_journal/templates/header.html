@@ -13,14 +13,14 @@
 <body>
 
 <header>
-    <a href="\home.html" class="logo">
+    <a href="{% url 'home' %}" class="logo">
         <img src="{% static 'bullet_journal/images/logo1.png' %}" alt="Logo" class="logo-img">
     </a>
     <nav>
         <ul class="nav-links">
             <li><a href="#">Calendario</a></li>
             <li><a href="#">To do list</a></li>
-            <li><a href="#">Bullet Journal</a></li>
+            <li><a href="{% url 'list' %}">Bullet Journal</a></li>
             <li><a href="#">Estadísticas</a></li>
             <li class="menuperfil">
             <a href="#">Hola {{ user.username }}</a>
