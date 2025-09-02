@@ -17,3 +17,7 @@ def registro(request):
     else:
         form = UserCreationForm()
     return render(request, 'registro.html', {'form': form})
+
+@login_required
+def logout(request):
+    return redirect('inicio.html')

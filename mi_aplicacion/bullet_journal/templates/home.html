@@ -10,7 +10,13 @@
 {% endblock %}
 
 {% block subtitulo %}
+{% if user.is_authenticated %}
     <h1>Hola {{ user.username }} &#x2665</h1>
+    
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+{% endif %}
 {% endblock %}
 
 {% block contenido %}

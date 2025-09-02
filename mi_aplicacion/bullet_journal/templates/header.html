@@ -13,7 +13,8 @@
 <body>
 
 <header>
-    <a href="{% url 'home' %}" class="logo">
+    <a href="{% url 'home' %}" class="logo"> 
+    <!---a class="logo"--->
         <img src="{% static 'bullet_journal/images/logo1.png' %}" alt="Logo" class="logo-img">
     </a>
     <nav>
@@ -26,7 +27,12 @@
             <a href="#">Hola {{ user.username }}</a>
             <ul class="menuperfil-content">
                 <li><a href="#">Mi perfil</a></li>
-                <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                    </form>
+                </li>
             </ul>
             <li><a ></a></li>
         </li>
