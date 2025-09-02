@@ -1,6 +1,6 @@
 {% extends "header.html" %}
 
-{% block title %}Mis Journals{% endblock %}
+{% block title %}Your to do list{% endblock %}
 
 {% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,14 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
 {% endblock %}
 
+{% block subtitulo %}
+{% if user.is_authenticated %}
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
+
 {% block contenido %}
-
-<h1>Crear Journal</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-</form>
-<a href="{% url 'journal_list' %}">Volver a la lista</a>
-
 {% endblock %}

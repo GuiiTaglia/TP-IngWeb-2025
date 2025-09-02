@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+.journal {
+  background-image: url("../images/fondo4.png");  
+      background-size: cover;             
+      background-position: center;         
+      background-repeat: no-repeat;
+      height: 100vh;                       
+      margin: 0;
+}
 
 header {
   display: flex;
@@ -61,11 +69,12 @@ h1 {
 
 .bienvenida{
     text-align: center;
-    font-family: 'Dancing Script', cursive;
+    font-family: "Amatic SC", sans-serif;
     color: #ff7c35;
     column-gap: #ff7c35;
-    font-size: 30px;
+    font-size: 35px;
     margin-top: 20px;
+    font-weight: bold;
 }
 
 .amatic-sc-regular {
@@ -84,7 +93,8 @@ h1 {
 .postit {
     width: 250px;
     min-height: 150px;
-    background-color: #fffa77; 
+    /*background-color: #fffa77; */
+    background-color: #f4cfa0;
     padding: 25px;
     margin: 55px;
     font-family: "Amatic SC", sans-serif;
@@ -174,7 +184,7 @@ h1 {
 }
 
 .explicacion a:hover {
-    background-color: #f7915b;
+    background-color: #ffc6a7;
 }
 
 .explicacion h2 {
@@ -190,4 +200,50 @@ h1 {
     font-family: "Amatic SC", sans-serif;
     color: #ff7c35;
     font-size: 25px;
+}
+
+.card.shadow.p-4 h1 {
+ font-family: 'Amatic SC',cursive; 
+ color: #ff7c35; 
+ font-size: 40px;
+}
+
+
+.row.justify-content-center {
+    margin-top: 150px;
+}
+
+.columns_home {
+  display: flex;           /* activa flexbox */
+  gap: 20px;               /* espacio entre columnas */
+}
+.column {
+  flex: 1;                 /* todas las columnas ocupan el mismo ancho */
+  padding: 20px;
+  background: #f9f9f9;
+  height: 300px; /* solo para mostrar el centrado */
+      display: flex;              /* activamos flex en la columna */
+      justify-content: center;    /* centra horizontal */
+      align-items: center; 
+}
+
+.column h1 {
+  font-size: 24px;
+  font-family: "Amatic SC", sans-serif;
+}
+
+.journal_create a{
+    color: #ff7f4d;
+    background-color: white;
+    padding: 8px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 26px;
+    text-align: center;
+    font-family: "Amatic SC", sans-serif;
+    font-weight: bold;
+    border: 1px solid  #ff7f4d;
+}
+.journal_create a:hover {
+    background-color: #ffc6a7;
 }

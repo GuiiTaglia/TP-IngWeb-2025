@@ -1,7 +1,26 @@
-{% extends 'base.html' %}
+{% extends "header.html" %}
 
-{% block content %}
-<h1>Mis Journals</h1>
+{% block title %}My Journals{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block contenido %}
+{% if user.is_authenticated %}
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+{% endif %}
+
+<body>
+    <div class="journal">
+
+    
+
+<h1>My Journals</h1>
 
 <!-- FORMULARIO DE FILTROS -->
 <form method="get">
@@ -44,4 +63,6 @@
 </ul>
 
 <a href="{% url 'journal_create' %}">Crear Journal</a>
+</div>
+</body>
 {% endblock %}

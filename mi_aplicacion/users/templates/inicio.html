@@ -1,30 +1,50 @@
 {% extends "header.html" %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Homepage{% endblock %}
 
 {% block extra_head %}
 
 <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+<!--link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"-->
 {% endblock %}
 
 {% block subtitulo %}
-    <h1>¿Estás listo para empezar tu bullet journal?</h1>
 {% endblock %}
 
 {% block contenido %}
     
     <div class="explicacion">
+      <h1>¿Estás listo para empezar tu bullet journal?</h1>
       <h2>¿Qué es un bullet journal?</h2>
       <p>Es un sistema de organización personal que combina agenda, diario y cuaderno creativo en un mismo lugar.</p>
-      <p>Fue creado por Ryder Carroll y se ha convertido en una herramienta flexible para planificar el día a día, organizar metas, registrar hábitos y reflejar pensamientos.</p>
-      <p>A diferencia de las agendas tradicionales, el bullet journal se adapta a vos: podés usarlo para anotar tareas pendientes, planificar tu semana,</p>
-      <p>llevar un registro de hábitos, escribir reflexiones o incluso darle un toque artístico con ilustraciones y colores.</p>
-      <p>Su mayor ventaja es que no tiene reglas estrictas: cada persona puede diseñarlo según sus necesidades, ya sea de manera minimalista o decorada.</p>
+      <p>Es una herramienta flexible para planificar el día a día, organizar metas, registrar hábitos y reflejar pensamientos.</p>
       <p>Es una forma práctica y a la vez creativa de darle orden y sentido a tu vida cotidiana.</p>
-    
-    <a href="{% url 'login' %}">Empezar mi Bullet Journal</a>
     </div>
+
+    <!--div class="container mt-5">
+      <div class="row">
+        <div class="col-md-4 bg-light p-3 border">
+          <h3>Columna 1</h3>
+          <p>Contenido de la primera columna.</p>
+        </div>
+        <div class="col-md-4 bg-secondary text-white p-3 border">
+          <h3>Columna 2</h3>
+          <p>Contenido de la segunda columna.</p>
+        </div>
+        <div class="col-md-4 bg-light p-3 border">
+          <h3>Columna 3</h3>
+          <p>Contenido de la tercera columna.</p>
+        </div>
+      </div>
+    </div-->
+
+    <div class="explicacion">
+      <a href="{% url 'login' %}">Empezar mi Bullet Journal</a>
+    </div>
+      
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 {% endblock %}
 

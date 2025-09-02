@@ -19,22 +19,26 @@
     </a>
     <nav>
         <ul class="nav-links">
-            <li><a href="#">Calendario</a></li>
-            <li><a href="#">To do list</a></li>
+            <li><a href="{% url 'calendar' %}">Calendario</a></li>
+            <li><a href="{% url 'to_do_list' %}">To do list</a></li>
             <li><a href="{% url 'journal_list' %}">Bullet Journal</a></li>
-            <li><a href="#">Estadísticas</a></li>
+            <li><a href="{% url 'stadistics' %}">Estadísticas</a></li>
             <li class="menuperfil">
-            <a href="#">Hola {{ user.username }}</a>
-            <ul class="menuperfil-content">
-                <li><a href="#">Mi perfil</a></li>
-                <li>
-                    <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Cerrar sesión</button>
-                    </form>
-                </li>
-            </ul>
-            <li><a ></a></li>
+            {% if user.is_authenticated %}
+                <a>Hola {{ user.username }}</a>
+                <ul class="menuperfil-content">
+                    <li><a href="#">Mi perfil</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                        </form>
+                    </li>
+                </ul>
+                {% else %}
+                    <a href="{% url 'login' %}">Incia sesión</a>
+            {% endif %}
+            
         </li>
     </nav>
 </header>

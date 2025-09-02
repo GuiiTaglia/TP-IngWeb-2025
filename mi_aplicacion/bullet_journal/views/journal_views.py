@@ -69,3 +69,14 @@ def journal_edit(request, pk):
     return render(request, 'bullet_journal/journal/edit_journal.html', {'form': form, 'journal': journal})
 
 
+@login_required
+def calendar(request):
+    return render(request, 'bullet_journal/journal/calendar.html')
+
+@login_required
+def to_do_list(request):
+    return render(request, 'bullet_journal/journal/to_do_list.html')
+
+@login_required
+def stadistics(request):
+    return render(request, 'bullet_journal/journal/stadistics.html')
