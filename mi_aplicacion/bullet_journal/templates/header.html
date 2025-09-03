@@ -23,23 +23,27 @@
             <li><a href="{% url 'to_do_list' %}">To do list</a></li>
             <li><a href="{% url 'journal_list' %}">Bullet Journal</a></li>
             <li><a href="{% url 'stadistics' %}">Estadísticas</a></li>
-            <li class="menuperfil">
-            {% if user.is_authenticated %}
-                <a>Hola {{ user.username }}</a>
-                <ul class="menuperfil-content">
-                    <li><a href="#">Mi perfil</a></li>
-                    <li>
-                        <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                        </form>
-                    </li>
-                </ul>
-                {% else %}
-                    <a href="{% url 'login' %}">Incia sesión</a>
-            {% endif %}
             
-        </li>
+            {% if user.is_superuser %}
+            <li><a href="{% url 'admin:index' %}">Panel de administración</a></li>
+            {% endif %}
+                <li class="menuperfil">
+                    {% if user.is_authenticated %}
+                        <a>Hola {{ user.username }}</a>
+                        <ul class="menuperfil-content">
+                            <li><a href="#">Mi perfil</a></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <a href="{% url 'login' %}">Inicia sesión</a>
+                    {% endif %}
+                </li>
+        </ul>
     </nav>
 </header>
 

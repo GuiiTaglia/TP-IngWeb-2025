@@ -21,3 +21,11 @@ def registro(request):
 @login_required
 def logout(request):
     return redirect('inicio.html')
+
+@login_required
+def redirigir_post_login(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('/admin/')
+        else:
+            return redirect('/home/')
