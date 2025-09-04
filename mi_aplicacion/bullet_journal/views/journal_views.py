@@ -8,7 +8,6 @@ from django.contrib import messages
 def home(request):
     return render(request, 'home.html')
 
-
 @login_required 
 def journal_list(request):
     journals = Journal.objects.filter(user=request.user).order_by('-date')
@@ -52,7 +51,7 @@ def journal_create(request):
             return redirect('journal_list')
     else:
         form = JournalForm()
-    return render(request, 'bullet_journal/journal/form.html', {'form': form})
+    return render(request, 'bullet_journal/journal/new_journal.html', {'form': form})
 
 @login_required
 def journal_edit(request, pk):

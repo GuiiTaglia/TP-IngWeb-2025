@@ -53,7 +53,7 @@
             {% if user.is_superuser %}
             <li><a class="dropdown-item" href="{% url 'admin:index' %}">Control admin</a></li>
             {% else %}
-            <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+            <!--<li><a class="dropdown-item" href="#">Mi perfil</a></li>-->
             {% endif %}
             <li>
               <form action="{% url 'logout' %}" method="post">

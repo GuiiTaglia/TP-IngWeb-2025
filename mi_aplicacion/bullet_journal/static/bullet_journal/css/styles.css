@@ -101,12 +101,28 @@
   background-image: url("../images/fondo4.png");  
   background-size: cover;             
   background-position: center;         
-  background-repeat: no-repeat;
+  background-repeat: repeat-y;
   height: 100vh;                       
   margin: 0;
   font-family: 'Times New Roman', Times, serif;
   padding-top: 100px;
   padding-left: 20px;
+}
+
+.journal-form {
+  height: 100vh;                       
+  margin: 0;
+  font-family: 'Times New Roman', Times, serif;
+  padding: 20px;
+  padding-top: 0;
+}
+
+.journal-form .btn.btn-primary {
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  color: white;
+  font-size: 30px;  
+  margin-bottom: 10px;
 }
 
 h1 {
@@ -207,8 +223,6 @@ h1 {
     display: block;
 }
 
-
-
 .explicacion {
     font-family: 'Times New Roman', Times, serif;
     font-size: 18px;
@@ -239,10 +253,10 @@ h1 {
 }
 
 .explicacion h2 {
-    text-align: center;
-    font-family: "Amatic SC", sans-serif;
-    color: #ff7c35;
-    font-size: 40px;
+  text-align: center;
+  font-family: "Amatic SC", sans-serif;
+  color: #ff7c35;
+  font-size: 40px;
   font-weight: bold;
 }
 
@@ -304,7 +318,7 @@ h1 {
 
 .btn.btn-primary{
   font-family: 'Times New Roman', Times, serif;
-  font-size: 16px;
+  font-size: 18px;
   background-color: #ff986f;
   color: white;
   border: none;
@@ -318,7 +332,7 @@ h1 {
 
 .btn.btn-secondary {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 16px;
+  font-size: 18px;
   background-color: #ffc09f;
   color: #ff5c04;
   border: none;
