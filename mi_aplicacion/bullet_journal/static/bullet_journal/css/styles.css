@@ -78,16 +78,14 @@
   transition: color 0.3s;
   font-family: 'Amatic SC', cursive;
   font-size: 27px;
-  background-color: #ff9f6c; 
+  /*background-color: #ff9f6c; */
 }
 
 .dropdown-item:hover {
-  background-color:#ff9f6c; 
   color: #ff6614;
 }
 
 .dropdown-item button:hover {
-  background-color: #ff9f6c; 
   color: #ff6614;
 }
 
