@@ -1,0 +1,7 @@
+Hola {{ user.username }},
+
+Gracias por registrarte. Para activar tu cuenta hacé click en el siguiente enlace:
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+

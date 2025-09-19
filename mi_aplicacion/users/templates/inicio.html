@@ -13,7 +13,12 @@
 {% endblock %}
 
 {% block contenido %}
-    
+
+{% if user.is_authenticated %}
+  <script>
+    window.location.href = "{% url 'redirigir_post_login' %}";
+  </script>
+{% else %}
     <div class="explicacion">
       <h1>¿Estás listo para empezar tu bullet journal?</h1>
       <h2>¿Qué es un bullet journal?</h2>
@@ -21,18 +26,13 @@
       <p>Es una herramienta flexible para planificar el día a día, organizar metas, registrar hábitos y reflejar pensamientos.</p>
       <p>Es una forma práctica y a la vez creativa de darle orden y sentido a tu vida cotidiana.</p>
     </div>
-
-    {% if user.is_authenticated %}
-      <div class="explicacion">
-        <a href="{% url 'home' %}">Empezar mi Bullet Journal</a>
-      </div>
-    {% else %}
-      <div class="explicacion">
-        <a href="{% url 'login' %}">Empezar mi Bullet Journal</a>
-      </div>
-    {% endif %}
     
-      
+    <div class="explicacion">
+      <a href="{% url 'login' %}">Empezar mi Bullet Journal</a>
+    </div>
+{% endif %}
+    
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
