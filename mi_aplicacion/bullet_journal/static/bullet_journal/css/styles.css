@@ -533,3 +533,9 @@ h1 {
     cursor: pointer;
     color: #aaa;
 }
+
+.popup-content img {
+    max-width: 100%; /* La imagen no superará el ancho de su contenedor (.popup-content) */
+    height: auto; /* Mantiene la proporción de la imagen al redimensionarse */
+    display: block; /* Elimina cualquier espacio adicional debajo de la imagen */
+}
