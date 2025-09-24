@@ -76,11 +76,16 @@
 
                         {% if journal.image %}
                             <p><strong>Imagen:</strong></p>
-                            <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 30px;">
+                            <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 90px;">
+                            
                         {% endif %}
-                    <!--button class="go-to-detail-btn" data-journal-pk="{{ journal.pk }}" data-journal-url="{% url 'journal_detail' journal.pk %}">
+                    <!--button class ="go-to-detail-btn" data-journal-pk="{{ journal.pk }}" data-journal-url="{% url 'journal_detail' journal.pk %}">
                         Ver detalles
                     </button--->
+                        <p><strong>Imagen:</strong></p>
+                        <img src="../static/bullet_journal/images/foto.jpg" alt="Imagen del journal" style="max-width: 90px;">
+                        <p></p>
+                        <a href="{% url 'journal_edit' journal.pk %}" style="color: ff6a19;">Editar Journal</a>
                     </div>
                 </div>
             </li>
