@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
-    title = models.CharField(max_length=200, blank=True)
-    content = models.TextField(null=True, blank=True)
     mood = models.CharField(max_length=50)
     sleep_hours = models.FloatField(null=True)
     water_glasses = models.IntegerField(null=True)
@@ -16,5 +14,5 @@ class Journal(models.Model):
     # y esto por si queremos video: video = models.FileField(upload_to='videos/noticias',blank=True)
 
     def __str__(self):
-        return f"{self.title} - {self.user.username}"
+        return f"{self.date} - {self.user.username}"
     

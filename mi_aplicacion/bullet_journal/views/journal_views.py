@@ -61,7 +61,7 @@ def journal_edit(request, pk):
         form = JournalForm(request.POST, request.FILES, instance=journal)
         if form.is_valid():
             form.save()
-            return redirect('journal_detail', pk=journal.pk)
+            return redirect('journal_list')
     else:
         form = JournalForm(instance=journal)
     

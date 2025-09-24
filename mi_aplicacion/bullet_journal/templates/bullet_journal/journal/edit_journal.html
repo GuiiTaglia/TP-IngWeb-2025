@@ -1,9 +1,53 @@
-<h1>Editar Journal: {{ journal.title }}</h1>
+{% extends "header.html" %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar cambios</button>
-</form>
+{% block title %}Editar Journal{% endblock %}
 
-<a href="{% url 'journal_list' %}">Volver a la lista</a>    
+{% block contenido %}
+<div class="container mt-5">
+    <div class="journal-form">
+
+        <h1>Editar Journal</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
+
+            <div class="mb-3">
+                <label for="mood" class="form-label">¿Cuál es tu estado de ánimo hoy?</label>
+                <input type="text" class="form-control" id="mood" name="mood" maxlength="50"
+                       value="{{ journal.mood }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="sleep_hours" class="form-label">¿Cuántas horas dormiste?</label>
+                <input type="number" class="form-control" id="sleep_hours" name="sleep_hours" step="0.1"
+                       value="{{ journal.sleep_hours }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="water_glasses" class="form-label">¿Cuántos vasos de agua tomaste?</label>
+                <input type="number" class="form-control" id="water_glasses" name="water_glasses"
+                       value="{{ journal.water_glasses }}">
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exercise" name="exercise"
+                       {% if journal.exercise %}checked{% endif %}>
+                <label class="form-check-label" for="exercise">¿Hiciste ejercicio hoy?</label>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">¿Querés cambiar la foto?</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                {% if journal.image %}
+                    <p class="mt-2">Foto actual: <img src="{{ journal.image.url }}" alt="Imagen Journal" style="max-width:150px;"></p>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </form>
+
+        <a href="{% url 'journal_list' %}" class="d-block mt-3" style="color: ff6a19;">Volver</a>
+    </div>
+</div>
+{% endblock %}

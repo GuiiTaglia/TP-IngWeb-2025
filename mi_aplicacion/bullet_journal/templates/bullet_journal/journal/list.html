@@ -68,7 +68,10 @@
                 <div id="popup-container-{{ journal.pk }}" class="popup-container">
                     <div class="popup-content">
                     <span class="close-btn" data-journal-pk="{{ journal.pk }}">&times;</span>
-                        <p><strong>Día:</strong> {{ journal.date }}</p>         
+                        {% load i18n %}
+                        {% language 'es' %}
+                            <p><strong>Día:</strong> {{ journal.date|date:"l, j \\d\\e F \\d\\e Y" }}</p>
+                        {% endlanguage %}
                         <p><strong>Estado de ánimo:</strong> {{ journal.mood }}</p>
                         <p><strong>Horas de sueño:</strong> {{ journal.sleep_hours }}</p>
                         <p><strong>Vasos de agua:</strong> {{ journal.water_glasses }}</p>
@@ -164,6 +167,7 @@
         });
     });
 });
+
 </script>
 
 
