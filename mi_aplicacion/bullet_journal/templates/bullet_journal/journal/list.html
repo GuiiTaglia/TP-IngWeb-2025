@@ -76,7 +76,7 @@
 
                         {% if journal.image %}
                             <p><strong>Imagen:</strong></p>
-                            <img src="{{ journal.image.url }}" alt="Imagen del journal">
+                            <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 30px;">
                         {% endif %}
                     <!--button class="go-to-detail-btn" data-journal-pk="{{ journal.pk }}" data-journal-url="{% url 'journal_detail' journal.pk %}">
                         Ver detalles
