@@ -58,10 +58,49 @@
                 </div>
             </form>
 
+            
+        <ul>
+        {% for journal in journals %}
+            <li>
+                <button class="open-popup-btn" data-journal-pk="{{ journal.pk }}">
+                    {{ journal.date }}
+                </button>
+                <div id="popup-container-{{ journal.pk }}" class="popup-container">
+                    <div class="popup-content">
+                    <span class="close-btn" data-journal-pk="{{ journal.pk }}">&times;</span>
+                        <p><strong>Día:</strong> {{ journal.date }}</p>         
+                        <p><strong>Estado de ánimo:</strong> {{ journal.mood }}</p>
+                        <p><strong>Horas de sueño:</strong> {{ journal.sleep_hours }}</p>
+                        <p><strong>Vasos de agua:</strong> {{ journal.water_glasses }}</p>
+                        <p><strong>Ejercicio:</strong> {% if journal.exercise %}Sí{% else %}No{% endif %}</p>
 
-            <ul>
+                        {% if journal.image %}
+                        <p><strong>Imagen:</strong></p>
+                        <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 100px;">
+                        {% endif %}>
+                    <!--button class="go-to-detail-btn" data-journal-pk="{{ journal.pk }}" data-journal-url="{% url 'journal_detail' journal.pk %}">
+                        Ver detalles
+                    </button--->
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+                <li>No hay journals.</li>
+            {% endfor %}
+        </ul>
+
+            <!---ul>
             {% for journal in journals %}
                 <li>
+                    <button id="open-popup">Abrir Pop-up</button>
+
+            <div id="popup-container" class="popup-container">
+            <div class="popup-content">
+                <span class="close-btn">&times;</span>
+                <h2>¡Hola! Soy una ventana emergente</h2>
+                <p>Este es el contenido de tu pop-up.</p>
+            </div>
+            </div>
                     <a href="{% url 'journal_detail' journal.pk %}">
                         {{ journal.date }} - {{ journal.title }}
                     </a>
@@ -69,7 +108,7 @@
             {% empty %}
                 <li>No hay journals.</li>
             {% endfor %}
-            </ul>
+            </ul--->
             <div class="journal_create">
                 <a href="{% url 'journal_create' %}">¡Registrar mi día!</a>
             </div>
@@ -80,52 +119,49 @@
 </p>
 
 
-<h1>Water Tracker</h1>
-  <div id="tracker" class="grid"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // Escucha clics en cualquier botón con la clase 'open-popup-btn'
+    document.querySelectorAll('.open-popup-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const journalPk = event.target.dataset.journalPk;
+            const popup = document.getElementById(`popup-container-${journalPk}`);
+            if (popup) {
+                popup.style.display = 'flex';
+            }
+        });
+    });
 
-  <script>
-  // Configuración
-  const meses = ["E","F","M","A","M","J","J","A","S","O","N","D"];
-  const dias = 31;
-  const valores = [
-    // ejemplo: 31 filas x 12 columnas, cada número = cantidad de vasos (0 a 8)
-    Array.from({length:12}, () => Math.floor(Math.random()*9)),
-    Array.from({length:12}, () => Math.floor(Math.random()*9)),
-    // ...
-  ];
+    // Escucha clics en cualquier botón de cierre
+    document.querySelectorAll('.close-btn').forEach(closeBtn => {
+        closeBtn.addEventListener('click', (event) => {
+            const journalPk = event.target.dataset.journalPk;
+            const popup = document.getElementById(`popup-container-${journalPk}`);
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        });
+    });
 
-  // paleta de colores (0 = blanco)
-  const colores = ["#fff","#d0ebf9","#a6d4f5","#7dbdf0","#54a6eb","#2b8fe7","#1772c4","#0e5691","#093a5d"];
+    // Escucha clics fuera de la ventana emergente para cerrar
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('popup-container')) {
+            event.target.style.display = 'none';
+        }
+    });
 
-  const tracker = document.getElementById("tracker");
-
-  // fila de cabecera
-  const corner = document.createElement("div");
-  tracker.appendChild(corner);
-  meses.forEach(m => {
-    const head = document.createElement("div");
-    head.className = "head";
-    head.textContent = m;
-    tracker.appendChild(head);
-  });
-
-  // filas de días
-  for(let d=1; d<=dias; d++){
-    // número de día
-    const day = document.createElement("div");
-    day.className = "day";
-    day.textContent = d;
-    tracker.appendChild(day);
-
-    for(let m=0; m<12; m++){
-      const val = (valores[d-1] && valores[d-1][m]) || 0;
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      cell.style.background = colores[val];
-      tracker.appendChild(cell);
-    }
-  }
+    document.querySelectorAll('.go-to-detail-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const url = event.target.dataset.journalUrl;
+            if (url) {
+                window.location.href = url; // Redirige al usuario a la URL
+            }
+        });
+    });
+});
 </script>
+
+
 
 </body>
 {% endblock %}
