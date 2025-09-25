@@ -42,7 +42,7 @@
         {% endfor %}
     </div>
 </div>
-
+{% endblock contenido %}
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -83,4 +83,4 @@
          new Chart(ctx, chartConfig);
     });
 </script>
-{% endblock %}
+{% endblock extra_js %}
