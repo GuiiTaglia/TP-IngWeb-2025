@@ -17,4 +17,70 @@
 {% endblock %}
 
 {% block contenido %}
+
+<div class="container mt-4">
+    <h1>Estadísticas de tu Journal</h1>
+    
+    <div class="row">
+        {% for stat in stats %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5>{{ stat.field_display }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart-{{ stat.field }}" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No hay suficientes datos para mostrar estadísticas. ¡Comienza a registrar tu progreso diario!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const statsData = JSON.parse('{{ stats_json|escapejs }}');
+    
+    statsData.forEach(stat => {
+        const ctx = document.getElementById(`chart-${stat.field}`).getContext('2d');
+        
+        // Configuración del gráfico
+        const chartConfig = {
+            type: stat.chart_type || 'line',
+            data: {
+                labels: stat.labels || stat.weekly.labels,
+                datasets: [{
+                    label: stat.field_display,
+                    data: stat.values || stat.weekly.values,
+                    borderColor: stat.field === 'water_glasses' ? 'rgba(54, 162, 235, 1)' : 
+                                 stat.field === 'sleep_hours' ? 'rgba(153, 102, 255, 1)' :
+                                 'rgba(255, 159, 64, 1)',
+                    backgroundColor: stat.field === 'water_glasses' ? 'rgba(54, 162, 235, 0.2)' : 
+                                      stat.field === 'sleep_hours' ? 'rgba(153, 102, 255, 0.2)' :
+                                      'rgba(255, 159, 64, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+         // Crear el gráfico
+         new Chart(ctx, chartConfig);
+    });
+</script>
 {% endblock %}
