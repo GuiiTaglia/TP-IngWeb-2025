@@ -83,40 +83,40 @@ class Journal(models.Model):
         }
     
 #si queremos que el usuario elija que estadisticas ver: 
-    class StatsPreference(models.Model):
-        PERIOD_CHOICES = [
-            ('daily', 'Diario'),
-            ('weekly', 'Semanal'),
-            ('monthly', 'Mensual'),
-            ('yearly', 'Anual'),
-        ]
+class StatsPreference(models.Model):
+    PERIOD_CHOICES = [
+        ('daily', 'Diario'),
+        ('weekly', 'Semanal'),
+        ('monthly', 'Mensual'),
+        ('yearly', 'Anual'),
+    ]
 
-        FIELD_CHOICES = [
-            ('mood', 'Estado de ánimo'),
-            ('sleep_hours', 'Horas de sueño'),
-            ('water_glasses', 'Vasos de agua'),
-            ('exercise', 'Ejercicio'),
-        ]
+    FIELD_CHOICES = [
+        ('mood', 'Estado de ánimo'),
+        ('sleep_hours', 'Horas de sueño'),
+        ('water_glasses', 'Vasos de agua'),
+        ('exercise', 'Ejercicio'),
+    ]
 
-        CHART_TYPE_CHOICES = [
-            ('line', 'Línea'),
-            ('bar', 'Barra'),
-            ('pie', 'Pastel'),
-        ]
+    CHART_TYPE_CHOICES = [
+        ('line', 'Línea'),
+        ('bar', 'Barra'),
+        ('pie', 'Pastel'),
+    ]
 
-        user = models.ForeignKey(User, on_delete=models.CASCADE)
-        field = models.CharField(max_length=50, choices=FIELD_CHOICES)
-        period = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='weekly')
-        chart_type = models.CharField(max_length=10, choices=CHART_TYPE_CHOICES, default='line')
-        is_visible = models.BooleanField(default=True)
-        display_order = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    field = models.CharField(max_length=50, choices=FIELD_CHOICES)
+    period = models.CharField(max_length=10, choices=PERIOD_CHOICES, default='weekly')
+    chart_type = models.CharField(max_length=10, choices=CHART_TYPE_CHOICES, default='line')
+    is_visible = models.BooleanField(default=True)
+    display_order = models.IntegerField(default=0)
 
-        class Meta:
-            unique_together = ('user', 'field')
-            ordering = ['display_order']
+    class Meta:
+        unique_together = ('user', 'field')
+        ordering = ['display_order']
         
-        def __str__(self):
-            return f"{self.user.username} - {self.get_field_display()} ({self.get_period_display()})"
+    def __str__(self):
+        return f"{self.user.username} - {self.get_field_display()} ({self.get_period_display()})"
     
 
 class CustomHabit(models.Model):
