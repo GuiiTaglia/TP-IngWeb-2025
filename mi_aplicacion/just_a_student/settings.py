@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bullet_journal',
     'cloudinary_storage',
     'cloudinary',
+    'sendgrid_backend',
 ]
 
 STORAGES = {
@@ -82,12 +83,21 @@ TEMPLATES = [
 ]
 
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+if 'RENDER' in os.environ:
+    # Producción: usar SendGrid
+    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+
+    # Opciones recomendadas de SendGrid
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    SENDGRID_ECHO_TO_STDOUT = False
+
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@tudominio.com")
+else:
+    # Local: usar consola (imprime mails en terminal)
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "test@example.com"
+
 
 
 WSGI_APPLICATION = 'just_a_student.wsgi.application'
