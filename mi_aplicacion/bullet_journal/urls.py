@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.journal_views import calendar, home, journal_list, journal_detail, journal_create, journal_edit, stadistics, to_do_list
+from .views.journal_views import calendar, home, journal_list, journal_detail, journal_create, journal_edit, stadistics, to_do_list, manage_habits, toggle_habit_status
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
@@ -12,6 +12,13 @@ urlpatterns = [
     path('journals/<int:pk>/edit/', journal_edit, name='journal_edit'),
     path('calendar/', calendar, name='calendar'),
     path('to_do_list/', to_do_list, name='to_do_list'),
+
+   # Gestión simple de hábitos (solo 2 URLs necesarias)
+    path('habits/manage/', manage_habits, name='manage_habits'),
+    path('habits/<int:habit_id>/toggle/', toggle_habit_status, name='toggle_habit_status'),
+    
+    
+    # Estadísticas
     path('stadistics/', stadistics, name='stadistics'),
 ]
 

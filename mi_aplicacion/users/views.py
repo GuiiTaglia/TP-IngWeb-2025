@@ -16,9 +16,6 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model, login
 
-from bullet_journal.models import Journal, StatsPreference 
-from django.utils import timezone
-import json
 
 """def inicio(request):
     return render(request, 'inicio.html')"""
@@ -129,59 +126,3 @@ def redirigir_post_login(request):
         return redirect('/home/')
     
 
-@login_required
-def statistics_dashboard(request):
-    # Obtener fecha actual
-    today = timezone.now().date()
-    
-    # Obtener las preferencias del usuario o usar las predeterminadas
-    stats_preferences = StatsPreference.objects.filter(user=request.user, is_visible=True)
-    
-    if not stats_preferences.exists():
-        # Preferencias predeterminadas si el usuario no ha configurado nada
-        default_fields = ['water_glasses', 'sleep_hours', 'exercise']
-        stats = []
-        
-        for field in default_fields:
-            weekly_data = Journal.get_weekly_data(request.user, field)
-            monthly_data = Journal.get_monthly_data(request.user, field)
-            
-            stats.append({
-                'field': field,
-                'field_display': field.replace('_', ' ').title(),
-                'weekly': {
-                    'labels': weekly_data['labels'],
-                    'values': weekly_data['values'],
-                },
-                'monthly': {
-                    'labels': monthly_data['labels'],
-                    'values': monthly_data['values'],
-                },
-                'chart_type': 'line' if field != 'exercise' else 'bar'
-            })
-    else:
-        # Usar las preferencias configuradas por el usuario
-        stats = []
-        
-        for preference in stats_preferences:
-            if preference.period == 'weekly':
-                data = Journal.get_weekly_data(request.user, preference.field)
-            elif preference.period == 'monthly':
-                data = Journal.get_monthly_data(request.user, preference.field)
-            
-            stats.append({
-                'field': preference.field,
-                'field_display': preference.get_field_display(),
-                'period': preference.period,
-                'labels': data['labels'],
-                'values': data['values'],
-                'chart_type': preference.chart_type
-            })
-    
-    # Convertir los datos para Chart.js
-    stats_json = json.dumps(stats)
-    
-    return render(request, 'bullet_journal/statistics.html', {
-        'stats': stats,
-        'stats_json': stats_json,
-    })
