@@ -12,6 +12,11 @@
             {% csrf_token %}
             <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
 
+                {% load i18n %}
+                {% language 'es' %}
+                <p style="font-size: 19px">Día: {{ journal.date|date:"l, j \\d\\e F \\d\\e Y" }}</p>
+                {% endlanguage %}
+
             <div class="mb-3">
                 <label for="mood" class="form-label">¿Cuál es tu estado de ánimo hoy?</label>
                 <input type="text" class="form-control" id="mood" name="mood" maxlength="50"

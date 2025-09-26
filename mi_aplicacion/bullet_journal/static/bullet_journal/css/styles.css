@@ -100,11 +100,11 @@
 
 .journal {
   background-image: url("../images/librito2.png");  
-  background-size: cover;            
-  background-position: center;         
-  background-repeat:no-repeat;
+  background-size: contain;           
+  background-repeat: no-repeat;
+  background-position: top center;
   background-position-y: 160px;
-  height: 100vh;                       
+  min-height: 150vh;                  
   margin: 0;
   font-family: 'Times New Roman', Times, serif;
   padding-top: 90px;
