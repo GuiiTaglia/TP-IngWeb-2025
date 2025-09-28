@@ -145,18 +145,37 @@ class Journal(models.Model):
         """Método unificado para obtener estadísticas de Journal + hábitos personalizados"""
         stats = []
         
-        # Estadísticas de campos estándar del Journal
-        standard_fields = {
-            'water_glasses': {'name': 'Vasos de Agua', 'color': '#3498db', 'chart_type': 'line'},
-            'sleep_hours': {'name': 'Horas de Sueño', 'color': '#9b59b6', 'chart_type': 'line'},
-            'exercise': {'name': 'Ejercicio', 'color': '#e74c3c', 'chart_type': 'bar'},
-        }
+            # Configuración de campos básicos del Journal
+        basic_fields_config = {
+            'water_glasses': {
+            'name': 'Vasos de Agua',
+            'color': '#3498db',
+            'chart_type': 'bar'
+            },
+            'sleep_hours': {
+                'name': 'Horas de Sueño',
+                'color': '#9b59b6',
+                'chart_type': 'line'
+            },
+            'exercise': {
+                'name': 'Ejercicio',
+                'color': '#e74c3c',
+                'chart_type': 'bar'
+            },
+            'mood': {
+                'name': 'Estado de Ánimo',
+                'color': '#f39c12',
+                'chart_type': 'pie'
+            }   
+    }
         
-        for field, config in standard_fields.items():
+        for field, config in basic_fields_config.items():
             if period == 'weekly':
                 data = cls.get_weekly_data(user, field)
-            else:
+            elif period == 'monthly':
                 data = cls.get_monthly_data(user, field)
+            else: 
+                data = cls.get_weekly_data(user, field)  # Por defecto semanal
             
             stats.append({
                 'id': f'journal_{field}',
@@ -172,21 +191,26 @@ class Journal(models.Model):
         custom_habits = CustomHabit.objects.filter(user=user, is_active=True)
         
         for habit in custom_habits:
+            field_name = f'habit_{habit.id}'
+        
+            # Obtener datos desde custom_habits_data del Journal (no desde HabitTracking)
             if period == 'weekly':
-                data = habit.get_weekly_tracking()
+                data = cls.get_weekly_data(user, field_name)
+            elif period == 'monthly':
+                data = cls.get_monthly_data(user, field_name)
             else:
-                data = CustomHabit.get_monthly_tracking(user, habit.id)
-            
+                data = cls.get_weekly_data(user, field_name)
+        
             stats.append({
                 'id': f'habit_{habit.id}',
-                'field': f'habit_{habit.id}',
+                'field': field_name,
                 'field_display': habit.name,
                 'type': habit.type,
-                'color': '#f39c12',  # Color por defecto para hábitos
+                'color': '#2ecc71',  # Color por defecto para hábitos
                 'chart_type': 'bar' if habit.type == 'boolean' else 'line',
                 'data': data
             })
-        
+    
         return stats
 
     class Meta:

@@ -17,10 +17,39 @@
 {% endblock %}
 
 {% block contenido %}
-
 <div class="container mt-4">
     <h1>Estadísticas de tu Journal</h1>
-    
+
+    <div class="period-controls mb-4">
+        <div class="btn-group" role="group">
+            <a href="?period=weekly"
+                class="btn {% if current_period == 'weekly' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                Semanal
+            </a>
+            <a href="?period=monthly"
+                class="btn {% if current_period == 'monthly' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                Mensual
+            </a>
+        </div>
+    </div>
+
+    {% if journals_count > 0 %}
+    <p class="text-muted">Mostrando estadísticas de {{ journals_count }} journal(s)</p>
+    {% else %}
+    <div class="alert alert-info">
+        No tienes journals registrados aún. <a href="{% url 'journal_create' %}">Crear tu primer journal</a>
+    </div>
+    {% endif %}
+
+    <!-- DEBUG del Template -->
+    <!--<div class="alert alert-warning">
+        <h4>DEBUG del Template:</h4>
+        <p><strong>stats:</strong> {{ stats }}</p>
+        <p><strong>stats|length:</strong> {{ stats|length }}</p>
+        <p><strong>stats_json:</strong> {{ stats_json }}</p>
+    </div>-->
+
+    <!-- Solo UN loop aquí -->
     <div class="row">
         {% for stat in stats %}
         <div class="col-md-6 mb-4">
@@ -28,8 +57,8 @@
                 <div class="card-header">
                     <h5>{{ stat.field_display }}</h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="chart-{{ stat.field }}" width="400" height="300"></canvas>
+                <div class="card-body" style="height: 400px;">
+                    <canvas id="chart-{{ stat.field }}"></canvas>
                 </div>
             </div>
         </div>
@@ -41,46 +70,349 @@
         </div>
         {% endfor %}
     </div>
+
 </div>
-{% endblock contenido %}
-{% block extra_js %}
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const statsData = JSON.parse('{{ stats_json|escapejs }}');
-    
-    statsData.forEach(stat => {
-        const ctx = document.getElementById(`chart-${stat.field}`).getContext('2d');
-        
-        // Configuración del gráfico
-        const chartConfig = {
-            type: stat.chart_type || 'line',
-            data: {
-                labels: stat.labels || stat.weekly.labels,
-                datasets: [{
-                    label: stat.field_display,
-                    data: stat.values || stat.weekly.values,
-                    borderColor: stat.field === 'water_glasses' ? 'rgba(54, 162, 235, 1)' : 
-                                 stat.field === 'sleep_hours' ? 'rgba(153, 102, 255, 1)' :
-                                 'rgba(255, 159, 64, 1)',
-                    backgroundColor: stat.field === 'water_glasses' ? 'rgba(54, 162, 235, 0.2)' : 
-                                      stat.field === 'sleep_hours' ? 'rgba(153, 102, 255, 0.2)' :
-                                      'rgba(255, 159, 64, 0.2)',
-                    borderWidth: 2,
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        };
+    console.log("INICIANDO SCRIPT DE GRÁFICOS");
 
-         // Crear el gráfico
-         new Chart(ctx, chartConfig);
-    });
+    let statsData;
+    try {
+        statsData = JSON.parse('{{ stats_json|escapejs }}');
+        console.log("DEBUG: Stats recibidas:", statsData);
+    } catch (e) {
+        console.error("ERROR: No se pudo parsear stats_json:", e);
+        statsData = [];
+    }
+
+    if (statsData && statsData.length > 0) {
+        statsData.forEach(stat => {
+            console.log(`DEBUG: Procesando ${stat.field_display}:`, stat);
+
+            const canvas = document.getElementById(`chart-${stat.field}`);
+            if (!canvas) {
+                console.error(`ERROR: No se encontró canvas con ID chart-${stat.field}`);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            const labels = stat.data ? stat.data.labels : [];
+            let values = stat.data ? stat.data.values : [];
+
+            // CONFIGURACIÓN ESPECIAL PARA ESTADO DE ÁNIMO (GRÁFICO DE TORTA)
+            if (stat.field === 'mood') {
+                console.log("📊 Procesando gráfico de emociones:", values);
+
+                // Normalizar y contar emociones (case insensitive)
+                const moodCounts = {};
+                const moodNormalized = {}; // Para guardar la versión original más frecuente
+
+                values.forEach(mood => {
+                    if (mood && mood !== null && mood.toString().trim() !== '') {
+                        const normalizedMood = mood.toString().toLowerCase().trim();
+                        const originalMood = mood.toString().trim();
+
+                        // Contar
+                        moodCounts[normalizedMood] = (moodCounts[normalizedMood] || 0) + 1;
+
+                        // Guardar la versión original (la primera vez o la más frecuente)
+                        if (!moodNormalized[normalizedMood] ||
+                            originalMood.length > moodNormalized[normalizedMood].length) {
+                            moodNormalized[normalizedMood] = originalMood;
+                        }
+                    }
+                });
+                console.log("DEBUG: Conteo normalizado de emociones:", moodCounts);
+                console.log("DEBUG: Versiones originales:", moodNormalized);
+
+                // Preparar datos para el gráfico
+                const moodLabels = Object.keys(moodCounts).map(normalized => moodNormalized[normalized]);
+                const moodData = Object.values(moodCounts);
+
+                //  GENERADOR DE COLORES AUTOMÁTICO
+                function generateColor(normalizedMood, index) {
+                    // Colores predefinidos para emociones comunes
+                    const predefinedColors = {
+                        'feliz': '#f39c12',        // Naranja
+                        'muy feliz': '#f1c40f',    // Amarillo
+                        'contento': '#e67e22',     // Naranja oscuro
+                        'alegre': '#ff9f43',       // Naranja claro
+                        'eufórico': '#feca57',     // Amarillo claro
+
+                        'triste': '#3498db',       // Azul
+                        'muy triste': '#2980b9',   // Azul oscuro
+                        'deprimido': '#34495e',    // Gris azulado
+                        'melancólico': '#5dade2',  // Azul claro
+
+                        'enojado': '#e74c3c',      // Rojo
+                        'furioso': '#c0392b',      // Rojo oscuro
+                        'molesto': '#e55039',      // Rojo naranja
+                        'irritado': '#ff6b6b',     // Rojo claro
+
+                        'ansioso': '#9b59b6',      // Púrpura
+                        'nervioso': '#8e44ad',     // Púrpura oscuro
+                        'estresado': '#a55eea',    // Púrpura claro
+                        'preocupado': '#74b9ff',   // Azul púrpura
+                        'relajado': '#27ae60',     // Verde
+                        'calmado': '#2ed573',      // Verde claro
+                        'tranquilo': '#1dd1a1',    // Verde agua
+                        'sereno': '#55efc4',       // Verde menta
+
+                        'neutral': '#95a5a6',      // Gris
+                        'normal': '#bdc3c7',       // Gris claro
+                        'bien': '#74b9ff',         // Azul suave
+                        'regular': '#a4b0be'       // Gris azulado
+                    };
+
+                    // Lista de colores adicionales para emociones nuevas
+                    const additionalColors = [
+                        '#ff7675', '#fd79a8', '#fdcb6e', '#6c5ce7',
+                        '#74b9ff', '#00b894', '#00cec9', '#fd79a8',
+                        '#e17055', '#81ecec', '#fab1a0', '#a29bfe',
+                        '#ff7675', '#55a3ff', '#26de81', '#fc5c65',
+                        '#fed330', '#45aaf2', '#4b7bec', '#26de81'
+                    ];
+
+                    return predefinedColors[normalizedMood] ||
+                        additionalColors[index % additionalColors.length];
+                }
+                // Generar colores para cada emoción
+                const backgroundColors = Object.keys(moodCounts).map((normalizedMood, index) => {
+                    return generateColor(normalizedMood, index);
+                });
+
+                console.log("🎨 Colores generados:", backgroundColors);
+
+                //  CREAR GRÁFICO DE TORTA
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: moodLabels,
+                        datasets: [{
+                            label: 'Estados de Ánimo',
+                            data: moodData,
+                            backgroundColor: backgroundColors,
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                            hoverOffset: 10 // Efecto hover
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 15,
+                                    usePointStyle: true,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed * 100) / total).toFixed(1);
+                                        return `${context.label}: ${context.parsed} día${context.parsed > 1 ? 's' : ''} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        }
+                    }
+                });
+                // Cambiar el gráfico de ejercicio por este código corregido:
+            } else if (stat.field === 'exercise') {
+                console.log("💪 Procesando gráfico de ejercicio:", values);
+
+                // Convertir valores boolean a números con direcciones opuestas
+                const exerciseValues = values.map(value => {
+                    if (value === null || value === undefined) return 0;
+                    return value === true ? 1 : -1; //  SÍ=1 (arriba), NO=-1 (abajo)
+                });
+
+                // Crear colores dinámicos basados en el valor
+                const backgroundColors = exerciseValues.map(value => {
+                    if (value === 1) return '#27ae6080'; // Verde para SÍ
+                    if (value === -1) return '#e74c3c80'; // Rojo para NO
+                    return '#95a5a680'; // Gris para null/0
+                });
+
+                //colores para de borde sin trasparencia
+                const borderColors = exerciseValues.map(value => {
+                    if (value === 1) return '#27ae60'; // Verde para SÍ
+                    if (value === -1) return '#e74c3c'; // Rojo para NO
+                    return '#95a5a6'; // Gris para null/0
+                });
+
+                console.log(`DEBUG: Values ejercicio:`, exerciseValues);
+                console.log(`DEBUG: Colores ejercicio:`, backgroundColors);
+                console.log('DEBUG: Colores borde:', borderColors);
+
+                //  CREAR EL GRÁFICO CON PLUGIN PERSONALIZADO
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: stat.field_display,
+                            data: exerciseValues,
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                min: -1.5, // Permitir valores negativos
+                                max: 1.5,  // Limitar valores positivos
+                                ticks: {
+                                    callback: function (value) {
+                                        if (value === 1) return '✅ SÍ';
+                                        if (value === -1) return '❌ NO';
+                                        if (value === 0) return '—';
+                                        return '';
+                                    },
+                                    stepSize: 1
+                                },
+                                grid: {
+                                    display: true,
+                                    color: '#ecf0f1', // ✅ Líneas suaves para la cuadrícula
+                                    lineWidth: 1,
+                                    drawOnChartArea: true,
+                                    drawTicks: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // Ocultar leyenda para mejor visualización
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.parsed.y;
+                                        if (value === 1) return 'Ejercicio: ✅ SÍ';
+                                        if (value === -1) return 'Ejercicio: ❌ NO';
+                                        return 'Ejercicio: Sin datos';
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    // ✅ AGREGAR PLUGIN PARA LÍNEA HORIZONTAL EN y=0
+                    plugins: [{
+                        id: 'horizontalLine',
+                        afterDraw: function (chart) {
+                            const ctx = chart.ctx;
+                            const yAxis = chart.scales.y;
+                            const xAxis = chart.scales.x;
+
+                            // Encontrar la posición y=0
+                            const zeroPosition = yAxis.getPixelForValue(0);
+
+                            // Dibujar línea horizontal negra en y=0
+                            ctx.save();
+                            ctx.strokeStyle = '#2c3e50'; // Color negro/gris oscuro
+                            ctx.lineWidth = 3;           // Grosor de la línea
+                            ctx.setLineDash([]);         // Línea sólida
+                            ctx.beginPath();
+                            ctx.moveTo(xAxis.left, zeroPosition);
+                            ctx.lineTo(xAxis.right, zeroPosition);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                    }]
+                });
+
+
+            } else {
+                // ✅ CONFIGURACIÓN PARA OTROS GRÁFICOS (BAR/LINE)
+                // Limpiar datos null
+                values = values.map(value => {
+                    if (value === null || value === undefined) return 0;
+                    if (stat.type === 'boolean') return value === true ? 1 : 0;
+                    return value;
+                });
+
+                console.log(`DEBUG: Labels para ${stat.field}:`, labels);
+                console.log(`DEBUG: Values para ${stat.field}:`, values);
+
+                new Chart(ctx, {
+                    type: stat.chart_type === 'bar' ? 'bar' : 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: stat.field_display,
+                            data: values,
+                            backgroundColor: stat.color + '80',
+                            borderColor: stat.color,
+                            borderWidth: 2,
+                            fill: stat.chart_type === 'line' ? false : true,
+                            tension: stat.chart_type === 'line' ? 0.4 : 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: stat.field === 'exercise' ? 1.2 : undefined,
+                                ticks: {
+                                    callback: function (value) {
+                                        if (stat.field === 'exercise') {
+                                            return value === 1 ? 'Sí' : value === 0 ? 'No' : '';
+                                        }
+                                        return value;
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) label += ': ';
+
+                                        if (stat.field === 'exercise') {
+                                            label += context.parsed.y === 1 ? 'Sí' : 'No';
+                                        } else if (stat.field === 'water_glasses') {
+                                            label += context.parsed.y + ' vasos';
+                                        } else if (stat.field === 'sleep_hours') {
+                                            label += context.parsed.y + ' horas';
+                                        } else {
+                                            label += context.parsed.y;
+                                        }
+
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            console.log(`✅ Gráfico creado para ${stat.field_display}`);
+        });
+    } else {
+        console.log("DEBUG: No hay datos para mostrar");
+    }
 </script>
-{% endblock extra_js %}
+{% endblock contenido %}

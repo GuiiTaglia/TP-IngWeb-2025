@@ -222,16 +222,40 @@ def to_do_list(request):
 def stadistics(request):
     """Vista para mostrar estadísticas del journal y hábitos personalizados"""
     user = request.user
+    period = request.GET.get('period', 'weekly')  # Permitir cambiar período
     
-    # Usar el método del modelo para obtener todas las estadísticas
-    all_stats = Journal.get_all_stats_for_user(user, period='weekly')
+    # DEBUG: Verificar journals del usuario
+    journals = Journal.objects.filter(user=user)
+    print(f"DEBUG: Journals encontrados: {journals.count()}")
+    for j in journals:
+        print(f"DEBUG: - {j.date}: water={j.water_glasses}, sleep={j.sleep_hours}, exercise={j.exercise}")
+        if j.custom_habits_data:
+            print(f"  Hábitos: {j.custom_habits_data}")
+    
+    # Obtener estadísticas
+    try:
+        all_stats = Journal.get_all_stats_for_user(user, period=period)
+        print(f"DEBUG: Stats generadas: {len(all_stats)} estadísticas")
+        
+        # Verificar datos específicos
+        for stat in all_stats:
+            print(f"DEBUG: {stat['field_display']} - Valores: {stat['data']['values']}")
+            
+    except Exception as e:
+        print(f"DEBUG: Error generando stats: {e}")
+        import traceback
+        traceback.print_exc()
+        all_stats = []
     
     # Convertir los datos para Chart.js
-    stats_json = json.dumps(all_stats)
-    
+    stats_json = json.dumps(all_stats, default=str)
+    print(f"DEBUG: JSON final: {stats_json}")
+
     return render(request, 'bullet_journal/journal/stadistics.html', {
         'stats': all_stats,
         'stats_json': stats_json,
+        'journals_count': journals.count(),
+        'current_period': period,
     })
 
 @login_required

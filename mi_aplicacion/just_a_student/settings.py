@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'bullet_journal',
     'cloudinary_storage',
     'cloudinary',
-    'sendgrid_backend',
+   # 'sendgrid_backend',
 ]
 
 STORAGES = {
