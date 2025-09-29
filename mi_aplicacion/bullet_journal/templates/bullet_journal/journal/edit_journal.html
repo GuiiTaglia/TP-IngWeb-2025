@@ -10,29 +10,36 @@
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
+            <!---input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
 
                 {% load i18n %}
                 {% language 'es' %}
                 <p style="font-size: 19px">Día: {{ journal.date|date:"l, j \\d\\e F \\d\\e Y" }}</p>
-                {% endlanguage %}
+                {% endlanguage %}--->
+            
+            <div class="mb-3">
+                <label for="date" class="form-label">Fecha:</label>
+                <input type="date" class="form-control" id="date" name="date" maxlength="50"
+                    value="{{ journal.date|date:'Y-m-d' }}">
+            </div>
+
 
             <div class="mb-3">
                 <label for="mood" class="form-label">¿Cuál es tu estado de ánimo hoy?</label>
                 <input type="text" class="form-control" id="mood" name="mood" maxlength="50"
-                       value="{{ journal.mood }}">
+                    value="{{ journal.mood }}">
             </div>
 
             <div class="mb-3">
                 <label for="sleep_hours" class="form-label">¿Cuántas horas dormiste?</label>
                 <input type="number" class="form-control" id="sleep_hours" name="sleep_hours" step="0.1"
-                       value="{{ journal.sleep_hours }}">
+                    value="{{ journal.sleep_hours }}">
             </div>
 
             <div class="mb-3">
                 <label for="water_glasses" class="form-label">¿Cuántos vasos de agua tomaste?</label>
                 <input type="number" class="form-control" id="water_glasses" name="water_glasses"
-                       value="{{ journal.water_glasses }}">
+                    value="{{ journal.water_glasses }}">
             </div>
 
             <div class="mb-3 form-check">
