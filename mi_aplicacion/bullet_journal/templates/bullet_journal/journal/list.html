@@ -28,9 +28,19 @@
             
         <form method="get" class="p-3">
             <div class="row g-3 align-items-end">
-                <div class="col-md-3">
+                <!---div class="col-md-3">
                     <label for="date" class="form-label">Fecha:</label>
                     <input type="date" id="date" name="date" value="{{ request.GET.date }}" class="form-control">
+                </div--->
+
+                <div class="col-md-3">
+                    <label for="sleep_hours" class="form-label">Horas de sueño:</label>
+                    <select id="sleep_hours" name="sleep_hours" class="form-select">
+                        <option value="">Todas</option>
+                        {% for h in sleep_hours_range %}
+                            <option value="{{ h }}" {% if request.GET.sleep_hours == h|stringformat:"s" %}selected{% endif %}>{{ h }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div class="col-md-3">

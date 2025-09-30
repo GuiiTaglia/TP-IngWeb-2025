@@ -22,6 +22,7 @@ def journal_list(request):
     date_filter = request.GET.get('date')
     mood_filter = request.GET.get('mood')
     exercise_filter = request.GET.get('exercise')
+    horas_sueno = request.GET.get('sleep_hours')
 
     if date_filter:
         journals = journals.filter(date=date_filter)
@@ -29,6 +30,8 @@ def journal_list(request):
         journals = journals.filter(mood__icontains=mood_filter)
     if exercise_filter in ['true', 'false']:
         journals = journals.filter(exercise=(exercise_filter == 'true'))
+    if horas_sueno:
+        journals = journals.filter(sleep_hours=horas_sueno)
 
     moods_disponibles = Journal.objects.filter(user=request.user).values_list('mood', flat=True).distinct()
 
@@ -37,7 +40,9 @@ def journal_list(request):
     return render(request, 'bullet_journal/journal/list.html', {
         'journals': journals,
         'moods_disponibles': moods_disponibles,
-        'existe_hoy': existe_hoy
+        'existe_hoy': existe_hoy,
+        'horas_sueno': horas_sueno,
+        'sleep_hours_range': range(1, 13)  
     })
 
 
