@@ -67,7 +67,13 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-header">
-                    <h5>{{ stat.field_display }}</h5>
+                    <h5>
+                        {{ stat.field_display }}
+                        {% if stat.goal_value %}
+                            <small class="text-muted">(Meta: {{ stat.goal_value }}{% if stat.unit %} {{ stat.unit }}{% endif %})</small>
+                        {% endif %}                        
+                    
+                    </h5>
                 </div>
                 <div class="card-body" style="height: 400px;">
                     <canvas id="chart-{{ stat.field }}"></canvas>
@@ -115,7 +121,7 @@
 
             // CONFIGURACIÓN ESPECIAL PARA ESTADO DE ÁNIMO (GRÁFICO DE TORTA)
             if (stat.field === 'mood') {
-                console.log("📊 Procesando gráfico de emociones:", values);
+                console.log(" Procesando gráfico de emociones:", values);
 
                 // Normalizar y contar emociones (case insensitive)
                 const moodCounts = {};
@@ -347,9 +353,189 @@
                         }
                     }]
                 });
+                
+                <!-- Después del bloque de ejercicio (línea ~320), agregar ANTES del `} else {`: -->
 
+} else if (stat.habit_type) {
+    // 🎯 CONFIGURACIÓN PARA HÁBITOS PERSONALIZADOS
+    console.log(`🎯 Procesando hábito personalizado: ${stat.field_display}`, stat);
+    
+    if (stat.habit_type === 'boolean') {
+        // Hábito tipo Sí/No (como ejercicio)
+        const habitValues = values.map(value => {
+            if (value === null || value === undefined) return 0;
+            return value === true ? 1 : -1; // SÍ=1 (arriba), NO=-1 (abajo)
+        });
 
-            } else {
+        const backgroundColors = habitValues.map(value => {
+            if (value === 1) return stat.color + '80'; // Color del hábito para SÍ
+            if (value === -1) return '#e74c3c80'; // Rojo para NO
+            return '#95a5a680'; // Gris para null/0
+        });
+
+        const borderColors = habitValues.map(value => {
+            if (value === 1) return stat.color; // Color del hábito para SÍ
+            if (value === -1) return '#e74c3c'; // Rojo para NO
+            return '#95a5a6'; // Gris para null/0
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: stat.field_display,
+                    data: habitValues,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: -1.5,
+                        max: 1.5,
+                        ticks: {
+                            callback: function (value) {
+                                if (value === 1) return '✅ SÍ';
+                                if (value === -1) return '❌ NO';
+                                if (value === 0) return '—';
+                                return '';
+                            },
+                            stepSize: 1
+                        },
+                        grid: {
+                            display: true,
+                            color: '#ecf0f1',
+                            lineWidth: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const value = context.parsed.y;
+                                if (value === 1) return `${stat.field_display}: ✅ SÍ`;
+                                if (value === -1) return `${stat.field_display}: ❌ NO`;
+                                return `${stat.field_display}: Sin datos`;
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [{
+                id: 'horizontalLine',
+                afterDraw: function (chart) {
+                    const ctx = chart.ctx;
+                    const yAxis = chart.scales.y;
+                    const xAxis = chart.scales.x;
+                    const zeroPosition = yAxis.getPixelForValue(0);
+
+                    ctx.save();
+                    ctx.strokeStyle = '#2c3e50';
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    ctx.moveTo(xAxis.left, zeroPosition);
+                    ctx.lineTo(xAxis.right, zeroPosition);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }]
+        });
+
+    } else if (stat.habit_type === 'integer') {
+        // Hábito tipo numérico (gráfico lineal)
+        console.log(`📊 Creando gráfico lineal para: ${stat.field_display}`);
+        
+        // Preparar datasets
+        const datasets = [{
+            label: stat.field_display + (stat.unit ? ` (${stat.unit})` : ''),
+            data: values,
+            borderColor: stat.color,
+            backgroundColor: stat.color + '20',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: stat.color,
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 5
+        }];
+
+        // Agregar línea de meta si existe
+        if (stat.goal_value) {
+            datasets.push({
+                label: 'Meta',
+                data: Array(labels.length).fill(stat.goal_value),
+                borderColor: '#fd7e14',
+                backgroundColor: 'transparent',
+                borderDash: [5, 5],
+                pointRadius: 0,
+                fill: false,
+                tension: 0
+            });
+        }
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + (stat.unit ? ` ${stat.unit}` : '');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        display: stat.goal_value ? true : false // Mostrar leyenda solo si hay meta
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                
+                                if (context.dataset.label === 'Meta') {
+                                    label += context.parsed.y + (stat.unit ? ` ${stat.unit}` : '');
+                                } else {
+                                    label += context.parsed.y + (stat.unit ? ` ${stat.unit}` : '');
+                                    
+                                    // Mostrar porcentaje de meta si existe
+                                    if (stat.goal_value && context.parsed.y > 0) {
+                                        const percentage = ((context.parsed.y / stat.goal_value) * 100).toFixed(1);
+                                        label += ` (${percentage}% de la meta)`;
+                                    }
+                                }
+                                
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+} else {
+    // ✅ CONFIGURACIÓN PARA OTROS GRÁFICOS (código existente sin cambios)
+    // ... tu código actual para otros gráficos ...
+
+            
                 // ✅ CONFIGURACIÓN PARA OTROS GRÁFICOS (BAR/LINE)
                 // Limpiar datos null
                 values = values.map(value => {

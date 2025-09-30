@@ -578,7 +578,36 @@ h1 {
     margin-left: -1px;
 }
 
+.card-header-orange {
+  background-color: #ff6a19 !important;
+  color: white !important;
+}
 
+.badge-orange {
+  background-color: #ff6a19 !important;
+  color: white !important;
+}
+
+.border-orange {
+  border: 2px solid #ff6a19 !important;
+  border-radius: 10px !important;
+}
+
+/* Clase para enlaces naranjas */
+.link-orange {
+  color: #ff6a19 !important;
+  text-decoration: none;
+}
+
+.link-orange:hover {
+  color: #ff5c04 !important;
+}
+
+/* Variaciones del naranja para diferentes elementos */
+.bg-orange-light {
+  background-color: #ff6a1986 !important; /* Tu color con transparencia */
+  opacity: 0.9;
+}
 /*Intento de hacer el libro que NO FUNCIONA*/
 /*.book-container {
   display: flex;

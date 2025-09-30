@@ -51,6 +51,29 @@
             <p><strong>Horas de sueño:</strong> {{ journal.sleep_hours }}</p>
             <p><strong>Vasos de agua:</strong> {{ journal.water_glasses }}</p>
             <p><strong>Ejercicio:</strong> {% if journal.exercise %}Sí{% else %}No{% endif %}</p>
+            <!-- AGREGAR ESTA SECCIÓN DE HÁBITOS: -->
+            {% if journal.custom_habits_data %}
+                <div class="habits-section">
+                    <p><strong>Hábitos Personalizados:</strong></p>
+                    {% for habit_key, habit_value in journal.custom_habits_data.items %}
+                        {% if habit_value %}
+                            {% for habit in user_habits %}
+                                {% if habit_key == "habit_"|add:habit.id|stringformat:"s" %}
+                                    <p><strong>{{ habit.name }}:</strong> 
+                                    {% if habit.type == 'boolean' %}
+                                        Sí
+                                    {% else %}
+                                        {{ habit_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}
+                                    {% endif %}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}           
+            
+            
             {% if journal.image %}
                 <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 100px;">
             {% endif %}

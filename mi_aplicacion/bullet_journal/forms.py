@@ -1,5 +1,5 @@
 from django import forms
-from .models import Journal, StatsPreference, CustomHabit, HabitTracking
+from .models import Journal, StatsPreference, CustomHabit
 
 class JournalForm(forms.ModelForm):
     class Meta:
@@ -57,43 +57,36 @@ class StatsPreferenceForm(forms.ModelForm):
 class CustomHabitForm(forms.ModelForm):
     class Meta:
         model = CustomHabit
-        fields = ['name', 'description', 'type']
+        fields = ['name', 'description', 'type', 'goal_value', 'unit']
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'ej: Meditar, Leer páginas, Correr km'}),
-            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Descripción opcional del hábito'}),
+            'name': forms.TextInput(attrs={
+                'placeholder': 'ej: Pasos diarios, Páginas leídas, Meditar',
+                'class': 'form-control'
+            }),
+            'description': forms.Textarea(attrs={
+                'rows': 3, 
+                'placeholder': 'Descripción opcional del hábito',
+                'class': 'form-control'
+            }),
             'type': forms.Select(attrs={'class': 'form-control'}),
+            'goal_value': forms.NumberInput(attrs={
+                'placeholder': 'ej: 10000 (para pasos)',
+                'class': 'form-control',
+                'min': '1'
+            }),
+            'unit': forms.TextInput(attrs={
+                'placeholder': 'ej: pasos, páginas, minutos',
+                'class': 'form-control'
+            })
         }
-
-class HabitTrackingForm(forms.ModelForm):
-    class Meta:
-        model = HabitTracking
-        fields = ['boolean_value', 'integer_value', 'float_value', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Notas opcionales'}),
-        }
-
-    def __init__(self, *args, habit_type=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        #ocultar campos no relevantes segun el tipo de habito
-        if habit_type == 'boolean':
-            self.fields.pop('integer_value', None)
-            self.fields.pop('float_value', None)
-            self.fields['boolean_value'].widget = forms.CheckboxInput(attrs={'class': 'form-check-input'})
-            self.fields['boolean_value'].label = "¿Completado?"
-            self.fields['boolean_value'].required = False
         
-        elif habit_type == 'integer':
-            self.fields.pop('boolean_value', None)
-            self.fields.pop('float_value', None)
-            self.fields['integer_value'].widget = forms.NumberInput(attrs={'min': '0', 'class': 'form-control'})
-            self.fields['integer_value'].label = "Cantidad"
-            self.fields['integer_value'].required = False
-            
-        elif habit_type == 'float':
-            self.fields.pop('boolean_value', None)
-            self.fields.pop('integer_value', None)
-            self.fields['float_value'].widget = forms.NumberInput(attrs={'step': '0.1', 'min': '0', 'class': 'form-control'})
-            self.fields['float_value'].label = "Cantidad"
-            self.fields['float_value'].required = False        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Hacer goal_value y unit opcionales visualmente
+        self.fields['goal_value'].required = False
+        self.fields['unit'].required = False
+        self.fields['description'].required = False
+
+
+       
 

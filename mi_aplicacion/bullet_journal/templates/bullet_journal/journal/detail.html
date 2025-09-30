@@ -22,6 +22,46 @@
 
 <p><strong>Ejercicio:</strong> {% if journal.exercise %}Sí{% else %}No{% endif %}</p>
 
+<hr>
+<p><strong>🔍 DEBUG - Hábitos del usuario:</strong></p>
+{% if user_habits %}
+    {% for habit in user_habits %}
+        <p>- {{ habit.name }} (ID: {{ habit.id }}, Tipo: {{ habit.type }})</p>
+    {% endfor %}
+{% else %}
+    <p>No hay user_habits en el contexto</p>
+{% endif %}
+
+<p><strong>🔍 DEBUG - Datos guardados en journal:</strong></p>
+{% if journal.custom_habits_data %}
+    <p>{{ journal.custom_habits_data }}</p>
+{% else %}
+    <p>No hay custom_habits_data en este journal</p>
+{% endif %}
+
+<hr>
+
+<!--  Esta sección para hábitos personalizados -->
+{% if journal.custom_habits_data %}
+<hr>
+<p><strong>Hábitos Personalizados:</strong></p>
+{% for habit_key, habit_value in journal.custom_habits_data.items %}
+    {% if habit_value %}
+        {% for habit in user_habits %}
+            {% if habit_key == "habit_"|add:habit.id|stringformat:"s" %}
+                <p><strong>{{ habit.name }}:</strong> 
+                {% if habit.type == 'boolean' %}
+                    Sí
+                {% else %}
+                    {{ habit_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}
+                {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+{% endif %}
+
 {% if journal.image %}
 <p><strong>Imagen:</strong></p>
 <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 400px;">

@@ -1,6 +1,6 @@
 from datetime import timedelta
-from bullet_journal.models import Journal, CustomHabit, HabitTracking, StatsPreference
-from bullet_journal.forms import JournalForm, CustomHabitForm, StatsPreferenceForm, HabitTrackingForm
+from bullet_journal.models import Journal, CustomHabit, StatsPreference
+from bullet_journal.forms import JournalForm, CustomHabitForm, StatsPreferenceForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -36,62 +36,28 @@ def journal_list(request):
     moods_disponibles = Journal.objects.filter(user=request.user).values_list('mood', flat=True).distinct()
 
     existe_hoy = journals.filter(date=now().date()).exists()
+
+    user_habits = CustomHabit.objects.filter(user=request.user)
     
     return render(request, 'bullet_journal/journal/list.html', {
         'journals': journals,
         'moods_disponibles': moods_disponibles,
         'existe_hoy': existe_hoy,
         'horas_sueno': horas_sueno,
-        'sleep_hours_range': range(1, 13)  
+        'sleep_hours_range': range(1, 13),  
+        'user_habits': user_habits
     })
 
 
 @login_required
 def journal_detail(request, pk):
     journal = get_object_or_404(Journal, pk=pk, user=request.user)
-    return render(request, 'bullet_journal/journal/detail.html', {'journal': journal})
+    user_habits = CustomHabit.objects.filter(user=request.user)
+    return render(request, 'bullet_journal/journal/detail.html', {
+        'journal': journal,
+        'user_habits': user_habits
+        })
 
-# Crear un journal
-# @login_required
-# def journal_create(request):
-#     if request.method == 'POST':
-#         form = JournalForm(request.POST, request.FILES, user=request.user)
-#         if form.is_valid():
-#             date = form.cleaned_data['date']
-            
-#             #extrar habitos personalizados del formulario
-#             custom_habits_data = {}
-#             for field_name, value in form.cleaned_data.items():
-#                 if field_name.startswith('habit_'):
-#                     custom_habits_data[field_name] = value
-            
-#             #Usar update_or_create para evitar duplicados por fecha y usuario
-#             journal, created = Journal.objects.update_or_create(
-#                 user=request.user,
-#                 date=date,
-#                 defaults={
-#                     'mood': form.cleaned_data['mood'],
-#                     'sleep_hours': form.cleaned_data.get('sleep_hours'),
-#                     'water_glasses': form.cleaned_data.get('water_glasses'),
-#                     'exercise': form.cleaned_data.get('exercise', False),
-#                     'image': form.cleaned_data.get('image'),
-#                     'custom_habits_data': custom_habits_data
-#                 }
-#             )
-#             action = "Creado" if created else "Actualizado"
-#             messages.success(request, f"Journal {action} correctamente 🎉")
-#             return redirect('journal_list')
-#     else:
-#         form = JournalForm(user=request.user)
-#         #prellenar la fecha con la fecha actual
-#         today = timezone.now().date()
-#         existing_journal = Journal.objects.filter(user=request.user, date=today).first()
-#         if existing_journal:
-#             form = JournalForm(instance=existing_journal, user=request.user)
-#             load_custom_habits_data(form, request.user, today)
-
-#     return render(request, 'bullet_journal/journal/new_journal.html', {'form': form, 'custom_habits': CustomHabit.objects.filter(user=request.user, is_active=True) })
-           
 
 @login_required
 def journal_create(request):
@@ -176,9 +142,12 @@ def journal_create(request):
             form = JournalForm(instance=existing_journal, user=request.user)
             load_custom_habits_data(form, request.user, today)
 
+    custom_habits = CustomHabit.objects.filter(user=request.user, is_active=True)
+  
+
     return render(request, 'bullet_journal/journal/new_journal.html', {
         'form': form, 
-        'custom_habits': CustomHabit.objects.filter(user=request.user, is_active=True)
+        'custom_habits': custom_habits
     })
 
 
@@ -275,6 +244,26 @@ def manage_habits(request):
     return render(request, 'bullet_journal/journal/manage_habits.html', {
         'form': form,
         'habits': habits
+    })
+
+@login_required
+def add_habit_quick(request):
+    """Vista rápida para agregar un hábito desde el formulario del journal"""
+    if request.method == 'POST':
+        form = CustomHabitForm(request.POST)
+        if form.is_valid():
+            habit = form.save(commit=False)
+            habit.user = request.user
+            habit.save()
+            messages.success(request, f'¡Hábito "{habit.name}" agregado! Ya aparece en tu formulario diario.')
+            return redirect('journal_create')  # Volver al formulario del journal
+        else:
+            messages.error(request, 'Error creando el hábito. Revisa los datos.')
+    else:
+        form = CustomHabitForm()
+    
+    return render(request, 'bullet_journal/journal/add_habit_quick.html', {
+        'form': form
     })
 
 @login_required

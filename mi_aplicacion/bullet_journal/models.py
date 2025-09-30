@@ -190,9 +190,27 @@ class Journal(models.Model):
         # Estadísticas de hábitos personalizados
         custom_habits = CustomHabit.objects.filter(user=user, is_active=True)
         
-        for habit in custom_habits:
-            field_name = f'habit_{habit.id}'
         
+            
+        habit_colors = [
+            '#e74c3c',  # Rojo
+            '#3498db',  # Azul
+            '#2ecc71',  # Verde
+            '#f39c12',  # Naranja
+            '#9b59b6',  # Morado
+            '#1abc9c',  # Turquesa
+            '#e67e22',  # Naranja oscuro
+            '#34495e',  # Gris azulado
+            '#f1c40f',  # Amarillo
+            '#e91e63',  # Rosa
+            '#795548',  # Marrón
+            '#607d8b'   # Gris
+        ]
+
+        for index, habit in enumerate(custom_habits):
+            field_name = f'habit_{habit.id}'
+            color = habit_colors[index % len(habit_colors)]
+
             # Obtener datos desde custom_habits_data del Journal (no desde HabitTracking)
             if period == 'weekly':
                 data = cls.get_weekly_data(user, field_name)
@@ -200,15 +218,18 @@ class Journal(models.Model):
                 data = cls.get_monthly_data(user, field_name)
             else:
                 data = cls.get_weekly_data(user, field_name)
-        
+            
             stats.append({
                 'id': f'habit_{habit.id}',
                 'field': field_name,
                 'field_display': habit.name,
                 'type': habit.type,
-                'color': '#2ecc71',  # Color por defecto para hábitos
+                'color': color,
                 'chart_type': 'bar' if habit.type == 'boolean' else 'line',
-                'data': data
+                'data': data,
+                'goal_value': habit.goal_value,
+                'unit': habit.unit,
+                'habit_type': habit.type
             })
     
         return stats
@@ -257,7 +278,7 @@ class CustomHabit(models.Model):
     TYPE_CHOICES = [
         ('boolean', 'Sí/No'),
         ('integer', 'Número'),
-        ('float', 'Número Decimal'),
+        ##('float', 'Número Decimal'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='custom_habits')
@@ -267,13 +288,19 @@ class CustomHabit(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
+    #Campos para metas
+    goal_value = models.IntegerField(null=True, blank=True)  # Valor objetivo (si aplica)
+    unit = models.CharField(max_length=20, blank=True, null=True)  #
     #opcionales para personalizacion 
        
     #icon = models.CharField(max_length=50, blank=True, null=True)  # Para iconos de FontAwesome o similares
     #color = models.CharField(max_length=20, default='#3498db')     # Color para gráficos
     #goal_value = models.FloatField(null=True, blank=True)          # Valor objetivo (si aplica)
     #unit = models.CharField(max_length=20, blank=True, null=True)  # Unidad (ej: "km", "páginas", etc.)
-    
+    class Meta:
+        unique_together = ('user', 'name')
+        ordering = ['-created_at']
+        
     def __str__(self):
         return f"{self.name} ({self.user.username})"
     
@@ -351,26 +378,4 @@ class CustomHabit(models.Model):
             'values': list(data.values())
         }
     
-class HabitTracking(models.Model):
-    habit = models.ForeignKey(CustomHabit, on_delete=models.CASCADE, related_name='tracking_entries')
-    date = models.DateField()
-    boolean_value = models.BooleanField(null=True, blank=True)
-    integer_value = models.IntegerField(null=True, blank=True)
-    float_value = models.FloatField(null=True, blank=True)
-    notes = models.TextField(blank=True, null=True)
 
-    class Meta:
-        unique_together = ('habit', 'date')
-        ordering = ['-date']
-
-    def __str__(self):
-        return f"{self.habit.name} - {self.date}"
-    
-    def get_value(self):
-        if self.habit.type == 'boolean':
-            return self.boolean_value
-        elif self.habit.type == 'integer':
-            return self.integer_value
-        elif self.habit.type == 'float':
-            return self.float_value
-        return None

@@ -1,11 +1,14 @@
+
 {% extends "header.html" %}
 
 {% block title %}Mis Journals{% endblock %}
 
 {% block extra_head %}
+{% load static %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
 {% endblock %}
 
 {% block contenido %}
@@ -40,15 +43,81 @@
                 <label class="form-check-label" for="exercise">¿Hiciste ejercicio hoy?</label>
             </div>
 
+            <!-- SECCIÓN DE HÁBITOS PERSONALIZADOS -->
+            {% if custom_habits %}
+            <div class="card mb-4 border-orange">
+                <div class="card-header bg-orange-light">
+                    <h5 class="mb-0">Mis Hábitos Personalizados</h5>
+                </div>
+                <div class="card-body">
+                    {% for habit in custom_habits %}
+                    <div class="mb-3">
+                        {% if habit.type == 'boolean' %}
+                            <!-- Hábito Sí/No -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" 
+                                       id="habit_{{ habit.id }}" 
+                                       name="habit_{{ habit.id }}"
+                                       value="true">
+                                <label class="form-check-label" for="habit_{{ habit.id }}">
+                                    <strong>{{ habit.name }}</strong>
+                                    {% if habit.description %}
+                                        <small class="text-muted d-block">{{ habit.description }}</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        {% elif habit.type == 'integer' %}
+                            <!-- Hábito Numérico -->
+                            <label for="habit_{{ habit.id }}" class="form-label">
+                                <strong>{{ habit.name }}</strong>
+                                {% if habit.goal_value %}
+                                    <span class="badge badge-orange" >Meta: {{ habit.goal_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}</span>
+                                {% endif %}
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="habit_{{ habit.id }}" 
+                                   name="habit_{{ habit.id }}"
+                                   min="0"
+                                   placeholder="{% if habit.goal_value %}{{ habit.goal_value }}{% else %}0{% endif %}{% if habit.unit %} {{ habit.unit }}{% endif %}">
+                            {% if habit.description %}
+                                <small class="form-text text-muted">{{ habit.description }}</small>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+
+            </div>
+            {% endif %}    
+            
+            <!-- Imagen -->
+
             <div class="mb-3">
                 <label for="image" class="form-label">¿Querés recordar este día con una foto?</label>
                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
             </div>
 
-            <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
+            <!-- Botones -->
+            <div class= "d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
+                <a href="{% url 'add_habit_quick' %}" class="btn btn-primary">
+                    Agregar Hábito
+                </a>
+                
+                {% if custom_habits %}
+                <a href="{% url 'manage_habits' %}" class="btn btn-primary">
+                    Gestionar Hábitos
+                </a>
+                {% endif %}
+            </div>
+
+            </div>
+
         </form>
 
-        <a href="{% url 'journal_list' %}" class="d-block mt-3" style="color: ff6a19;">Volver</a>
+        <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
     </div>
 </div>
 
