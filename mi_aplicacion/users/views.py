@@ -17,6 +17,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model, login
 
 
+
 """def inicio(request):
     return render(request, 'inicio.html')"""
 
@@ -109,9 +110,6 @@ def activate(request, uidb64, token):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-"""@login_required
-def logout(request):
-    return redirect('inicio.html')"""
 
 def logout_view(request):
     auth_logout(request)
@@ -124,5 +122,4 @@ def redirigir_post_login(request):
         return redirect('/admin/')
     else:
         return redirect('/home/')
-    
 

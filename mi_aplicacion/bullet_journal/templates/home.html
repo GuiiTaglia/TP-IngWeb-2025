@@ -34,9 +34,11 @@
 
 
     <div class="column">
-        <div class="journal_create">
-            <a href="{% url 'journal_create' %}">Registrar mi día</a>
-        </div>
+        {% if not existe_hoy %}
+          <div class="journal_create">
+              <a href="{% url 'journal_create' %}">¡Registrar mi día!</a>
+          </div>
+        {% endif %}
     </div>
 
 

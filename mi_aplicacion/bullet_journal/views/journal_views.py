@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.http import JsonResponse
 import json
 
+from django.utils.timezone import now
+
 
 @login_required
 def home(request):
@@ -301,3 +303,13 @@ def load_custom_habits_data(form, user, date):
                     form.fields[field_name].initial = value
     except Journal.DoesNotExist:
         pass
+
+
+def journal_list(request):
+    journals = Journal.objects.filter(user=request.user)
+    existe_hoy = journals.filter(date=now().date()).exists()
+    return render(request, "bullet_journal/journal/list.html", {
+        "journals": journals,
+        "existe_hoy": existe_hoy
+    })
+    

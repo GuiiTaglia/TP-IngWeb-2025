@@ -38,7 +38,6 @@
   color: #ff6614;
 }
 
-/* Ajuste para dropdown del perfil */
 .nav-item.dropdown .dropdown-menu {
   min-width: 150px;
   background-color: #fda77a; 
@@ -497,14 +496,15 @@ h1 {
     background-color: rgb(255, 255, 255);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(255, 115, 0, 0.2);
     text-align: left;
     position: relative;
     width: 80%;
     max-width: 400px;
+    font-family: 'Times New Roman', Times, serif;
 }
 
-.close-btn {
+/*.close-btn {
     position: absolute;
     top: 8px;
     right: 19px;
@@ -512,10 +512,66 @@ h1 {
     cursor: pointer;
     color: #ff6a19;
     font-weight: bold;
-}
+}*/
 
 .popup-content img {
     max-width: 100%; 
     height: auto; 
     display: block; 
+}
+
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.journal-item .open-popup-btn {
+  background-color: #f7a97f !important;
+  border-radius: 12px !important;
+  border: none !important;
+  color: white !important;
+}
+
+.journal-item .open-popup-btn:hover {
+  background-color: #ff8040 !important;
+}
+
+.period-controls .btn-periodo {
+    color: #ff7f4d;
+    background-color: white; 
+    padding: 8px 20px;
+    text-decoration: none;
+    font-size: 26px;
+    text-align: center;
+    font-family: "Amatic SC", sans-serif;
+    font-weight: bold;
+    border: 1px solid #ff7f4d; 
+    cursor: pointer; 
+    border-radius: 0;
+}
+
+.period-controls .btn-periodo:hover {
+    background-color: #ffc6a7; 
+}
+
+.period-controls .btn-periodo.activo {
+    color: white; 
+    background-color: #ff7f4d; 
+    border-color: #ff7f4d; 
+}
+
+.period-controls .btn-group .btn-periodo:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.period-controls .btn-group .btn-periodo:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.period-controls .btn-group .btn-periodo + .btn-periodo {
+    margin-left: -1px;
 }
