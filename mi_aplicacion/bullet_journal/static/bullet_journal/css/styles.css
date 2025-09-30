@@ -98,15 +98,15 @@
 }
 
 .journal {
-  background-image: url("../images/librito2.png");  
+  /*background-image: url("../images/librito2.png");  
   background-size: contain;           
   background-repeat: no-repeat;
   background-position: top center;
   background-position-y: 160px;
-  min-height: 150vh;                  
+  min-height: 120vh;  */                
   margin: 0;
   font-family: 'Times New Roman', Times, serif;
-  padding-top: 90px;
+  padding-top: 70px;
   padding-left: 20px;
 }
 
@@ -114,7 +114,7 @@
   height: 100vh;                       
   margin: 0;
   font-family: 'Times New Roman', Times, serif;
-  padding: 20px;
+  padding: 10px;
   padding-top: 0;
 }
 
@@ -428,14 +428,16 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
-    font-family: Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
 }
 
 .calendar-header button {
@@ -443,6 +445,8 @@ h1 {
     border: none;
     font-size: 1.5em;
     cursor: pointer;
+    color: rgb(246, 130, 6);
+    
 }
 
 .weekdays, .calendar-body {
@@ -471,13 +475,11 @@ h1 {
     font-weight: bold;
 }
 
-.journal-indicator {
-    display: block;
-    width: 8px;
-    height: 8px;
-    background-color: #28a745;
-    border-radius: 50%;
-    margin: 5px auto 0;
+.has-journal .journal-indicator {
+  color: rgb(246, 130, 6);
+  font-weight: bold;
+  font-size: 18px;
+  margin-left: 4px;
 }
 
 .popup-container {
@@ -496,7 +498,7 @@ h1 {
     background-color: rgb(255, 255, 255);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(255, 115, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: left;
     position: relative;
     width: 80%;
@@ -575,3 +577,62 @@ h1 {
 .period-controls .btn-group .btn-periodo + .btn-periodo {
     margin-left: -1px;
 }
+
+
+/*Intento de hacer el libro que NO FUNCIONA*/
+/*.book-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 40px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.page {
+  flex: 1;
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+}
+
+.left-page {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.right-page {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.day-cell1 {
+  background: #f9c97d;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+}
+
+.no-journal {
+  color: #555;
+  font-style: italic;
+}
+
+.week-container {
+  display: flex;
+  width: 100%;
+}
+
+.left-side, .right-side {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.day-column {
+  background: rgba(255,255,255,0.8);
+  border-radius: 10px;
+  padding: 10px;
+}*/

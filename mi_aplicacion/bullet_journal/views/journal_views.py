@@ -1,3 +1,4 @@
+from datetime import timedelta
 from bullet_journal.models import Journal, CustomHabit, HabitTracking, StatsPreference
 from bullet_journal.forms import JournalForm, CustomHabitForm, StatsPreferenceForm, HabitTrackingForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,7 +19,6 @@ def home(request):
 def journal_list(request):
     journals = Journal.objects.filter(user=request.user).order_by('-date')
 
-    # Filtros opcionales: por fecha, estado de ánimo, ejercicio
     date_filter = request.GET.get('date')
     mood_filter = request.GET.get('mood')
     exercise_filter = request.GET.get('exercise')
@@ -30,15 +30,17 @@ def journal_list(request):
     if exercise_filter in ['true', 'false']:
         journals = journals.filter(exercise=(exercise_filter == 'true'))
 
-    # Obtener moods únicos de los journals de este usuario para el filtro dinámico
     moods_disponibles = Journal.objects.filter(user=request.user).values_list('mood', flat=True).distinct()
 
+    existe_hoy = journals.filter(date=now().date()).exists()
+    
     return render(request, 'bullet_journal/journal/list.html', {
         'journals': journals,
         'moods_disponibles': moods_disponibles,
+        'existe_hoy': existe_hoy
     })
 
-# Detalle de un journal
+
 @login_required
 def journal_detail(request, pk):
     journal = get_object_or_404(Journal, pk=pk, user=request.user)
@@ -98,17 +100,13 @@ def journal_create(request):
             date = form.cleaned_data['date']
             print(f"DEBUG: Fecha: {date}")
             
-            # Verificar journals existentes
             existing_count = Journal.objects.filter(user=request.user, date=date).count()
             print(f"DEBUG: Journals existentes para {date}: {existing_count}")
             
-            # Método más simple y directo
             try:
-                # Intentar obtener journal existente
                 journal = Journal.objects.get(user=request.user, date=date)
                 print(f"DEBUG: Journal existente encontrado ID: {journal.id}")
                 
-                # Actualizar campos uno por uno
                 journal.mood = form.cleaned_data['mood']
                 journal.sleep_hours = form.cleaned_data.get('sleep_hours')
                 journal.water_glasses = form.cleaned_data.get('water_glasses')
@@ -117,7 +115,6 @@ def journal_create(request):
                 if form.cleaned_data.get('image'):
                     journal.image = form.cleaned_data['image']
                 
-                # Extraer hábitos personalizados
                 custom_habits_data = {}
                 for field_name, value in form.cleaned_data.items():
                     if field_name.startswith('habit_'):
@@ -130,7 +127,6 @@ def journal_create(request):
                 
             except Journal.DoesNotExist:
                 print(f"DEBUG: Creando nuevo journal")
-                # Crear nuevo journal
                 custom_habits_data = {}
                 for field_name, value in form.cleaned_data.items():
                     if field_name.startswith('habit_'):
@@ -189,7 +185,6 @@ def journal_edit(request, pk):
         form = JournalForm(request.POST, request.FILES, instance=journal, user=request.user)
         
         if form.is_valid():
-            #extraer habitos personalizados del formulario
             custom_habits_data = {} 
             for field_name, value in form.cleaned_data.items():
                 if field_name.startswith('habit_'):
@@ -224,9 +219,8 @@ def to_do_list(request):
 def stadistics(request):
     """Vista para mostrar estadísticas del journal y hábitos personalizados"""
     user = request.user
-    period = request.GET.get('period', 'weekly')  # Permitir cambiar período
+    period = request.GET.get('period', 'weekly')  
     
-    # DEBUG: Verificar journals del usuario
     journals = Journal.objects.filter(user=user)
     print(f"DEBUG: Journals encontrados: {journals.count()}")
     for j in journals:
@@ -234,12 +228,10 @@ def stadistics(request):
         if j.custom_habits_data:
             print(f"  Hábitos: {j.custom_habits_data}")
     
-    # Obtener estadísticas
     try:
         all_stats = Journal.get_all_stats_for_user(user, period=period)
         print(f"DEBUG: Stats generadas: {len(all_stats)} estadísticas")
         
-        # Verificar datos específicos
         for stat in all_stats:
             print(f"DEBUG: {stat['field_display']} - Valores: {stat['data']['values']}")
             
@@ -249,7 +241,6 @@ def stadistics(request):
         traceback.print_exc()
         all_stats = []
     
-    # Convertir los datos para Chart.js
     stats_json = json.dumps(all_stats, default=str)
     print(f"DEBUG: JSON final: {stats_json}")
 
@@ -305,11 +296,3 @@ def load_custom_habits_data(form, user, date):
         pass
 
 
-def journal_list(request):
-    journals = Journal.objects.filter(user=request.user)
-    existe_hoy = journals.filter(date=now().date()).exists()
-    return render(request, "bullet_journal/journal/list.html", {
-        "journals": journals,
-        "existe_hoy": existe_hoy
-    })
-    
