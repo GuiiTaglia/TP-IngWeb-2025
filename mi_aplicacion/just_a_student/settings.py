@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'bullet_journal',
     'cloudinary_storage',
     'cloudinary',
-   # 'sendgrid_backend',
 ]
 
 STORAGES = {
@@ -92,7 +91,7 @@ if 'RENDER' in os.environ:
     SENDGRID_SANDBOX_MODE_IN_DEBUG = False
     SENDGRID_ECHO_TO_STDOUT = False
 
-    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@tudominio.com")
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "proyectodjango972@gmail.com")
 else:
     # Local: usar consola (imprime mails en terminal)
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
