@@ -18,14 +18,12 @@ Gestionar Hábitos Personalizados
         <h1> Gestionar Mis Hábitos</h1>
         <p class="fs-5 mb-4">Aquí puedes activar, desactivar o ver todos tus hábitos personalizados</p>
 
-        <!-- Botón para agregar nuevo hábito -->
         <div class="mb-4">
             <a href="{% url 'add_habit_quick' %}" class="btn btn-primary btn-lg">
                  Crear Nuevo Hábito
             </a>
         </div>
 
-        <!-- Lista de hábitos -->
         {% if habits %}
             <div class="row">
                 {% for habit in habits %}
@@ -72,7 +70,6 @@ Gestionar Hábitos Personalizados
                                 </div>
                             </div>
 
-                            <!-- Botones de acción -->
                             <div class="mt-3">
                                 <a href="{% url 'toggle_habit_status' habit.id %}" 
                                    class="btn btn-sm {% if habit.is_active %}btn-warning{% else %}btn-success{% endif %}">
@@ -83,8 +80,7 @@ Gestionar Hábitos Personalizados
                                     {% endif %}
                                 </a>
                                 
-                                <!-- Opcional: Botón para editar (si implementas la funcionalidad) -->
-                                <!-- <a href="#" class="btn btn-sm btn-outline-primary">✏️ Editar</a> -->
+                                <a href="#" class="btn btn-sm btn-outline-primary">Editar</a>
                             </div>
                         </div>
                     </div>

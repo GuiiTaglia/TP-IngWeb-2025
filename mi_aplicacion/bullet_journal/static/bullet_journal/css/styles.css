@@ -326,7 +326,6 @@ h1 {
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
-  
 }
 
 .btn.btn-primary:hover{
@@ -593,17 +592,16 @@ h1 {
   border-radius: 10px !important;
 }
 
-/* Clase para enlaces naranjas */
 .link-orange {
   color: #ff6a19 !important;
   text-decoration: none;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .link-orange:hover {
   color: #ff5c04 !important;
 }
 
-/* Variaciones del naranja para diferentes elementos */
 .bg-orange-light {
   background-color: #ff6a1986 !important; /* Tu color con transparencia */
   opacity: 0.9;
@@ -665,3 +663,15 @@ h1 {
   border-radius: 10px;
   padding: 10px;
 }*/
+
+
+.btn.btn-sm.btn-outline-primary{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  background-color: white;
+  color: #ff5c04;
+  border: 1px solid #ff5c04;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
