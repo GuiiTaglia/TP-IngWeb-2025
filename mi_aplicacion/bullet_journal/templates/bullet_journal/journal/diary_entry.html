@@ -28,7 +28,6 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <!-- Título del día -->
             <div class="mb-4">
                 <input type="text" 
                        class="form-control diary-title-input" 
@@ -37,7 +36,6 @@
                        value="{{ journal.title|default:'' }}">
             </div>
 
-            <!-- Descripción del día -->
             <div class="mb-4">
                 <label class="form-label">
                     <strong>Escribe sobre tu día...</strong>
@@ -47,8 +45,7 @@
                           rows="12"
                           placeholder="¿Qué pasó hoy? ¿Cómo te sentiste? ¿Qué aprendiste? ¿Qué te gustaría recordar de este día?">{{ journal.diary_entry|default:'' }}</textarea>
             </div>
-
-            <!-- Imagen actual (si existe) -->
+        
             {% if journal.diary_image %}
             <div class="mb-3">
                 <label class="form-label"><strong>Imagen actual:</strong></label>
@@ -60,7 +57,6 @@
             </div>
             {% endif %}
 
-            <!-- Subir nueva imagen -->
             <div class="mb-4">
                 <label for="diary_image" class="form-label">
                     <strong> ¿Quieres agregar una imagen a tu día?</strong>
@@ -75,7 +71,6 @@
                 </small>
             </div>
 
-            <!-- Botones -->
             <div class="d-flex gap-3 justify-content-center flex-wrap">
                 <button type="submit" class="btn btn-primary btn-lg">
                      Guardar mi día
