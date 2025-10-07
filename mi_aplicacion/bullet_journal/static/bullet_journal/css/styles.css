@@ -606,17 +606,6 @@ h1 {
   background-color: #ff6a1986 !important; /* Tu color con transparencia */
   opacity: 0.9;
 }
-
-/* Clase específica para checkboxes naranjas */
-.form-check-input-orange:checked {
-    background-color: #ff6a19 !important;
-    border-color: #ff6a19 !important;
-}
-
-.form-check-input-orange:focus {
-    border-color: #ff6a19 !important;
-    box-shadow: 0 0 0 0.25rem rgba(255, 106, 25, 0.25) !important;
-}
 /*Intento de hacer el libro que NO FUNCIONA*/
 /*.book-container {
   display: flex;
@@ -675,14 +664,66 @@ h1 {
   padding: 10px;
 }*/
 
-
 .btn.btn-sm.btn-outline-primary{
   font-family: 'Times New Roman', Times, serif;
-  font-size: 14px;
-  background-color: white;
-  color: #ff5c04;
+  font-size: 16px;
+  background-color: #ffdcca;
+  color: #d74b00;
   border: 1px solid #ff5c04;
   padding: 5px 10px;
   border-radius: 4px;
-  font-weight: bold;
 }
+
+.btn.btn-sm.btn-outline-primary:hover{
+  background-color: #ff7024;
+  color: white;
+  border: none;
+}
+
+.btn.btn-sm.btn-warning{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  background-color: rgb(255, 110, 110);
+  color: white;
+  border: 1px solid #ff0404;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.btn.btn-sm.btn-warning:hover{
+  background-color: rgb(255, 35, 35);
+  color: white;
+  border: none;
+  font-size: bold;
+}
+
+.btn.btn-sm.btn-success{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  background-color: #03c400;
+  color: white;
+  border: 1px solid #039f00;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.btn.btn-sm.btn-success:hover{
+  background-color: #027900;
+  color: white;
+  border: none;
+}
+
+.badge.bg-secondary{
+  background-color: rgb(255, 110, 110) !important;
+  color: white !important;
+  border: 1px solid #ff0404 !important;
+}
+
+.badge.bg-success{
+  background-color: #03c400 !important;
+  color: white !important;
+  border: 1px solid #039f00 !important;
+}
+
+
+

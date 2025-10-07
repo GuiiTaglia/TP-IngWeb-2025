@@ -15,9 +15,8 @@ Crear Nuevo Hábito
 {% block contenido %}
 <div class="container mt-5">
     <div class="journal-form">
-        <h1> Nuevo Hábito Personalizado</h1>
-        <p class="fs-5 mb-3">Una vez creado, aparecerá automáticamente en tu formulario diario</p>
-
+        <h1> Nuevo hábito personalizado</h1>
+        
         <form method="post">
             {% csrf_token %}
             
@@ -71,16 +70,13 @@ Crear Nuevo Hábito
                 {% endif %}
             </div>
 
-            <!-- Botón principal con el estilo de tus otras páginas -->
             <button type="submit" class="btn btn-primary btn-lg mb-3">
                 ¡Crear mi hábito!
             </button>
         </form>
 
-        <!-- Link de vuelta con el estilo consistente -->
-        <a href="{% url 'journal_create' %}" style="color: #ff6a19;">← Volver al formulario del día</a>
+        <a href="{% url 'journal_create' %}" class= "link-orange">← Volver al formulario del día</a>
 
-        <!-- Ejemplos de hábitos (sin tarjeta verde) -->
         <div class="mt-4">
             <h5>💡 Ideas de Hábitos Populares</h5>
             <div class="row mt-3">
@@ -106,7 +102,5 @@ Crear Nuevo Hábito
         </div>
     </div>
 </div>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
