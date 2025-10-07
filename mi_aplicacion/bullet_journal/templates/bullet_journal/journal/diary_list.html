@@ -1,0 +1,77 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}Mis Entradas de Diario{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="container" style="padding-top: 120px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mis diarios</h2>
+        <a href="{% url 'diary_entry' %}" class="btn btn-primary">
+            Nuevo diario
+        </a>
+    </div>
+
+    {% if diary_entries %}
+        <div class="row">
+            {% for entry in diary_entries %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-orange">
+                    {% if entry.diary_image %}
+                    <img src="{{ entry.diary_image.url }}" 
+                         class="card-img-top" 
+                         style="height: 200px; object-fit: cover;"
+                         alt="Imagen del día">
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="card-title">
+                            <h5>{{ entry.title|default:"Sin título" }}</h5>
+                            <small class="text-muted">
+                                {{ entry.date|date:"j M Y" }}
+                            </small>
+                        </div>
+                        
+                        <p class="card-text flex-grow-1">
+                            {% if entry.diary_entry %}
+                                {{ entry.diary_entry|truncatewords:30 }}
+                            {% else %}
+                                <em class="text-muted">Sin descripción</em>
+                            {% endif %}
+                        </p>
+                        
+                        <a href="{% url 'diary_detail' entry.pk %}" 
+                           class="btn btn-outline-primary mt-auto">
+                            Leer más
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <h4 class="text-muted"> Aún no tienes diarios</h4>
+            <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
+            <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
+                Crear primer diario
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Botón para volver -->
+    <div class="text-center mt-4">
+        <a href="{% url 'diary_entry' %}" class="btn btn-outline-secondary">
+             Volver al diario
+        </a>
+    </div>
+</div>
+{% endblock %}

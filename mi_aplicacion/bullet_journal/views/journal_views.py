@@ -290,3 +290,65 @@ def load_custom_habits_data(form, user, date):
         pass
 
 
+# Agregar después de las vistas existentes:
+@login_required
+def diary_entry(request):
+    """Vista para crear/editar entrada de diario personal"""
+    today = timezone.now().date()
+    
+    # Verificar si ya existe una entrada para hoy
+    journal, created = Journal.objects.get_or_create(
+        user=request.user,
+        date=today,
+        defaults={
+            'mood': '',
+            'sleep_hours': None,
+            'water_glasses': None,
+            'exercise': False,
+        }
+    )
+    
+    if request.method == 'POST':
+        # Actualizar campos del diario
+        journal.title = request.POST.get('title', '')
+        journal.diary_entry = request.POST.get('diary_entry', '')
+        
+        # Manejar imagen del diario
+        if 'diary_image' in request.FILES:
+            journal.diary_image = request.FILES['diary_image']
+        
+        journal.save()
+        messages.success(request, '¡Tu entrada de diario ha sido guardada!')
+        return redirect('diary_entry')
+    
+    return render(request, 'bullet_journal/journal/diary_entry.html', {
+        'journal': journal,
+        'today': today,
+    })
+
+@login_required
+def diary_list(request):
+    """Vista para listar todas las entradas de diario"""
+    # Solo mostrar entradas que tengan título o texto de diario
+    diary_entries = Journal.objects.filter(
+        user=request.user
+    ).exclude(
+        title__isnull=True, 
+        diary_entry__isnull=True
+    ).exclude(
+        title='', 
+        diary_entry=''
+    ).order_by('-date')
+    
+    return render(request, 'bullet_journal/journal/diary_list.html', {
+        'diary_entries': diary_entries,
+    })
+
+@login_required
+def diary_detail(request, pk):
+    """Vista para ver detalle de una entrada de diario"""
+    diary_entry = get_object_or_404(Journal, pk=pk, user=request.user)
+    
+    return render(request, 'bullet_journal/journal/diary_detail.html', {
+        'diary_entry': diary_entry,
+    })

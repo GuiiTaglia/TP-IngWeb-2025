@@ -1,0 +1,56 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}{{ diary_entry.title|default:"Entrada de Diario" }}{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="container" style="padding-top: 120px;">
+    <div class="diary-container">
+        <div class="diary-header">
+            <div class="diary-date">
+                 {{ diary_entry.date|date:"l, j M Y" }}
+            </div>
+            <h1>{{ diary_entry.title|default:"Sin título" }}</h1>
+        </div>
+
+        {% if diary_entry.diary_image %}
+        <div class="text-center mb-4">
+            <img src="{{ diary_entry.diary_image.url }}" 
+                 alt="Imagen del diario" 
+                 class="diary-image-preview img-fluid">
+        </div>
+        {% endif %}
+
+        <div class="diary-content-display">
+            {% if diary_entry.diary_entry %}
+                <p style="font-family: 'Georgia', serif; line-height: 1.8; font-size: 1.1rem;">
+                    {{ diary_entry.diary_entry|linebreaks }}
+                </p>
+            {% else %}
+                <p class="text-muted"><em>Sin contenido escrito.</em></p>
+            {% endif %}
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex gap-3 justify-content-center flex-wrap mt-5 pt-4 border-top">
+            <a href="{% url 'diary_entry' %}" class="btn btn-primary">
+                 Editar diario de hoy
+            </a>
+            <a href="{% url 'diary_list' %}" class="btn btn-outline-primary">
+                Ver todas los diarios
+            </a>
+            <a href="{% url 'journal_list' %}" class="btn btn-outline-secondary">
+                ← Volver al journal
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

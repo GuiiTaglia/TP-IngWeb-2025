@@ -1,0 +1,108 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}Mi Diario Personal{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
+</head>
+
+{% endblock %}  
+
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="diary-container">
+        <div class="diary-header">
+            <div class="diary-date">
+                {{ today|date:"l, j \d\e F \d\e Y" }}
+            </div>
+            <h2>Mi Diario Personal</h2>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Título del día -->
+            <div class="mb-4">
+                <input type="text" 
+                       class="form-control diary-title-input" 
+                       name="title" 
+                       placeholder="¿Qué título le pondrías a tu día?"
+                       value="{{ journal.title|default:'' }}">
+            </div>
+
+            <!-- Descripción del día -->
+            <div class="mb-4">
+                <label class="form-label">
+                    <strong>Escribe sobre tu día...</strong>
+                </label>
+                <textarea class="form-control diary-content" 
+                          name="diary_entry" 
+                          rows="12"
+                          placeholder="¿Qué pasó hoy? ¿Cómo te sentiste? ¿Qué aprendiste? ¿Qué te gustaría recordar de este día?">{{ journal.diary_entry|default:'' }}</textarea>
+            </div>
+
+            <!-- Imagen actual (si existe) -->
+            {% if journal.diary_image %}
+            <div class="mb-3">
+                <label class="form-label"><strong>Imagen actual:</strong></label>
+                <div>
+                    <img src="{{ journal.diary_image.url }}" 
+                         alt="Imagen del diario" 
+                         class="diary-image-preview">
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Subir nueva imagen -->
+            <div class="mb-4">
+                <label for="diary_image" class="form-label">
+                    <strong> ¿Quieres agregar una imagen a tu día?</strong>
+                </label>
+                <input type="file" 
+                       class="form-control" 
+                       id="diary_image" 
+                       name="diary_image" 
+                       accept="image/*">
+                <small class="form-text text-muted">
+                    Puedes subir una foto que represente tu día o algo especial que quieras recordar.
+                </small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <button type="submit" class="btn btn-primary btn-lg">
+                     Guardar mi día
+                </button>
+                <a href="{% url 'diary_list' %}" class="btn btn-outline-primary btn-lg">
+                     Ver mis diarios
+                </a>
+                <a href="{% url 'journal_list' %}" class="btn btn-outline-secondary">
+                    Volver al journal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Auto-resize del textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('.diary-content');
+    
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.max(300, textarea.scrollHeight) + 'px';
+    }
+    
+    textarea.addEventListener('input', autoResize);
+    autoResize(); // Ejecutar al cargar
+});
+</script>
+{% endblock %}

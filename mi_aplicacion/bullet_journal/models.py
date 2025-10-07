@@ -16,6 +16,11 @@ class Journal(models.Model):
     #esto solo si queremos pdf --> pruebas_en_pdf = models.FileField(upload_to='raw/', blank=True) Adicionalmente, si necesitamos manejar archivos PDF o ZIP debemos habilitar la opción de CLoudinary que permite esto en la pestaña Seguiridad
     # y esto por si queremos video: video = models.FileField(upload_to='videos/noticias',blank=True)
     
+    # AGREGAR ESTOS CAMPOS NUEVOS:
+    title = models.CharField(max_length=200, blank=True, null=True)  # Título del día
+    diary_entry = models.TextField(blank=True, null=True)  # Descripción del día
+    diary_image = models.ImageField(upload_to='diary_images/', null=True, blank=True)  # Imagen para el diario
+
     # Campo para almacenar datos de hábitos personalizados en formato JSON
     custom_habits_data = models.JSONField(default=dict, blank=True)
     def __str__(self):

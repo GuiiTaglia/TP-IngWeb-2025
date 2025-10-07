@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exercise" name="exercise">
+                <input type="checkbox" class="form-check-input form-check-input-orange" id="exercise" name="exercise">
                 <label class="form-check-label" for="exercise">¿Hiciste ejercicio hoy?</label>
             </div>
 
@@ -55,7 +55,7 @@
                         {% if habit.type == 'boolean' %}
                             <!-- Hábito Sí/No -->
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" 
+                                <input type="checkbox" class="form-check-input form-check-input-orange" 
                                        id="habit_{{ habit.id }}" 
                                        name="habit_{{ habit.id }}"
                                        value="true">
