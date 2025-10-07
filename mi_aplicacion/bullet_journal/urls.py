@@ -13,16 +13,13 @@ urlpatterns = [
     path('calendar/', calendar, name='calendar'),
     path('to_do_list/', to_do_list, name='to_do_list'),
 
-   # Gestión simple de hábitos (solo 2 URLs necesarias)
     path('habits/manage/', manage_habits, name='manage_habits'),
     path('habits/add/', add_habit_quick, name='add_habit_quick'),
     path('habits/toggle/<int:habit_id>/', toggle_habit_status, name='toggle_habit_status'),
 
-    # URLs para diario personal
     path('diary/', diary_entry, name='diary_entry'),
     path('diary/list/', diary_list, name='diary_list'),
     path('diary/<int:pk>/', diary_detail, name='diary_detail'),
-    # Estadísticas
     path('stadistics/', stadistics, name='stadistics'),
 ]
 
