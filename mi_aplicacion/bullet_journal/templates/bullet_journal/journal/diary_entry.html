@@ -48,7 +48,7 @@
                 </label>
                 <textarea class="form-control diary-content" 
                           name="diary_entry" 
-                          rows="4"
+                          rows="2"
                           placeholder="¿Qué pasó hoy? ¿Cómo te sentiste? ¿Qué aprendiste? ¿Qué te gustaría recordar de este día?">{{ journal.diary_entry|default:'' }}</textarea>
             </div>
         
@@ -81,7 +81,7 @@
                 <button type="submit" class="btn btn-primary btn-lg">
                      Guardar mi día
                 </button>
-                <a href="{% url 'diary_list' %}" class="btn btn-outline-primary btn-lg">
+                <a href="{% url 'diary_list' %}" class="btn btn-primary btn-lg">
                      Ver mis diarios
                 </a>
             </div>

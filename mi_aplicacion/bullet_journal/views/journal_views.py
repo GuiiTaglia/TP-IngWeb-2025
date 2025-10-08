@@ -321,7 +321,7 @@ def diary_entry(request):
         
         journal.save()
         messages.success(request, '¡Tu entrada de diario ha sido guardada!')
-        return redirect('diary_entry')
+        return redirect('diary_list')
     
     return render(request, 'bullet_journal/journal/diary_entry.html', {
         'journal': journal,
@@ -361,4 +361,3 @@ def diary_detail(request, pk):
     return render(request, 'bullet_journal/journal/diary_detail.html', {
         'diary_entry': diary_entry,
     })
-

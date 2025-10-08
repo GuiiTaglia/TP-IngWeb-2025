@@ -31,7 +31,6 @@
                 <input type="text" name="q" value="{{ query }}"
                 class="form-control" placeholder="Buscar palabra...">
                 <button type="submit" class="btn btn-secondary">Buscar</button>
-                <a href="{% url 'diary_entry' %}" class="btn btn-primary">Crear Diario</a>
             </form>
             <p></p>
             {% if diary_entries %}
@@ -50,9 +49,9 @@
                                 <div class="card-title">
                                     <h5>{{ entry.title|default:"Sin título" }}</h5>
                                     <small class="text-muted">
-                                        <div class="diary-date" data-date="{{ diary_entry.date|date:'Y-m-d' }}">
+                                        <div class="diary-date" data-date="{{ entry.date|date:'Y-m-d' }}" data-pk="{{ entry.pk }}">
                                             {% language 'es' %}
-                                                <p><strong>Día:</strong> {{ diary_entry.date|date:"l"|title }} {{ diary_entry.date|date:"j \d\e F \d\e Y" }}</p>
+                                                <p><strong>Día:</strong> {{ entry.date|date:"l"|title }} {{ entry.date|date:"j \d\e F \d\e Y" }}</p>
                                             {% endlanguage %}
                                         </div>
                                     </small>
