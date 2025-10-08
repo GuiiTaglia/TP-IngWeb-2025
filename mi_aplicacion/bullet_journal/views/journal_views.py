@@ -10,6 +10,8 @@ import json
 from django.utils.timezone import now
 from django.http import HttpResponse
 from haystack.management.commands import rebuild_index
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.management import call_command
 
 @login_required
 def home(request):
@@ -364,3 +366,13 @@ def rebuild_index_view(request):
     command = rebuild_index.Command()
     command.handle(interactive=False, verbosity=1)
     return HttpResponse("Índice reconstruido correctamente.")
+
+
+@staff_member_required
+def rebuild_index_view(request):
+    """
+    Reconstruye el índice de búsqueda de Haystack/Whoosh.
+    Solo accesible para usuarios que sean staff (admins).
+    """
+    call_command('update_index', verbosity=2, interactive=False)
+    return HttpResponse("Índice de búsqueda reconstruido correctamente")

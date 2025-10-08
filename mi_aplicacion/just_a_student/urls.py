@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from bullet_journal import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +25,5 @@ urlpatterns = [
     path('', include('bullet_journal.urls')),
     path('search/', include('haystack.urls')), 
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path('rebuild_index/', views.rebuild_index_view, name='rebuild_index'),
 ]
-
