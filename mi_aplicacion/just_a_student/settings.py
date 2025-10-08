@@ -40,12 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
 
+    'cloudinary_storage',
+    'cloudinary',   
     'haystack',
 
     'bullet_journal',
-    'cloudinary_storage',
-    'cloudinary',
-    
 ]
 
 STORAGES = {
