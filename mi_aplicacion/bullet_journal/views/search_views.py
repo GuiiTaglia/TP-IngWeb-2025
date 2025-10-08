@@ -1,9 +1,13 @@
 from django.shortcuts import render
-from haystack.query import SearchQuerySet
+from models import Journal
+from haystack import indexes
 
-def search(request):
-    query = request.GET.get('q', '')
-    results = []
-    if query:
-        results = SearchQuerySet().filter(content=query)
-    return render(request, 'search/search.html', {'results': results, 'query': query})
+class DiarioIndex(indexes.SearchIndex, indexes.Indexable):
+    title = indexes.CharField(model_attr='title')
+    entry = indexes.CharField(model_attr='entry')
+
+    def get_model(self):
+        return Journal
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()

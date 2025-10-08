@@ -12,4 +12,6 @@ dependencies = [
     "gunicorn",
     "django-cloudinary-storage>=0.3.0",
     "pillow>=11.3.0",
+    "whoosh>=2.7.4",
+    "django-haystack>=3.3.0",
 ]
