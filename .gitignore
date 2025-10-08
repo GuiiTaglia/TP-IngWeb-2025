@@ -38,3 +38,7 @@ venv/
 
 # Archivos de VSCode, PyCharm, etc.
 .idea/
+
+# Variables de entorno
+.env
+*.env

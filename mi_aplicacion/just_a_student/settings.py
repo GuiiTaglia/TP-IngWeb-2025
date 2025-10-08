@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url 
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,8 +104,8 @@ ACCOUNT_SIGNUP_URL = '/signup/'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '667442854261-a6nd5gme7tk1bdri2fl3cr2kdbjrhaup.apps.googleusercontent.com',
-            'secret': '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',  
+            'client_id': config('GOOGLE_CLIENT_ID', default=''),
+            'secret': config('GOOGLE_CLIENT_SECRET', default=''),  
             'key': ''
         },
         'SCOPE': [
@@ -118,16 +119,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# Configuración de email
-if 'RENDER' in os.environ:
-    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "proyectodjango972@gmail.com")
-else:
-    # Para desarrollo - imprime emails en consola
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    DEFAULT_FROM_EMAIL = "noreply@bulletjournal.com"
 
 
 
