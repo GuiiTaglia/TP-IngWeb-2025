@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from bullet_journal.models import Journal
 from haystack import indexes
 

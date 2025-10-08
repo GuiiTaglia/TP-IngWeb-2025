@@ -1,5 +1,5 @@
 from datetime import timedelta
-from bullet_journal.models import Journal, CustomHabit, StatsPreference
+from bullet_journal.models import Journal, CustomHabit, StatsPreference as models
 from bullet_journal.forms import JournalForm, CustomHabitForm, StatsPreferenceForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,6 @@ from django.http import JsonResponse
 import json
 from django.utils.timezone import now
 from django.http import HttpResponse
-from haystack.management.commands import rebuild_index
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 
@@ -362,14 +361,14 @@ def diary_detail(request, pk):
         'diary_entry': diary_entry,
     })
 
-def rebuild_index_view(request):
+#def rebuild_index_view(request):
     command = rebuild_index.Command()
     command.handle(interactive=False, verbosity=1)
     return HttpResponse("Índice reconstruido correctamente.")
 
 
-@staff_member_required
-def rebuild_index_view(request):
+#@staff_member_required
+#def rebuild_index_view(request):
     # Llama al comando de Django para actualizar el índice de Haystack
     call_command('update_index', interactive=False)
     return HttpResponse("Índice reconstruido correctamente.")
