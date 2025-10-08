@@ -16,13 +16,19 @@
 
 
 {% block contenido %}
+<body>
+    
+
 <div class="container mt-4">
+    <div class = "journal">
     <div class="diary-container">
         <div class="diary-header">
-            <div class="diary-date">
-                {{ today|date:"l, j \d\e F \d\e Y" }}
-            </div>
+            
             <h2>Mi Diario Personal</h2>
+
+            <div class="diary-date">
+                <p id="hoy-texto" class="fs-5 mb-3">Hoy:</p>
+            </div>
         </div>
 
         <form method="post" enctype="multipart/form-data">
@@ -42,7 +48,7 @@
                 </label>
                 <textarea class="form-control diary-content" 
                           name="diary_entry" 
-                          rows="12"
+                          rows="4"
                           placeholder="¿Qué pasó hoy? ¿Cómo te sentiste? ¿Qué aprendiste? ¿Qué te gustaría recordar de este día?">{{ journal.diary_entry|default:'' }}</textarea>
             </div>
         
@@ -78,16 +84,14 @@
                 <a href="{% url 'diary_list' %}" class="btn btn-outline-primary btn-lg">
                      Ver mis diarios
                 </a>
-                <a href="{% url 'journal_list' %}" class="btn btn-outline-secondary">
-                    Volver al journal
-                </a>
             </div>
         </form>
     </div>
+    </div>
 </div>
+</body>
 
 <script>
-// Auto-resize del textarea
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.querySelector('.diary-content');
     
@@ -98,6 +102,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     textarea.addEventListener('input', autoResize);
     autoResize(); // Ejecutar al cargar
+});
+
+window.addEventListener('load', function() {
+  const diasSemana = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+  const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+  const hoy = new Date();
+  const diaSemana = diasSemana[hoy.getDay()];
+  const dia = hoy.getDate();
+  const mes = meses[hoy.getMonth()];
+  const anio = hoy.getFullYear();
+
+  // Mostrar fecha como texto
+  document.getElementById('hoy-texto').textContent = `Hoy: ${diaSemana}, ${dia} de ${mes} de ${anio}`;
+
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const fechaLocal = `${yyyy}-${mm}-${dd}`;
+
+  document.getElementById('date').value = fechaLocal;
 });
 </script>
 {% endblock %}

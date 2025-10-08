@@ -113,18 +113,6 @@
                 {% endif %}
             </div>
 
-
-            <!-- Botones -->
-             <div class="d-flex gap-2 mb-3">
-                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                {% if custom_habits %}
-                <a href="{% url 'manage_habits' %}" class="btn btn-primary">
-                    Gestionar Hábitos
-                </a>
-                {% endif %}
-
-             </div>
-
         </form>
 
         <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
