@@ -7,9 +7,9 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse
 import json
-
 from django.utils.timezone import now
-
+from django.http import HttpResponse
+from haystack.management.commands import rebuild_index
 
 @login_required
 def home(request):
@@ -330,19 +330,26 @@ def diary_entry(request):
 def diary_list(request):
     """Vista para listar todas las entradas de diario"""
     # Solo mostrar entradas que tengan título o texto de diario
-    diary_entries = Journal.objects.filter(
-        user=request.user
-    ).exclude(
-        title__isnull=True, 
-        diary_entry__isnull=True
-    ).exclude(
-        title='', 
-        diary_entry=''
-    ).order_by('-date')
+    query = request.GET.get('q', '').strip()  # texto de búsqueda
+
+    diary_entries = Journal.objects.filter(user=request.user)
+    
+    diary_entry = diary_entries.exclude(
+        title__isnull=True, diary_entry__isnull=True
+    ).exclude(title='', diary_entry='')
+
+    if query:
+        diary_entries = diary_entries.filter(
+            models.Q(title__icontains=query) | models.Q(diary_entry__icontains=query)
+        )
+
+    diary_entries = diary_entries.order_by('-date')
     
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
+        'query': query,
     })
+
 
 @login_required
 def diary_detail(request, pk):
@@ -352,3 +359,8 @@ def diary_detail(request, pk):
     return render(request, 'bullet_journal/journal/diary_detail.html', {
         'diary_entry': diary_entry,
     })
+
+def rebuild_index_view(request):
+    command = rebuild_index.Command()
+    command.handle(interactive=False, verbosity=1)
+    return HttpResponse("Índice reconstruido correctamente.")

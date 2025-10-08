@@ -13,13 +13,19 @@
 
 {% block contenido %}
 <div class="container" style="padding-top: 120px;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Mis diarios</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="mb-0">Mis diarios</h2>
+        
+        <!-- Formulario de búsqueda -->
+         <form method="get" action="{% url 'diary_list' %}" class="d-flex" style="gap: 8px;">
+            <input type="text" name="q" value="{{ query }}"
+            class="form-control" placeholder="Buscar palabra...">
+            <button type="submit" class="btn btn-outline-primary">Buscar</button>
+        </form>
         <a href="{% url 'diary_entry' %}" class="btn btn-primary">
             Nuevo diario
         </a>
     </div>
-
     {% if diary_entries %}
         <div class="row">
             {% for entry in diary_entries %}

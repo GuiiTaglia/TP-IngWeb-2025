@@ -1,0 +1,31 @@
+{% extends "header.html" %}
+{% block title %}Buscar en el Diario{% endblock %}
+
+{% block contenido %}
+<div class="container" style="padding-top: 120px;">
+    <h2 class="mb-4">Resultados de búsqueda</h2>
+
+    <form method="get" action="." class="d-flex mb-4" style="gap: 8px;">
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar palabra...">
+        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+    </form>
+
+    {% if query %}
+        <h5>Resultados para "{{ query }}":</h5>
+        <hr>
+
+        {% for result in page.object_list %}
+            <div class="mb-3">
+                <h5><a href="{% url 'diary_detail' result.object.id %}">{{ result.object.title|default:"Sin título" }}</a></h5>
+                <p>{{ result.object.diary_entry|truncatewords:25 }}</p>
+                <small class="text-muted">{{ result.object.date|date:"j M Y" }}</small>
+            </div>
+        {% empty %}
+            <p>No se encontraron coincidencias.</p>
+        {% endfor %}
+
+    {% else %}
+        <p>Ingresá una palabra para buscar en tus diarios.</p>
+    {% endif %}
+</div>
+{% endblock %}

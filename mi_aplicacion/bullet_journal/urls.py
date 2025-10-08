@@ -3,6 +3,7 @@ from .views.journal_views import calendar, home, journal_list, journal_detail, j
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from .views import search_views
 
 urlpatterns = [
     path('home/', home, name='home'),
@@ -21,7 +22,10 @@ urlpatterns = [
     path('diary/list/', diary_list, name='diary_list'),
     path('diary/<int:pk>/', diary_detail, name='diary_detail'),
     path('stadistics/', stadistics, name='stadistics'),
+    path('rebuild_index/', views.rebuild_index_view, name='rebuild_index'),
+    path('search/', search_views.search, name='search'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

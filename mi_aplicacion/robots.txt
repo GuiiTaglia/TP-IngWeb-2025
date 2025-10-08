@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://tu-sitio.onrender.com/sitemap.xml
