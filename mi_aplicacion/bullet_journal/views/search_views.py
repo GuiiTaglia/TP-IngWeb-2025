@@ -1,7 +1,8 @@
-from bullet_journal.models import Journal
 from haystack import indexes
+from bullet_journal.models import Journal
 
-class DiarioIndex(indexes.SearchIndex, indexes.Indexable):
+class JournalIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
     title = indexes.CharField(model_attr='title')
     entry = indexes.CharField(model_attr='entry')
 
@@ -10,3 +11,5 @@ class DiarioIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
+
+

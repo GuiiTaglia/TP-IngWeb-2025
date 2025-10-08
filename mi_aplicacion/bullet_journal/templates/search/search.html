@@ -5,9 +5,9 @@
 <div class="container" style="padding-top: 120px;">
     <h2 class="mb-4">Resultados de búsqueda</h2>
 
-    <form method="get" action="." class="d-flex mb-4" style="gap: 8px;">
-        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar palabra...">
-        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+    <form method="get" action="{% url 'search' %}">
+        <input type="text" name="q" placeholder="Buscar...">
+        <button type="submit">Buscar</button>
     </form>
 
     {% if query %}

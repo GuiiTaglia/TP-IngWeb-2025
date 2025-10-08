@@ -22,7 +22,7 @@ urlpatterns = [
     path('diary/list/', diary_list, name='diary_list'),
     path('diary/<int:pk>/', diary_detail, name='diary_detail'),
     path('stadistics/', stadistics, name='stadistics'),
-    path('search/', search_views.search, name='search'),
+    path('search/', search, name='search'),
 ]
 
 if settings.DEBUG:
