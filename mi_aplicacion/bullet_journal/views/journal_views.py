@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
+from django.db.models import Q
 
 @login_required
 def home(request):
@@ -341,7 +342,7 @@ def diary_list(request):
 
     if query:
         diary_entries = diary_entries.filter(
-            models.Q(title__icontains=query) | models.Q(diary_entry__icontains=query)
+            Q(title__icontains=query) | Q(diary_entry__icontains=query)
         )
 
     diary_entries = diary_entries.order_by('-date')
@@ -361,14 +362,3 @@ def diary_detail(request, pk):
         'diary_entry': diary_entry,
     })
 
-#def rebuild_index_view(request):
-    command = rebuild_index.Command()
-    command.handle(interactive=False, verbosity=1)
-    return HttpResponse("Índice reconstruido correctamente.")
-
-
-#@staff_member_required
-#def rebuild_index_view(request):
-    # Llama al comando de Django para actualizar el índice de Haystack
-    call_command('update_index', interactive=False)
-    return HttpResponse("Índice reconstruido correctamente.")
