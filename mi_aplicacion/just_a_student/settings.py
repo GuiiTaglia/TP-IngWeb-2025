@@ -39,10 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+
+    'haystack',
+
     'bullet_journal',
     'cloudinary_storage',
     'cloudinary',
-    'haystack',
+    
 ]
 
 STORAGES = {
@@ -204,8 +207,6 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.environ.get("CLOUDINARY_API_KEY"),
     'API_SECRET': os.environ.get("CLOUDINARY_API_SECRET")
 }
-
-
 
 HAYSTACK_CONNECTIONS = {
     'default': {
