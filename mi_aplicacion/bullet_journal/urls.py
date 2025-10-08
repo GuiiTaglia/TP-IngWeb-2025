@@ -22,7 +22,7 @@ urlpatterns = [
     path('diary/list/', diary_list, name='diary_list'),
     path('diary/<int:pk>/', diary_detail, name='diary_detail'),
     path('stadistics/', stadistics, name='stadistics'),
-    path('rebuild_index/', views.rebuild_index_view, name='rebuild_index'),
+    #path('rebuild_index/', views.rebuild_index_view, name='rebuild_index'),
     path('search/', search_views.search, name='search'),
 ]
 
