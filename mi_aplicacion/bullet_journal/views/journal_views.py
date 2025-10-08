@@ -370,9 +370,6 @@ def rebuild_index_view(request):
 
 @staff_member_required
 def rebuild_index_view(request):
-    """
-    Reconstruye el índice de búsqueda de Haystack/Whoosh.
-    Solo accesible para usuarios que sean staff (admins).
-    """
-    call_command('update_index', verbosity=2, interactive=False)
-    return HttpResponse("Índice de búsqueda reconstruido correctamente")
+    # Llama al comando de Django para actualizar el índice de Haystack
+    call_command('update_index', interactive=False)
+    return HttpResponse("Índice reconstruido correctamente.")
