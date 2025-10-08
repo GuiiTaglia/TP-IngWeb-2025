@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from models import Journal
+from bullet_journal.models import Journal
 from haystack import indexes
 
 class DiarioIndex(indexes.SearchIndex, indexes.Indexable):
