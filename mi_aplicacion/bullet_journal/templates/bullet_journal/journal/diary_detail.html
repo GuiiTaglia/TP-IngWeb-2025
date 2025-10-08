@@ -1,5 +1,6 @@
 {% extends "header.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}{{ diary_entry.title|default:"Entrada de Diario" }}{% endblock %}
 
@@ -15,8 +16,10 @@
 <div class="container" style="padding-top: 120px;">
     <div class="diary-container">
         <div class="diary-header">
-            <div class="diary-date">
-                 {{ diary_entry.date|date:"l, j M Y" }}
+            <div class="diary-date" data-date="{{ diary_entry.date|date:'Y-m-d' }}">
+                {% language 'es' %}
+                    <p><strong>Día:</strong> {{ diary_entry.date|date:"l"|title }} {{ diary_entry.date|date:"j \d\e F \d\e Y" }}</p>
+                {% endlanguage %}
             </div>
             <h1>{{ diary_entry.title|default:"Sin título" }}</h1>
         </div>

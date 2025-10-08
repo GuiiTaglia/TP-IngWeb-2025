@@ -1,23 +1,28 @@
 {% extends "header.html" %}
+{% load static %}
+{% load i18n %}
 
 {% block title %}Gestionar Hábitos{% endblock %}
 
-{% block extra_head %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
-{% endblock %}
+<head>
+    {% block extra_head %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
+    {% endblock %}
+</head>
 
 {% block subtitulo %}
-Gestionar Hábitos Personalizados
+Gestionar hábitos personalizados
 {% endblock %}
 
 {% block contenido %}
+<body> 
 <div class="container mt-5">
     <div class="journal-form">
         <h1> Gestionar Mis Hábitos</h1>
-        <p class="fs-5 mb-4">Aquí puedes activar, desactivar o ver todos tus hábitos personalizados</p>
-
+        <p class="fs-5 mb-4">
         <div class="mb-4">
             <a href="{% url 'add_habit_quick' %}" class="btn btn-primary btn-lg">
                  Crear Nuevo Hábito
@@ -131,8 +136,10 @@ Gestionar Hábitos Personalizados
 
         <!-- Botón de regreso -->
         <div class="mt-4">
-            <a href="{% url 'journal_list' %}" style="color: #ff6a19;">← Volver a Journals</a>
+            <a href="{% url 'manage_habits' %}" style="color: #ff6a19;">← Volver a los hábitos</a>
         </div>
     </div>
 </div>
+
+</body>
 {% endblock %}
