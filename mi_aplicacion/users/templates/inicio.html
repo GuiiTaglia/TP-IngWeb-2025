@@ -28,7 +28,11 @@
     </div>
     
     <div class="explicacion">
-      <a href="{% url 'login' %}">Empezar mi Bullet Journal</a>
+      <a href="{% url 'users:login' %}">Empezar mi Bullet Journal</a>
+
+      <p class="mt-3">
+        ¿No tienes cuenta? <a href="{% url 'users:signup' %}">Regístrate aquí</a>
+      </p>
     </div>
 {% endif %}
     

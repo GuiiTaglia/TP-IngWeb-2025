@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    #Apps locales
     'users',
 
     'cloudinary_storage',
@@ -45,19 +47,93 @@ INSTALLED_APPS = [
     'haystack',
 
     'bullet_journal',
+    
+    #Third party apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
 ]
 
-STORAGES = {
-  'default': {
-    'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage' 
-  },
-  'staticfiles': {                                                 
-    'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'    
-  },
+SITE_ID = 1
+# Configuración de autenticación
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Configuración de allauth
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True  # ← Email único
+ACCOUNT_PREVENT_ENUMERATION = False  # Para mostrar errores específicos
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# NUEVA CONFIGURACIÓN SIN WARNINGS
+ACCOUNT_SIGNUP_FIELDS = [
+    'email*',      # Campo email obligatorio
+    'email2*',     # Confirmar email obligatorio
+    'username*',   # Username obligatorio  
+    'password1*',  # Password obligatorio
+    'password2*'   # Confirmar password obligatorio
+]
+
+# Configuración de registro y login
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Confirmar email dos veces
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Login automático tras verificar
+ACCOUNT_LOGOUT_ON_GET = False  # Requiere POST para logout
+
+# Configuración de login y logout
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'  # Google ya verifica
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Login automático tras verificar
+ACCOUNT_LOGOUT_ON_GET = False  # Requiere POST para logout
+
+# URLs
+LOGIN_URL = '/login/'  # ← USAR ALLAUTH URLs
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Configurar allauth para usar tus vistas
+ACCOUNT_LOGIN_URL = '/login/'
+ACCOUNT_SIGNUP_URL = '/signup/'
+
+# Configuración de Google OAuth
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '667442854261-a6nd5gme7tk1bdri2fl3cr2kdbjrhaup.apps.googleusercontent.com',
+            'secret': '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',  
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
 }
+
+# Configuración de email
+if 'RENDER' in os.environ:
+    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "proyectodjango972@gmail.com")
+else:
+    # Para desarrollo - imprime emails en consola
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "noreply@bulletjournal.com"
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'allauth.account.middleware.AccountMiddleware',    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,6 +141,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if 'RENDER' in os.environ:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'just_a_student.urls'
 
@@ -86,19 +165,11 @@ TEMPLATES = [
 
 
 if 'RENDER' in os.environ:
-    # Producción: usar SendGrid
-    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-
-    # Opciones recomendadas de SendGrid
-    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-    SENDGRID_ECHO_TO_STDOUT = False
-
-    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "proyectodjango972@gmail.com")
+    DEBUG = False
+    ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
 else:
-    # Local: usar consola (imprime mails en terminal)
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    DEFAULT_FROM_EMAIL = "test@example.com"
+    DEBUG = True
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 
@@ -168,14 +239,15 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "inicio"
+
 
 
 #MEDIA_URL = '/media/' 
@@ -184,22 +256,37 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
-if 'RENDER' in os.environ:
-    print("USING RENDER.COM SETTINGS!")
-    DEBUG = False
-    ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
-    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
-    MIDDLEWARE.insert(MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
-                      'whitenoise.middleware.WhiteNoiseMiddleware')
-    MEDIA_URL= "/media/"
-    STORAGES = {
-        "default":
-                {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
 
-        "staticfiles":
-                {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+if 'RENDER' in os.environ:
+    DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+# Configuración de almacenamiento
+if 'RENDER' in os.environ:
+    STORAGES = {
+        "default": {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
     }
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+else:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    }
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get("CLOUDINARY_CLOUD_NAME"),
@@ -213,3 +300,4 @@ HAYSTACK_CONNECTIONS = {
         'PATH': BASE_DIR / 'whoosh_index',
     },
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

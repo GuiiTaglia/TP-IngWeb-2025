@@ -57,7 +57,7 @@
               <!--<li><a class="dropdown-item" href="#">Mi perfil</a></li>-->
               {% endif %}
               <li>
-                <form action="{% url 'logout' %}" method="post">
+                <form action="{% url 'users:logout' %}" method="post">
                   {% csrf_token %}
                   <button type="submit" class="dropdown-item">Cerrar sesión</button>
                 </form>
@@ -66,14 +66,14 @@
           </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+          <a class="nav-link" href="{% url 'users:login' %}">Iniciar sesión</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
+          <a class="nav-link" href="{% url 'users:signup' %}">Registrarse</a>
         </li>
         {% comment %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Inicia sesión</a>
+          <a class="nav-link" href="{% url 'users:login' %}">Inicia sesión</a>
         </li>
         {% endcomment %}
         {% endif %}

@@ -1,125 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-#from django.contrib.auth.forms import UserCreationForm
-from bullet_journal.views.journal_views import home
-from .forms import CustomUserCreationForm
-from django.core.mail import send_mail
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import logout as auth_logout
+from allauth.account.views import LoginView, SignupView
 
-from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth import get_user_model, login
-from django.conf import settings
-
-
-"""def inicio(request):
-    return render(request, 'inicio.html')"""
-
-User = get_user_model()
 def inicio(request):
+    """Vista de página de inicio"""
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('/home/')
     return render(request, 'inicio.html')
 
-
-
-def registro(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False 
-            user.save()
-
-            # preparar email
-            current_site = get_current_site(request)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-
-            message = render_to_string('activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': uid,
-                'token': token,
-            })
-
-            send_mail(
-                'Activa tu cuenta',
-                message,
-                settings.DEFAULT_FROM_EMAIL, 
-                [user.email],
-                fail_silently=False,
-            )
-
-            return render(request, 'check_email.html', {'email': user.email})
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-def activate(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user)
-        return render(request, 'activation_success.html')
-    else:
-        return render(request, 'activation_invalid.html')
-
-#def registro(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})#
-
-#def registro(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-#def registro(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-
 def logout_view(request):
+    """Vista personalizada de logout"""
     auth_logout(request)
-    return redirect('inicio')
+    return redirect('/')
 
-    
 @login_required
 def redirigir_post_login(request):
+    """Redireccionar después del login según tipo de usuario"""
     if request.user.is_superuser:
         return redirect('/admin/')
     else:
         return redirect('/home/')
 
+# VISTAS PERSONALIZADAS PARA ALLAUTH
+class CustomLoginView(LoginView):
+    """Vista de login personalizada usando tu template"""
+    template_name = 'login.html'
+
+class CustomSignupView(SignupView):
+    """Vista de registro personalizada usando tu template"""
+    template_name = 'register.html'
+
+def check_email_view(request):
+    """Vista para mostrar mensaje de verificación de email"""
+    email = request.session.get('account_verification_email', 'tu email')
+    return render(request, 'check_email.html', {'email': email})
