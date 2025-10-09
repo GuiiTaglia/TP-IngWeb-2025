@@ -1,4 +1,3 @@
-
 class datetime_safe:
     @classmethod
     def new_datetime(cls, *args, **kwargs):
