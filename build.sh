@@ -10,7 +10,7 @@ set -o errexit
 # uv run ./manage.py migrate
 # uv run ./manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true    
 
-pip unistall Django -y || true
+pip uninstall Django -y || true
 
 pip install -r requirements.txt
 
