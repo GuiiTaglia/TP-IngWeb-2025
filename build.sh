@@ -10,12 +10,14 @@ set -o errexit
 # uv run ./manage.py migrate
 # uv run ./manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true    
 
+pip unistall Django -y || true
+
+pip install -r requirements.txt
+
 pip install django-cloudinary-storage
 pip install setuptools 
 
 pip cache purge
-
-pip install -r requirements.txt
 
 python mi_aplicacion/manage.py migrate
 python mi_aplicacion/manage.py collectstatic --no-input
