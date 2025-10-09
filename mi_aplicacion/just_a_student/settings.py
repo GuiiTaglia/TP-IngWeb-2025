@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url 
-from decouple import config
+from dotenv import load_dotenv
+load_dotenv() 
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -104,8 +106,8 @@ ACCOUNT_SIGNUP_URL = '/signup/'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID', default=''),
-            'secret': config('GOOGLE_CLIENT_SECRET', default=''),  
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID', default=''),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET', default=''),  
             'key': ''
         },
         'SCOPE': [
