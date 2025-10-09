@@ -14,8 +14,8 @@ set -o errexit
 
 pip install -r requirements.txt
 
-python manage.py migrate
-python manage.py collectstatic --no-input
+python mi_aplicacion/manage.py migrate
+python mi_aplicacion/manage.py collectstatic --no-input
 
 # Crea el superusuario (opcional, pero buena práctica)
-python manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true
+python mi_aplicacion/manage.py createsuperuser --username admin --email "guillermina.tagliavini@gmail.com" --noinput || true
