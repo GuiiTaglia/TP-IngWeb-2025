@@ -28,9 +28,9 @@
       <div class="postit" id="postit"></div>
     </div>
 
-    <div class="column">
+    <!---div class="column">
         <h1>To do list for today</h1>
-    </div>
+    </div--->
 
 
     <div class="column">
@@ -40,6 +40,15 @@
           </div>
         {% endif %}
     </div>
+
+    <div class="column">
+        {% if not existe_hoy %}
+          <div class="journal_create">
+              <a href="{% url 'diary_entry' %}">¡Registrar diario hoy!</a>
+          </div>
+        {% endif %}
+    </div>
+
 
 
   </div>
