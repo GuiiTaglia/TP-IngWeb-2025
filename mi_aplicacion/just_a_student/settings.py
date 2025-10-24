@@ -342,3 +342,21 @@ else:
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https' if 'RENDER' in os.environ else 'http'
 
+# Configuración de correo
+if os.getenv("RENDER"):  # Si está corriendo en Render (producción)
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'apikey'  # Literal, no lo cambies
+    EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+    DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+
+else:  # Entorno local
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'justastudentucse@gmail.com'
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
