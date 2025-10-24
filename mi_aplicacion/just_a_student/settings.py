@@ -16,6 +16,21 @@ import dj_database_url
 from dotenv import load_dotenv
 load_dotenv() 
 
+try:
+    import sys
+    import types
+    from hacks_compatibilidad.django_utils_compat import datetime_safe as _datetime_safe
+
+    module_name = "django.utils.datetime_safe"
+    if module_name not in sys.modules:
+        m = types.ModuleType(module_name)
+        # Exponer las funciones esperadas por Whoosh/Haystack
+        m.date = _datetime_safe.new_date
+        m.datetime = _datetime_safe.new_datetime
+        sys.modules[module_name] = m
+except Exception:
+    # no bloquear el arranque si hay algún problema con el shim
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +41,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': str(BASE_DIR / 'whoosh_index'),
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -49,7 +70,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',   
     'haystack',
-
+    'search.apps.SearchConfig',
     'bullet_journal',
     
     #Third party apps
@@ -288,10 +309,5 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get("CLOUDINARY_API_SECRET")
 }
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': BASE_DIR / 'whoosh_index',
-    },
-}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

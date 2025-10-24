@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 import json
+from django.urls import reverse
 #from cloudinary_storage.storage import RawMediaCloudinaryStorage  deje esto aca por si usamos pdf en algun momento
 
 class Journal(models.Model):
@@ -66,6 +67,20 @@ class Journal(models.Model):
         """Obtiene los hábitos personalizados para esta fecha específica"""
     
         return self.custom_habits_data or {}
+
+    def get_custom_habits_text(self):
+        if not self.custom_habits_data:
+            return ""
+        parts = []
+        for k, v in self.custom_habits_data.items():
+            try:
+                parts.append(str(v))
+            except Exception:
+                continue
+        return " ".join(parts)
+    
+    def get_absolute_url(self):
+        return reverse('journal_detail', args=[str(self.pk)])
     
     
     

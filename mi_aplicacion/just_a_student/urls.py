@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 from bullet_journal import views
-
+from search.views import rebuild_index
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -29,7 +29,7 @@ urlpatterns = [
     path('search/', include('haystack.urls')), 
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 
-
+    path('rebuild_index/', rebuild_index, name='rebuild_index'),
 
     path('accounts/', include('allauth.urls')),
 ]

@@ -3,7 +3,7 @@
 {% if object.user %}{{ object.user.username }}{% endif %}
 {% if object.date %}{{ object.date }}{% endif %}
 
-{# indexar valores del JSON de hábitos personalizados #}
+{# Indexar valores del JSON de hábitos personalizados #}
 {% for k, v in object.custom_habits_data.items %}
 {{ v }}
 {% endfor %}
