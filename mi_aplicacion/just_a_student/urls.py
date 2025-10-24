@@ -30,7 +30,11 @@ urlpatterns = [
     path('', include('users.urls')),
     path('', include('bullet_journal.urls')),
     path('search/', include('haystack.urls')), 
+<<<<<<< Updated upstream
     path('robots.txt', lambda r: serve(r, 'robots.txt', settings.STATIC_ROOT)),
+=======
+    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+>>>>>>> Stashed changes
 
     path('rebuild_index/', rebuild_index, name='rebuild_index'),
 
