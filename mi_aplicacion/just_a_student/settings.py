@@ -313,15 +313,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ----------------------------
 # Email (SMTP) para usuarios normales
 # ----------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')        # justastudentucse@gmail.com
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # tu App Password
-DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-ACCOUNT_DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+if 'RENDER' in os.environ:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # o SendGrid si lo configuran
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'justastudentucse@gmail.com'
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
 
 # Forzar HTTPS en enlaces de confirmación
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
