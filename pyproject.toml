@@ -15,4 +15,6 @@ dependencies = [
     "whoosh>=2.7.4",
     "django-haystack>=3.3.0",
     "python-dotenv>=1.1.1",
+    "django-allauth>=65.12.1",
+    "pyjwt>=2.10.1",
 ]
