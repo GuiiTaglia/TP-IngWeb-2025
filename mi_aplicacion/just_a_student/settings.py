@@ -95,25 +95,21 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True  # ← Email único
 ACCOUNT_PREVENT_ENUMERATION = False  # Para mostrar errores específicos
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_QUERY_EMAIL = True  # trae email del perfil de Google
 
-# NUEVA CONFIGURACIÓN SIN WARNINGS
-ACCOUNT_SIGNUP_FIELDS = [
-    'email*',      # Campo email obligatorio
-    'email2*',     # Confirmar email obligatorio
-    'username*',   # Username obligatorio  
-    'password1*',  # Password obligatorio
-    'password2*'   # Confirmar password obligatorio
-]
+# Si querés simplificar el signup normal
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = False
 
 # Configuración de registro y login
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Confirmar email dos veces
+#ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True  # Confirmar email dos veces
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Login automático tras verificar
 ACCOUNT_LOGOUT_ON_GET = False  # Requiere POST para logout
 
 # Configuración de login y logout
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'  # Google ya verifica
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Login automático tras verificar
-ACCOUNT_LOGOUT_ON_GET = False  # Requiere POST para logout
+#SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'  # Google ya verifica
+#ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Login automático tras verificar
+#ACCOUNT_LOGOUT_ON_GET = False  # Requiere POST para logout
 
 # URLs
 LOGIN_URL = '/login/'  # ← USAR ALLAUTH URLs
@@ -313,3 +309,35 @@ CLOUDINARY_STORAGE = {
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ----------------------------
+# Email (SMTP) para usuarios normales
+# ----------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')        # justastudentucse@gmail.com
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # tu App Password
+DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+ACCOUNT_DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+
+# Forzar HTTPS en enlaces de confirmación
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+import os
+SITE_ID = 1
+SITE_DOMAIN = os.environ.get('SITE_DOMAIN', 'localhost:8000')
+
+
+# Configuración del dominio
+SITE_ID = 1
+
+if 'RENDER' in os.environ:
+    SITE_DOMAIN = 'tp-ingweb-2025.onrender.com'
+else:
+    SITE_DOMAIN = 'localhost:8000'
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https' if 'RENDER' in os.environ else 'http'
+
