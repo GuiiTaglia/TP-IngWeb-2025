@@ -97,7 +97,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True  # ← Email único
 ACCOUNT_PREVENT_ENUMERATION = False  # Para mostrar errores específicos
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_QUERY_EMAIL = True  # trae email del perfil de Google
 
 # Si querés simplificar el signup normal
