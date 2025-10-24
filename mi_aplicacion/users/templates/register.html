@@ -34,7 +34,7 @@
             <form method="post" class="mb-4">
               {% csrf_token %}
               
-              <div class="mb-3">
+              <!-- <div class="mb-3">
                 <label for="{{ form.username.id_for_label }}" class="form-label">Usuario</label>
                 {{ form.username }}
                 {% if form.username.errors %}
@@ -81,11 +81,10 @@
               <button type="submit" class="btn.btn-primary"> Crear Cuenta </button>
             </form>
             
-            <!-- SEPARADOR -->
             <div class="my-3">
               <hr style="border-color: #ff7c35;">
               <p class="text-muted text-center">O regístrate con</p>
-            </div>
+            </div> -->
             
             <!-- BOTÓN DE GOOGLE -->
             <a href="{% provider_login_url 'google' %}" 

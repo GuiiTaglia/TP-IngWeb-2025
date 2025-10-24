@@ -76,21 +76,22 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <h4 class="text-muted"> Aún no tienes diarios</h4>
+                                    <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
+                                    <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
+                                        Crear primer diario
+                                    </a>
+                                </div>
+                                {% endif %}
                         {% endfor %}
                         </div>
                     </div>
                 </div>
                 
-            {% else %}
-                <div class="text-center py-5">
-                    <h4 class="text-muted"> Aún no tienes diarios</h4>
-                    <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
-                    <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
-                        Crear primer diario
-                    </a>
-                </div>
-            {% endif %}
+            
+            
         </div>
     </div>
 </body>

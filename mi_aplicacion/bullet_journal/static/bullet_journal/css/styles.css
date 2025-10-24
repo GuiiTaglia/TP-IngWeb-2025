@@ -349,6 +349,8 @@ h1 {
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
+  text-align: center;
+  justify-content: center;
 }
 
 .btn.btn-primary:hover{
@@ -770,12 +772,39 @@ h1 {
 }
 
 .log{
-  background-color: #ffcbaf !important
+  background-color: white
+}
+
+.log-button{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 19px;
+  background-color: #ff986f;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  justify-content: center;
+}
+
+.log-button:hover {
+  color: #fe610d !important;
+  background-color: #ffd2ba !important;
 }
 
 .log h1{
-  background-color: #ffcbaf;
   font-family: 'Amatic SC', cursive; 
   color: #ff7c35; 
   font-size: 40px;
+  padding: 0;
+  margin: 20px;
+}
+
+.log a{
+  color: #ff7c35; 
+  font-size: 14px;
+}
+
+a[href*="password"] {
+    display: none;
 }
