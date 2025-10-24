@@ -17,17 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.views.static import serve
 from bullet_journal import views
 from search.views import rebuild_index
 from django.conf import settings
 from django.conf.urls.static import static
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
     path('', include('bullet_journal.urls')),
     path('search/', include('haystack.urls')), 
-    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path('robots.txt', lambda r: serve(r, 'robots.txt', settings.STATIC_ROOT)),
 
     path('rebuild_index/', rebuild_index, name='rebuild_index'),
 
