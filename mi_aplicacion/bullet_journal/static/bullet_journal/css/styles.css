@@ -753,7 +753,6 @@ h1 {
   font-family: 'Times New Roman', Times, serif !important;
 }
 
-
 .btn.btn-outline-primary.mt-auto{
   font-family: 'Times New Roman', Times, serif;
   font-size: 16px;
@@ -768,4 +767,15 @@ h1 {
   background-color: #ff7024;
   color: white;
   border: none;
+}
+
+.log{
+  background-color: #ffcbaf !important
+}
+
+.log h1{
+  background-color: #ffcbaf;
+  font-family: 'Amatic SC', cursive; 
+  color: #ff7c35; 
+  font-size: 40px;
 }
