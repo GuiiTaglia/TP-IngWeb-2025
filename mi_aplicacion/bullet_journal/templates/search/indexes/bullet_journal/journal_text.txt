@@ -1,9 +1,2 @@
 {{ object.title }}
 {{ object.diary_entry }}
-{% if object.user %}{{ object.user.username }}{% endif %}
-{% if object.date %}{{ object.date }}{% endif %}
-
-{# indexar valores del JSON de hábitos personalizados #}
-{% for k, v in object.custom_habits_data.items %}
-{{ v }}
-{% endfor %}

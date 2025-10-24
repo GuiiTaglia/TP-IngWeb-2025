@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://tp-ingweb-2025.onrender.com/sitemap.xml

@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /search/
+Disallow: /rebuild_index/
+
+Allow: /
+
+
