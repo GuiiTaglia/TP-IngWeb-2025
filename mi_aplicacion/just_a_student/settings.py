@@ -342,21 +342,19 @@ else:
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https' if 'RENDER' in os.environ else 'http'
 
-# Configuración de correo
-if os.getenv("RENDER"):  # Si está corriendo en Render (producción)
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.sendgrid.net'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'apikey'  # Literal, no lo cambies
-    EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
-    DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+import os
 
-else:  # Entorno local
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_USE_TLS = True
+if 'RENDER' in os.environ:  # producción
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.sendgrid.net"
     EMAIL_PORT = 587
-    EMAIL_HOST_USER = 'justastudentucse@gmail.com'
-    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-    DEFAULT_FROM_EMAIL = 'Just a Student <justastudentucse@gmail.com>'
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = "apikey"
+    EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_API_KEY")
+    DEFAULT_FROM_EMAIL = os.environ.get(
+        "DEFAULT_FROM_EMAIL", "Just a Student <justastudentucse@gmail.com>"
+    )
+    SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "tp-ingweb-2025.onrender.com")
+else:  # local
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # imprime mails en consola
+    SITE_DOMAIN = "localhost:8000"
