@@ -351,16 +351,15 @@ def diary_entry(request):
 #         'diary_entries': diary_entries,
 #         'query': query,
 #     })
+@login_required
 def diary_list(request):
-    """Vista para listar todas las entradas de diario"""
-    query = request.GET.get('q', '').strip()  # texto de búsqueda
+    query = request.GET.get('q', '').strip()
 
     # Filtrar entradas del usuario que tengan título o contenido
     diary_entries = Journal.objects.filter(user=request.user).exclude(
         Q(title__isnull=True, diary_entry__isnull=True) | Q(title='', diary_entry='')
     )
 
-    # Aplicar búsqueda si hay query
     if query:
         diary_entries = diary_entries.filter(
             Q(title__icontains=query) | Q(diary_entry__icontains=query)
@@ -372,6 +371,7 @@ def diary_list(request):
         'diary_entries': diary_entries,
         'query': query,
     })
+
 
 
 

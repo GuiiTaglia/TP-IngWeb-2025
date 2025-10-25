@@ -125,51 +125,62 @@
         </form>
         <p></p>
 
-        {% if diary_entries %}
-            <div class="row">
-                {% for entry in diary_entries %}
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 border-orange">
+        {% if diary_entries and diary_entries.exists %}
+    <div class="row">
+        {% for entry in diary_entries %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-orange">
 
-                            {% if entry.diary_image %}
-                            <img src="{{ entry.diary_image.url }}" 
-                                 class="card-img-top" 
-                                 style="height: 100px; object-fit: cover;" 
-                                 alt="Imagen del día">
-                            {% endif %}
+                    {% if entry.diary_image %}
+                        <img src="{{ entry.diary_image.url }}" 
+                             class="card-img-top" 
+                             style="height: 100px; object-fit: cover;" 
+                             alt="Imagen del día">
+                    {% endif %}
 
-                            <div class="card-body d-flex flex-column">
-                                <div class="card-title">
-                                    <small class="text-muted">
-                                        {% if entry.date %}
-                                        {% language 'es' %}
+                    <div class="card-body d-flex flex-column">
+                        <div class="card-title">
+                            <small class="text-muted">
+                                {% if entry.date %}
+                                    {% language 'es' %}
                                         <p><strong>Día:</strong> {{ entry.date|date:"l"|title }} {{ entry.date|date:"j \d\e F \d\e Y" }}</p>
-                                        {% endlanguage %}
-                                        {% endif %}
-                                    </small>
-                                </div>
-
-                                <div class="tituloDiario">
-                                    <h5>{{ entry.title|default:"Sin título" }}</h5>
-                                </div>
-
-                                <p class="card-text flex-grow-1">
-                                    {% if entry.diary_entry %}
-                                        {{ entry.diary_entry|truncatewords:30 }}
-                                    {% else %}
-                                        <em class="text-muted">Sin descripción</em>
-                                    {% endif %}
-                                </p>
-
-                                <a href="{% url 'diary_detail' entry.pk %}" class="btn btn-outline-primary mt-auto">
-                                    Leer más
-                                </a>
-                            </div>
+                                    {% endlanguage %}
+                                {% else %}
+                                    <p><strong>Día:</strong> Sin fecha</p>
+                                {% endif %}
+                            </small>
                         </div>
+
+                        <div class="tituloDiario">
+                            <h5>{{ entry.title|default:"Sin título" }}</h5>
+                        </div>
+
+                        <p class="card-text flex-grow-1">
+                            {% if entry.diary_entry %}
+                                {{ entry.diary_entry|truncatewords:30 }}
+                            {% else %}
+                                <em class="text-muted">Sin descripción</em>
+                            {% endif %}
+                        </p>
+
+                        <a href="{% url 'diary_detail' entry.pk %}" class="btn btn-outline-primary mt-auto">
+                            Leer más
+                        </a>
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        {% else %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">Aún no tienes diarios</h4>
+        <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
+        <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
+            Crear primer diario
+        </a>
+    </div>
+{% endif %}
+
             <div class="text-center py-5">
                 <h4 class="text-muted">Aún no tienes diarios</h4>
                 <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
