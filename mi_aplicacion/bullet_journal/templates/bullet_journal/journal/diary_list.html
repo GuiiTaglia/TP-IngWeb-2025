@@ -114,13 +114,11 @@
 
 {% block contenido %}
 
-{% if user.is_authenticated %}
 
 <div class="container">
     <div class="journal-form">
         <h1>Mis diarios</h1>
 
-        <!-- Formulario de búsqueda -->
         <form method="get" action="{% url 'diary_list' %}" class="d-flex" style="gap: 8px;">
             <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Buscar palabra...">
             <button type="submit" class="btn btn-secondary">Buscar</button>
@@ -184,9 +182,3 @@
     </div>
 </div>
 
-{% else %}
-<p>You are not logged in</p>
-<a href="{% url 'login' %}">Log In</a>
-{% endif %}
-
-{% endblock %}
