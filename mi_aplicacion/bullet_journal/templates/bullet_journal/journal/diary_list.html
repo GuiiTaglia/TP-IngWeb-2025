@@ -1,4 +1,5 @@
-<!-- {% extends "header.html" %}
+@ -1,96 +1,97 @@
+{% extends "header.html" %}
 {% load static %}
 {% load i18n %}
 
@@ -26,7 +27,7 @@
     <div class="container">
         <div class="journal-form">
             <h1>Mis diarios</h1>
-
+            <!-- Formulario de búsqueda -->
             <form method="get" action="{% url 'diary_list' %}" class="d-flex" style="gap: 8px;">
                 <input type="text" name="q" value="{{ query }}"
                 class="form-control" placeholder="Buscar palabra...">
@@ -76,120 +77,24 @@
                                     </div>
                                 </div>
                             </div>
-                            {% else %}
-                                <div class="text-center py-5">
-                                    <h4 class="text-muted"> Aún no tienes diarios</h4>
-                                    <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
-                                    <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
-                                        Crear primer diario
-                                    </a>
-                                </div>
-                                {% endif %}
+                            {% endif %}
+                            
                         {% endfor %}
                         </div>
                     </div>
                 </div>
                 
+            {% else %}
+                <div class="text-center py-5">
+                    <h4 class="text-muted"> Aún no tienes diarios</h4>
+                    <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
+                    <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
+                        Crear primer diario
+                    </a>
+                </div>
+            {% endif %}
             
             
         </div>
     </div>
-</body>
-{% endblock %} -->
-
-
-
-{% extends "header.html" %}
-{% load static %}
-{% load i18n %}
-
-{% block title %}Mis Entradas de Diario{% endblock %}
-
-{% block extra_head %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'bullet_journal/css/styles.css' %}">
-{% endblock %}
-
-{% block contenido %}
-
-
-<div class="container">
-    <div class="journal-form">
-        <h1>Mis diarios</h1>
-
-        <form method="get" action="{% url 'diary_list' %}" class="d-flex" style="gap: 8px;">
-            <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Buscar palabra...">
-            <button type="submit" class="btn btn-secondary">Buscar</button>
-        </form>
-        <p></p>
-
-        {% if diary_entries and diary_entries.exists %}
-    <div class="row">
-        {% for entry in diary_entries %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 border-orange">
-
-                    {% if entry.diary_image %}
-                        <img src="{{ entry.diary_image.url }}" 
-                             class="card-img-top" 
-                             style="height: 100px; object-fit: cover;" 
-                             alt="Imagen del día">
-                    {% endif %}
-
-                    <div class="card-body d-flex flex-column">
-                        <div class="card-title">
-                            <small class="text-muted">
-                                {% if entry.date %}
-                                    {% language 'es' %}
-                                        <p><strong>Día:</strong> {{ entry.date|date:"l"|title }} {{ entry.date|date:"j \d\e F \d\e Y" }}</p>
-                                    {% endlanguage %}
-                                {% else %}
-                                    <p><strong>Día:</strong> Sin fecha</p>
-                                {% endif %}
-                            </small>
-                        </div>
-
-                        <div class="tituloDiario">
-                            <h5>{{ entry.title|default:"Sin título" }}</h5>
-                        </div>
-
-                        <p class="card-text flex-grow-1">
-                            {% if entry.diary_entry %}
-                                {{ entry.diary_entry|truncatewords:30 }}
-                            {% else %}
-                                <em class="text-muted">Sin descripción</em>
-                            {% endif %}
-                        </p>
-
-                        <a href="{% url 'diary_detail' entry.pk %}" class="btn btn-outline-primary mt-auto">
-                            Leer más
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <div class="text-center py-5">
-        <h4 class="text-muted">Aún no tienes diarios</h4>
-        <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
-        <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
-            Crear primer diario
-        </a>
-    </div>
-{% endif %}
-
-            <div class="text-center py-5">
-                <h4 class="text-muted">Aún no tienes diarios</h4>
-                <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
-                <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
-                    Crear primer diario
-                </a>
-            </div>
-        {% endif %}
-
-    </div>
-</div>
-
+</body> 
