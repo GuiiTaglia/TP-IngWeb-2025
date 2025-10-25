@@ -329,28 +329,50 @@ def diary_entry(request):
     })
 
 @login_required
+# def diary_list(request):
+#     """Vista para listar todas las entradas de diario"""
+#     # Solo mostrar entradas que tengan título o texto de diario
+#     query = request.GET.get('q', '').strip()  # texto de búsqueda
+
+#     diary_entries = Journal.objects.filter(user=request.user)
+    
+#     diary_entry = diary_entries.exclude(
+#         title__isnull=True, diary_entry__isnull=True
+#     ).exclude(title='', diary_entry='')
+
+#     if query:
+#         diary_entries = diary_entries.filter(
+#             Q(title__icontains=query) | Q(diary_entry__icontains=query)
+#         )
+
+#     diary_entries = diary_entries.order_by('-date')
+    
+#     return render(request, 'bullet_journal/journal/diary_list.html', {
+#         'diary_entries': diary_entries,
+#         'query': query,
+#     })
 def diary_list(request):
     """Vista para listar todas las entradas de diario"""
-    # Solo mostrar entradas que tengan título o texto de diario
     query = request.GET.get('q', '').strip()  # texto de búsqueda
 
-    diary_entries = Journal.objects.filter(user=request.user)
-    
-    diary_entry = diary_entries.exclude(
-        title__isnull=True, diary_entry__isnull=True
-    ).exclude(title='', diary_entry='')
+    # Filtrar entradas del usuario que tengan título o contenido
+    diary_entries = Journal.objects.filter(user=request.user).exclude(
+        Q(title__isnull=True, diary_entry__isnull=True) | Q(title='', diary_entry='')
+    )
 
+    # Aplicar búsqueda si hay query
     if query:
         diary_entries = diary_entries.filter(
             Q(title__icontains=query) | Q(diary_entry__icontains=query)
         )
 
     diary_entries = diary_entries.order_by('-date')
-    
+
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
         'query': query,
     })
+
 
 
 @login_required
