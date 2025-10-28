@@ -12,7 +12,9 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.db.models import Q
-from haystack.query import SearchQuerySet, AutoQuery
+from haystack.inputs import AutoQuery
+from haystack.query import SearchQuerySet
+from .models import Journal
 
 @login_required
 def home(request):
@@ -357,14 +359,10 @@ def diary_list(request):
     query = request.GET.get('q', '').strip()
 
     if query:
-        results = SearchQuerySet().filter(
-            content=AutoQuery(query),
-            user=request.user)
-        diary_entries = [r.object for r in results if r.object.title or r.object.diary_entry]
+        results = SearchQuerySet().filter(content=AutoQuery(query))
+        diary_entries = [r.object for r in results if r.object.user ==  request.user]
     else:
-        diary_entries = Journal.objects.filter(user=request.user).exclude(
-            Q(title__isnull=True, diary_entry__isnull=True) | Q(title='', diary_entry='')
-        ).order_by('-date')
+        diary_entries = Journal.objects.filter(user=request.user)
 
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
