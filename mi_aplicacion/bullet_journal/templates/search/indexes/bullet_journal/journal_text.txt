@@ -1,4 +1,3 @@
 {{ object.title }}
 {{ object.diary_entry }}
-{{ object.user.username }}
-{{ object.get_custom_habits_text }}
+
