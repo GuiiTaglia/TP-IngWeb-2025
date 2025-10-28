@@ -33,6 +33,7 @@
                 class="form-control" placeholder="Buscar palabra...">
                 <button type="submit" class="btn btn-secondary">Buscar</button>
                  <a href="{% url 'diary_list' %}" class="btn btn-secondary">Mostrar todos</a>
+                 <a href="{% url 'diary_entry' %}" class="btn btn-secondary" style="display: flex; justify-content: center; align-items: center;">+</a>
             </form>
             <p></p>
             {% if diary_entries %}
@@ -89,10 +90,10 @@
                 <div class="text-center py-5">
                     <h4 class="text-muted"> Aún no tienes diarios</h4>
                     <p class="text-muted">¡Comienza a escribir sobre tus días!</p>
-                    <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
+                    <!-- <a href="{% url 'diary_entry' %}" class="btn btn-primary btn-lg">
                         Crear primer diario
-                    </a>
-                </div>
+                    </a> -->
+                </div> 
             {% endif %}
             
             
