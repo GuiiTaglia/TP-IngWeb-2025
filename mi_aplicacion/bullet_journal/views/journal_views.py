@@ -362,7 +362,7 @@ def diary_list(request):
     if query:
         try:
             results = SearchQuerySet().filter(content=AutoQuery(query))
-            # Solo tomamos objetos que existan y sean del usuario
+          
             diary_entries = [r.object for r in results if hasattr(r, 'object') and r.object.user == request.user]
         except Exception as e:
             print(f"Error en búsqueda: {e}")  # Esto lo verás en docker logs
@@ -372,7 +372,7 @@ def diary_list(request):
 
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
-        'query': query,
+        'query': query,
     })
 
 @login_required
