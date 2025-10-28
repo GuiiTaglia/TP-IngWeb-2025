@@ -2,7 +2,7 @@ from django.urls import path
 from .views.journal_views import calendar, home, journal_list, journal_detail, journal_create, journal_edit, stadistics, to_do_list, manage_habits, toggle_habit_status, add_habit_quick, diary_entry, diary_list, diary_detail
 from django.conf import settings
 from django.conf.urls.static import static
-from .views.search_views import search
+
 
 
 urlpatterns = [
