@@ -32,6 +32,7 @@
                 <input type="text" name="q" value="{{ query }}"
                 class="form-control" placeholder="Buscar palabra...">
                 <button type="submit" class="btn btn-secondary">Buscar</button>
+                 <a href="{% url 'diary_list' %}" class="btn btn-secondary">Mostrar todos</a>
             </form>
             <p></p>
             {% if diary_entries %}
