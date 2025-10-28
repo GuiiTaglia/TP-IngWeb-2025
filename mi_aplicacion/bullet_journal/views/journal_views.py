@@ -373,7 +373,7 @@ def diary_list(request):
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
         'query': query,
-    })
+        })
 
 @login_required
 def diary_detail(request, pk):
