@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.db.models import Q
+from haystack.query import SearchQuerySet, AutoQuery
 
 @login_required
 def home(request):
@@ -355,24 +356,21 @@ def diary_entry(request):
 def diary_list(request):
     query = request.GET.get('q', '').strip()
 
-    # Filtrar entradas del usuario que tengan título o contenido
-    diary_entries = Journal.objects.filter(user=request.user).exclude(
-        Q(title__isnull=True, diary_entry__isnull=True) | Q(title='', diary_entry='')
-    )
-
     if query:
-        diary_entries = diary_entries.filter(
-            Q(title__icontains=query) | Q(diary_entry__icontains=query)
-        )
-
-    diary_entries = diary_entries.order_by('-date')
+        results = SearchQuerySet().filter(
+            content=AutoQuery(query),
+            user=request.user)
+        diary_entries = [r.object for r in results if r.object.title or r.object.diary_entry]
+    else:
+        diary_entries = Journal.objects.filter(user=request.user).exclude(
+            Q(title__isnull=True, diary_entry__isnull=True) | Q(title='', diary_entry='')
+        ).order_by('-date')
 
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
         'query': query,
-    })
-
-
+        })
+   
 
 
 @login_required
