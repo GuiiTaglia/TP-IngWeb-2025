@@ -12,8 +12,12 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.db.models import Q
-from haystack.inputs import AutoQuery
-from haystack.query import SearchQuerySet
+try:
+    from haystack.query import SearchQuerySet
+    from haystack.inputs import AutoQuery
+    HAYSTACK_AVAILABLE = True
+except Exception:
+    HAYSTACK_AVAILABLE = False
 
 
 @login_required
@@ -357,26 +361,34 @@ def diary_entry(request):
 @login_required
 def diary_list(request):
     query = request.GET.get('q', '').strip()
-    diary_entries = []
-
     if query:
-        try:
-            results = SearchQuerySet().filter(content=AutoQuery(query))
-          
-            diary_entries = [
-                r.object for r in results
-                if getattr(r, 'object', None) is not None and r.object.user == request.user
-            ]
-        except Exception as e:
-            print(f"Error en búsqueda: {e}")
-            diary_entries = Journal.objects.filter(user=request.user)
+        # Intento Haystack (full-text). Si falla o no hay resultados para el usuario, usamos ORM como fallback.
+        if HAYSTACK_AVAILABLE:
+            try:
+                sqs = SearchQuerySet().models(Journal).filter(content=AutoQuery(query)).load_all()
+                diary_entries = []
+                for r in sqs:
+                    obj = getattr(r, 'object', None)
+                    if obj and hasattr(obj, 'user') and obj.user_id == getattr(request.user, 'id', None):
+                        diary_entries.append(obj)
+                # si no hay resultados validados por usuario, fallback ORM
+                if not diary_entries:
+                    raise Exception("Haystack no devolvió resultados para el usuario, fallback ORM")
+            except Exception:
+                diary_entries = Journal.objects.filter(user=request.user).filter(
+                    Q(title__icontains=query) | Q(diary_entry__icontains=query)
+                ).order_by('-date')
+        else:
+            diary_entries = Journal.objects.filter(user=request.user).filter(
+                Q(title__icontains=query) | Q(diary_entry__icontains=query)
+            ).order_by('-date')
     else:
-        diary_entries = Journal.objects.filter(user=request.user)
+        diary_entries = Journal.objects.filter(user=request.user).order_by('-date')
 
     return render(request, 'bullet_journal/journal/diary_list.html', {
         'diary_entries': diary_entries,
         'query': query,
-        })
+    })
 
 @login_required
 def diary_detail(request, pk):
