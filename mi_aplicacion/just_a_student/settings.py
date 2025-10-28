@@ -44,7 +44,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': str(BASE_DIR / 'whoosh_index'),
+        'PATH': BASE_DIR / 'whoosh_index',
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
