@@ -14,7 +14,7 @@ from django.core.management import call_command
 from django.db.models import Q
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
-from .models import Journal
+
 
 @login_required
 def home(request):
