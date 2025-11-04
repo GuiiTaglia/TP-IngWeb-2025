@@ -911,12 +911,12 @@ a[href*="password"] {
   
   /* Aumentar tamaño del logo */
   .logo-img {
-    width: 170px !important; /* antes 120px */
+    width: 100px !important; /* antes 120px */
   }
 
   /* Tamaño del botón menú (icono) */
   .navbar-toggler i {
-    font-size: 34px !important; /* más grande */
+    font-size: 29px !important; /* más grande */
   }
 
   /* Links del menú */
@@ -932,7 +932,7 @@ a[href*="password"] {
   }*/
 
   .custom-header {
-    padding: 15px !important;
+    padding: 10px !important;
   }
 }
 
