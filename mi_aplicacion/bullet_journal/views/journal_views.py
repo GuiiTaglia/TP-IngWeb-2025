@@ -151,12 +151,17 @@ def journal_create(request):
             form = JournalForm(instance=existing_journal, user=request.user)
             load_custom_habits_data(form, request.user, today)
 
+
+    sleep_hours_options = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12]
+    water_glasses_options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     custom_habits = CustomHabit.objects.filter(user=request.user, is_active=True)
   
 
     return render(request, 'bullet_journal/journal/new_journal.html', {
         'form': form, 
-        'custom_habits': custom_habits
+        'custom_habits': custom_habits,
+        'sleep_hours_options': sleep_hours_options,    # ← AGREGAR
+        'water_glasses_options': water_glasses_options, # ← AGREGAR
     })
 
 

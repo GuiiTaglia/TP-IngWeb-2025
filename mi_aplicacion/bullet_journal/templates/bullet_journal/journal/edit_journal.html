@@ -208,83 +208,92 @@
 }
 </style>
 <!-- En edit_journal.html - REEMPLAZAR todo el <script>: -->
+<!-- En edit_journal.html - REEMPLAZAR todo el <script>: -->
+<!-- En edit_journal.html - REEMPLAZAR el JavaScript completo: -->
 
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            
-            // Selector de horas de sueño
-            const sleepHiddenInput = document.getElementById('sleep_hours');
-            const hourOptions = document.querySelectorAll('.hour-option');
-            
-            // Marcar la opción actual de sueño
-            const currentSleepValue = sleepHiddenInput.value;
-            hourOptions.forEach(option => {
-                if (option.dataset.value == currentSleepValue) {
-                    option.classList.add('selected');
-                }
-                
-                option.addEventListener('click', function() {
-                    // Remover selección anterior
-                    hourOptions.forEach(opt => opt.classList.remove('selected'));
-                    // Agregar selección actual
-                    this.classList.add('selected');
-                    // Actualizar valor oculto
-                    sleepHiddenInput.value = this.dataset.value;
-                });
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        // ✅ DEFINIR LAS VARIABLES AL INICIO
+        const sleepHiddenInput = document.getElementById('sleep_hours');
+        const waterHiddenInput = document.getElementById('water_glasses');
+        const hourOptions = document.querySelectorAll('.hour-option');
+        const glassOptions = document.querySelectorAll('.glass-option');
         
-            // Selector de vasos de agua
-            const waterHiddenInput = document.getElementById('water_glasses');
-            const glassOptions = document.querySelectorAll('.glass-option');
-            
-            // Marcar la opción actual de agua
-            const currentWaterValue = waterHiddenInput.value;
-            glassOptions.forEach(option => {
-                if (option.dataset.value == currentWaterValue) {
-                    option.classList.add('selected');
-                }
-                
-                option.addEventListener('click', function() {
-                    // Remover selección anterior
-                    glassOptions.forEach(opt => opt.classList.remove('selected'));
-                    // Agregar selección actual
-                    this.classList.add('selected');
-                    // Actualizar valor oculto
-                    waterHiddenInput.value = this.dataset.value;
-                });
-            });
+        console.log('🔍 DEBUG: Valor inicial sleep_hours:', sleepHiddenInput.value, typeof sleepHiddenInput.value);
+        console.log('🔍 DEBUG: Valor inicial water_glasses:', waterHiddenInput.value, typeof waterHiddenInput.value);
         
-            // Debug de hábitos
-            const habitCheckboxes = document.querySelectorAll('input[name^="habit_"]');
+        // Selector de horas de sueño - ARREGLAR LA COMPARACIÓN
+        const currentSleepValue = sleepHiddenInput.value;
+        hourOptions.forEach(option => {
+            console.log('🔍 DEBUG: Comparando', option.dataset.value, '==', currentSleepValue);
+            // ✅ CONVERTIR A NÚMERO PARA COMPARAR CORRECTAMENTE
+            if (parseFloat(option.dataset.value) == parseFloat(currentSleepValue)) {
+                option.classList.add('selected');
+                console.log('✅ DEBUG: Hora seleccionada inicialmente:', option.dataset.value);
+            }
             
-            console.log('🔍 DEBUG: Checkboxes de hábitos encontrados:', habitCheckboxes.length);
-            
-            habitCheckboxes.forEach(checkbox => {
-                console.log(`🔍 DEBUG: Checkbox ${checkbox.name} está marcado:`, checkbox.checked);
-                
-                checkbox.addEventListener('change', function() {
-                    console.log(`🔍 DEBUG: ${this.name} cambió a:`, this.checked);
-                });
-            });
-            
-            form.addEventListener('submit', function(e) {
-                console.log('🔍 DEBUG: Formulario enviándose...');
-                console.log('🔍 DEBUG: Horas de sueño:', sleepHiddenInput.value);
-                console.log('🔍 DEBUG: Vasos de agua:', waterHiddenInput.value);
-                
-                const formData = new FormData(form);
-                
-                console.log('🔍 DEBUG: Datos del formulario:');
-                for (let [key, value] of formData.entries()) {
-                    console.log(`  ${key}: ${value}`);
-                }
-                
-                habitCheckboxes.forEach(checkbox => {
-                    console.log(`🔍 DEBUG: ¿${checkbox.name} está en FormData?`, formData.has(checkbox.name));
-                });
+            option.addEventListener('click', function() {
+                // Remover selección anterior
+                hourOptions.forEach(opt => opt.classList.remove('selected'));
+                // Agregar selección actual
+                this.classList.add('selected');
+                // Actualizar valor oculto
+                sleepHiddenInput.value = this.dataset.value;
+                console.log('🔍 DEBUG: Horas de sueño seleccionadas:', this.dataset.value);
             });
         });
+    
+        // Selector de vasos de agua - ARREGLAR LA COMPARACIÓN
+        const currentWaterValue = waterHiddenInput.value;
+        glassOptions.forEach(option => {
+            console.log('🔍 DEBUG: Comparando', option.dataset.value, '==', currentWaterValue);
+            // ✅ CONVERTIR A NÚMERO PARA COMPARAR CORRECTAMENTE
+            if (parseInt(option.dataset.value) == parseInt(currentWaterValue)) {
+                option.classList.add('selected');
+                console.log('✅ DEBUG: Vasos seleccionados inicialmente:', option.dataset.value);
+            }
+            
+            option.addEventListener('click', function() {
+                // Remover selección anterior
+                glassOptions.forEach(opt => opt.classList.remove('selected'));
+                // Agregar selección actual
+                this.classList.add('selected');
+                // Actualizar valor oculto
+                waterHiddenInput.value = this.dataset.value;
+                console.log('🔍 DEBUG: Vasos de agua seleccionados:', this.dataset.value);
+            });
+        });
+    
+        // Debug de hábitos (mantener el código existente)
+        const form = document.querySelector('form');
+        const habitCheckboxes = document.querySelectorAll('input[name^="habit_"]');
+        
+        console.log('🔍 DEBUG: Checkboxes de hábitos encontrados:', habitCheckboxes.length);
+        
+        habitCheckboxes.forEach(checkbox => {
+            console.log(`🔍 DEBUG: Checkbox ${checkbox.name} está marcado:`, checkbox.checked);
+            
+            checkbox.addEventListener('change', function() {
+                console.log(`🔍 DEBUG: ${this.name} cambió a:`, this.checked);
+            });
+        });
+        
+        form.addEventListener('submit', function(e) {
+            console.log('🔍 DEBUG: Formulario enviándose...');
+            console.log('🔍 DEBUG: Horas de sueño:', sleepHiddenInput.value);
+            console.log('🔍 DEBUG: Vasos de agua:', waterHiddenInput.value);
+            
+            const formData = new FormData(form);
+            
+            console.log('🔍 DEBUG: Datos del formulario:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`  ${key}: ${value}`);
+            }
+            
+            habitCheckboxes.forEach(checkbox => {
+                console.log(`🔍 DEBUG: ¿${checkbox.name} está en FormData?`, formData.has(checkbox.name));
+            });
+        });
+    });
 </script>
-
 {% endblock contenido %}

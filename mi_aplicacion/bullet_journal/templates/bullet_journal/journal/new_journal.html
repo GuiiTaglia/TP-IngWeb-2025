@@ -13,7 +13,6 @@
 {% block contenido %}
 <div class="container mt-5">
     <div class="journal-form">
-    
         <h1>¿Cómo fue tu día?</h1>
 
         <p id="hoy-texto" class="fs-5 mb-3">Hoy:</p>
@@ -27,14 +26,38 @@
                 <input type="text" class="form-control" id="mood" name="mood" maxlength="50" placeholder="Ej: Feliz, Triste...">
             </div>
 
-            <div class="mb-3">
-                <label for="sleep_hours" class="form-label">¿Cuántas horas dormiste?</label>
-                <input type="number" class="form-control" id="sleep_hours" name="sleep_hours" step="0.1" placeholder="Ej: 7.5">
+            <div class="mb-4">
+                <label class="form-label">¿Cuántas horas dormiste?</label>
+                <input type="hidden" id="sleep_hours" name="sleep_hours" value="">
+                <div class="sleep-selector">
+                    <div class="hours-grid">
+                        {% for hour in sleep_hours_options %}
+                        <div class="hour-option" data-value="{{ hour }}">
+                            <div class="hour-circle">
+                                <span>{{ hour }}</span>
+                            </div>
+                            <small>hrs</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="water_glasses" class="form-label">¿Cuántos vasos de agua tomaste?</label>
-                <input type="number" class="form-control" id="water_glasses" name="water_glasses" placeholder="Ej: 8">
+            <div class="mb-4">
+                <label class="form-label">¿Cuántos vasos de agua tomaste?</label>
+                <input type="hidden" id="water_glasses" name="water_glasses" value="">
+                <div class="water-selector">
+                    <div class="glasses-grid">
+                        {% for glass in water_glasses_options %}
+                        <div class="glass-option" data-value="{{ glass }}">
+                            <div class="glass-circle">
+                                <span>{{ glass }}</span>
+                            </div>
+                            <small>vasos</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3 form-check">
@@ -42,7 +65,6 @@
                 <label class="form-check-label" for="exercise">¿Hiciste ejercicio hoy?</label>
             </div>
 
-            <!-- SECCIÓN DE HÁBITOS PERSONALIZADOS -->
             {% if custom_habits %}
             <div class="card mb-4 border-orange">
                 <div class="card-header bg-orange-light">
@@ -52,95 +74,175 @@
                     {% for habit in custom_habits %}
                     <div class="mb-3">
                         {% if habit.type == 'boolean' %}
-                            <!-- Hábito Sí/No -->
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input form-check-input-orange" 
-                                       id="habit_{{ habit.id }}" 
-                                       name="habit_{{ habit.id }}"
-                                       value="true">
-                                <label class="form-check-label" for="habit_{{ habit.id }}">
-                                    <strong>{{ habit.name }}</strong>
-                                    {% if habit.description %}
-                                        <small class="text-muted d-block">{{ habit.description }}</small>
-                                    {% endif %}
-                                </label>
-                            </div>
-                        {% elif habit.type == 'integer' %}
-                            <!-- Hábito Numérico -->
-                            <label for="habit_{{ habit.id }}" class="form-label">
-                                <strong>{{ habit.name }}</strong>
-                                {% if habit.goal_value %}
-                                    <span class="badge badge-orange" >Meta: {{ habit.goal_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}</span>
-                                {% endif %}
-                            </label>
-                            <input type="number" 
-                                   class="form-control" 
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input form-check-input-orange" 
                                    id="habit_{{ habit.id }}" 
                                    name="habit_{{ habit.id }}"
-                                   min="0"
-                                   placeholder="{% if habit.goal_value %}{{ habit.goal_value }}{% else %}0{% endif %}{% if habit.unit %} {{ habit.unit }}{% endif %}">
-                            {% if habit.description %}
-                                <small class="form-text text-muted">{{ habit.description }}</small>
+                                   value="true">
+                            <label class="form-check-label" for="habit_{{ habit.id }}">
+                                <strong>{{ habit.name }}</strong>
+                                {% if habit.description %}
+                                <small class="text-muted d-block">{{ habit.description }}</small>
+                                {% endif %}
+                            </label>
+                        </div>
+                        {% elif habit.type == 'integer' %}
+                        <label for="habit_{{ habit.id }}" class="form-label">
+                            <strong>{{ habit.name }}</strong>
+                            {% if habit.goal_value %}
+                            <span class="badge badge-orange">Meta: {{ habit.goal_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}</span>
                             {% endif %}
+                        </label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="habit_{{ habit.id }}" 
+                               name="habit_{{ habit.id }}"
+                               min="0"
+                               placeholder="{% if habit.goal_value %}{{ habit.goal_value }}{% else %}0{% endif %}{% if habit.unit %} {{ habit.unit }}{% endif %}">
+                        {% if habit.description %}
+                        <small class="form-text text-muted">{{ habit.description }}</small>
+                        {% endif %}
                         {% endif %}
                     </div>
                     {% endfor %}
                 </div>
-
-
             </div>
-            {% endif %}    
+            {% endif %}
             
-            
-            <!-- <div class="mb-3">
-                <label for="image" class="form-label">¿Querés recordar este día con una foto?</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-            </div> -->
-
-            
-            <div class= "d-flex gap-2 flex-wrap">
+            <div class="d-flex gap-2 flex-wrap">
                 <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
-                <!---a href="{% url 'add_habit_quick' %}" class="btn btn-primary">
-                    Agregar Hábito
-                </a>
-                
-                {% if custom_habits %}
-                <a href="{% url 'manage_habits' %}" class="btn btn-primary">
-                    Gestionar Hábitos
-                </a>
-                {% endif %}--->
             </div>
             <p></p>
-
         </form>
 
         <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
     </div>
 </div>
 
+<style>
+    .sleep-selector, .water-selector {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .hours-grid, .glasses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 10px;
+        max-width: 100%;
+    }
+    
+    .hour-option, .glass-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .hour-circle, .glass-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: 2px solid #dee2e6;
+        background-color: white;
+        margin-bottom: 5px;
+    }
+    
+    .hour-circle {
+        color: #ff6614;
+        border-color: #ff6614;
+    }
+    
+    .hour-option:hover .hour-circle {
+        background-color: #ff6614;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .hour-option.selected .hour-circle {
+        background-color: #ff6614;
+        color: white;
+        box-shadow: 0 0 0 3px rgba(255, 102, 20, 0.3);
+    }
+    
+    .glass-circle {
+        color: #ff6614;
+        border-color: #ff6614;
+    }
+    
+    .glass-option:hover .glass-circle {
+        background-color: #ff6614;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .glass-option.selected .glass-circle {
+        background-color: #ff6614;
+        color: white;
+        box-shadow: 0 0 0 3px rgba(255, 102, 20, 0.3);
+    }
+    
+    .hour-option small, .glass-option small {
+        color: #6c757d;
+        font-size: 0.75rem;
+    }
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 window.addEventListener('load', function() {
-  const diasSemana = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-  const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+    const diasSemana = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+    const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-  const hoy = new Date();
-  const diaSemana = diasSemana[hoy.getDay()];
-  const dia = hoy.getDate();
-  const mes = meses[hoy.getMonth()];
-  const anio = hoy.getFullYear();
+    const hoy = new Date();
+    const diaSemana = diasSemana[hoy.getDay()];
+    const dia = hoy.getDate();
+    const mes = meses[hoy.getMonth()];
+    const anio = hoy.getFullYear();
 
-  // Mostrar fecha como texto
-  document.getElementById('hoy-texto').textContent = `Hoy: ${diaSemana}, ${dia} de ${mes} de ${anio}`;
+    document.getElementById('hoy-texto').textContent = `Hoy: ${diaSemana}, ${dia} de ${mes} de ${anio}`;
 
-  const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-  const dd = String(hoy.getDate()).padStart(2, '0');
-  const fechaLocal = `${yyyy}-${mm}-${dd}`;
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    const fechaLocal = `${yyyy}-${mm}-${dd}`;
 
-  document.getElementById('date').value = fechaLocal;
+    document.getElementById('date').value = fechaLocal;
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sleepHiddenInput = document.getElementById('sleep_hours');
+    const hourOptions = document.querySelectorAll('.hour-option');
+    
+    hourOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            hourOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            sleepHiddenInput.value = this.dataset.value;
+        });
+    });
+
+    const waterHiddenInput = document.getElementById('water_glasses');
+    const glassOptions = document.querySelectorAll('.glass-option');
+    
+    glassOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            glassOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            waterHiddenInput.value = this.dataset.value;
+        });
+    });
 });
 </script>
-{% endblock %}
+
+{% endblock contenido %}
 
