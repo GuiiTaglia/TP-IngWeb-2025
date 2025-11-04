@@ -53,7 +53,7 @@
             <!-- ARREGLADO: Selector de mes específico -->
             <div class="col-md-4">
                 <div class="dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle {% if current_period == 'specific_month' %}btn-info text-white{% endif %}" 
+                    <button class="month-selector-btn dropdown-toggle {% if current_period == 'specific_month' %}btn-info text-white{% endif %}" 
                             type="button" 
                             id="monthSelector" 
                             data-bs-toggle="dropdown"
@@ -66,14 +66,14 @@
                         {% endif %}
                     </button>
                     
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="monthSelector" style="max-height: 300px; overflow-y: auto;">
+                    <ul class="dropdown-menu dropdown-menu-end custom-month-dropdown" aria-labelledby="monthSelector">
                         {% if months_data %}
                             {% for month_data in months_data %}
                                 <li>
-                                    <a class="dropdown-item d-flex justify-content-between" 
+                                    <a class="dropdown-item" 
                                        href="?period=specific_month&year={{ month_data.year }}&month={{ month_data.month }}">
                                         <span>{{ month_data.display }}</span>
-                                        <small class="text-muted">{{ month_data.count }} días</small>
+                                        <!-- <small class="text-muted">{{ month_data.count }} días</small> -->
                                     </a>
                                 </li>
                             {% endfor %}

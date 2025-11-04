@@ -913,3 +913,74 @@ a[href*="password"] {
   }
 }
 
+.month-selector-btn {
+  background-color: #ff9f6c;
+  border: 2px solid white;
+  color: white !important;
+  font-family: 'Amatic SC', cursive;
+  font-size: 27px;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.month-selector-btn:hover,
+.month-selector-btn:focus {
+  background-color: white !important;
+  color: #ff6614 !important;
+  border-color: #ff6614;
+  transition: 0.2s ease-in-out;
+}
+
+.month-selector-btn.active {
+  background-color: #ff6614 !important;
+  color: white !important;
+}
+
+/* Fondo del menú desplegable */
+.custom-month-dropdown {
+  background-color: #ff9f6c !important;
+  border: 2px solid white !important;
+  border-radius: 10px;
+  padding: 8px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Ítems de la lista */
+.custom-month-dropdown .dropdown-item {
+  font-family: 'Amatic SC', cursive;
+  font-size: 26px;
+  font-weight: bold;
+  color: white !important;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Días pequeño */
+.custom-month-dropdown .dropdown-item small {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+/* Hover */
+.custom-month-dropdown .dropdown-item:hover {
+  background-color: white !important;
+  color: #ff6614 !important;
+  transition: .2s ease-in-out;
+}
+
+/* Scroll bonito para la lista */
+.custom-month-dropdown {
+  scrollbar-width: thin;
+  scrollbar-color: #ff6614 white;
+}
+.custom-month-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-month-dropdown::-webkit-scrollbar-thumb {
+  background: #ff6614;
+  border-radius: 10px;
+}
