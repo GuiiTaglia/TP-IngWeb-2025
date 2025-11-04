@@ -5,24 +5,16 @@
 {% block contenido %}
 <div class="container mt-5">
     <div class="journal-form">
-
         <h1>Editar Journal</h1>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <!-- <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
-
-                {% load i18n %}
-                {% language 'es' %}
-                <p style="font-size: 19px">Día: {{ journal.date|date:"l, j \\d\\e F \\d\\e Y" }}</p>
-                {% endlanguage %} -->
             
             <div class="mb-3">
                 <label for="date" class="form-label">Fecha:</label>
                 <input type="date" class="form-control" id="date" name="date" maxlength="50"
                     value="{{ journal.date|date:'Y-m-d' }}">
             </div>
-
 
             <div class="mb-3">
                 <label for="mood" class="form-label">¿Cuál es tu estado de ánimo hoy?</label>
@@ -56,16 +48,15 @@
                 <div class="card-body">
                     {% for habit in custom_habits %}
                     <div class="mb-3">
-                        {% with field_name="habit_"|add:habit.id %}
-
+                        
                         {% if habit.type == 'boolean' %}
                             <div class="form-check">
                                 <input type="checkbox"
                                     class="form-check-input form-check-input-orange"
-                                    id="{{ field_name }}"
-                                    name="{{ field_name }}"
+                                    id="habit_{{ habit.id }}"
+                                    name="habit_{{ habit.id }}"
                                     {% if habit.current_value %}checked{% endif %}>
-                                <label class="form-check-label" for="{{ field_name }}">
+                                <label class="form-check-label" for="habit_{{ habit.id }}">
                                     <strong>{{ habit.name }}</strong>
                                     {% if habit.description %}
                                         <small class="text-muted d-block">{{ habit.description }}</small>
@@ -74,7 +65,7 @@
                             </div>
 
                         {% elif habit.type == 'integer' %}
-                            <label for="{{ field_name }}" class="form-label">
+                            <label for="habit_{{ habit.id }}" class="form-label">
                                 <strong>{{ habit.name }}</strong>
                                 {% if habit.goal_value %}
                                     <span class="badge badge-orange">
@@ -86,41 +77,61 @@
                             <input 
                                 type="number"
                                 class="form-control"
-                                id="{{ field_name }}"
-                                name="{{ field_name }}"
+                                id="habit_{{ habit.id }}"
+                                name="habit_{{ habit.id }}"
                                 min="0"
-                                value="{{ habit.current_value }}"
+                                value="{{ habit.current_value|default:'' }}"
                                 placeholder="{{ habit.goal_value|default:0 }} {% if habit.unit %}{{ habit.unit }}{% endif %}">
                             
                             {% if habit.description %}
                                 <small class="form-text text-muted">{{ habit.description }}</small>
                             {% endif %}
                         {% endif %}
-
-                        {% endwith %}
                     </div>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
 
-
-
-            <!-- Imagen -->           
-            <!-- <div class="mb-3">
-                <label for="image" class="form-label">¿Querés cambiar la foto?</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                {% if journal.image %}
-                    <p class="mt-2">Foto actual: <img src="{{ journal.image.url }}" alt="Imagen Journal" style="max-width:150px;"></p>
-                {% endif %}
-            </div> -->
-
             <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
         </form>
-
-    
 
         <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
     </div>
 </div>
-{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    // ARREGLADO: Buscar dinámicamente todos los checkboxes de hábitos
+    const habitCheckboxes = document.querySelectorAll('input[name^="habit_"]');
+    
+    console.log('🔍 DEBUG: Checkboxes de hábitos encontrados:', habitCheckboxes.length);
+    
+    habitCheckboxes.forEach(checkbox => {
+        console.log(`🔍 DEBUG: Checkbox ${checkbox.name} está marcado:`, checkbox.checked);
+        
+        checkbox.addEventListener('change', function() {
+            console.log(`🔍 DEBUG: ${this.name} cambió a:`, this.checked);
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        console.log('🔍 DEBUG: Formulario enviándose...');
+        const formData = new FormData(form);
+        
+        console.log('🔍 DEBUG: Datos del formulario:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`  ${key}: ${value}`);
+        }
+        
+        // Verificar hábitos específicos
+        habitCheckboxes.forEach(checkbox => {
+            console.log(`🔍 DEBUG: ¿${checkbox.name} está en FormData?`, formData.has(checkbox.name));
+        });
+    });
+});
+</script>
+
+{% endblock contenido %}
