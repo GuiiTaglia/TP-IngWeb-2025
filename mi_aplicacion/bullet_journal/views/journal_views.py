@@ -206,6 +206,7 @@ def journal_edit(request, pk):
     user_habits = CustomHabit.objects.filter(user=request.user, is_active=True)
 
     if request.method == 'POST':
+        print(f"🔍 DEBUG: POST data recibido: {dict(request.POST)}")  # NUEVO DEBUG
         # Parse date safely
         date_str = request.POST.get('date') or ''
         try:
@@ -217,6 +218,14 @@ def journal_edit(request, pk):
         conflict = Journal.objects.filter(user=request.user, date=new_date).exclude(pk=journal.pk).first()
         if conflict:
             messages.error(request, "Ya existe otro diario en la fecha seleccionada.")
+
+            for habit in user_habits:
+                field_name = f'habit_{habit.id}'
+                if journal.custom_habits_data and field_name in journal.custom_habits_data:
+                    habit.current_value = journal.custom_habits_data[field_name]
+                else:
+                    habit.current_value = None
+
             # re-render with existing data
             return render(request, 'bullet_journal/journal/edit_journal.html', {
                 'journal': journal,
@@ -240,30 +249,58 @@ def journal_edit(request, pk):
 
         # build custom_habits_data from POST using habit ids
         habit_data = journal.custom_habits_data or {}
+        print(f"🔍 DEBUG: Habit data inicial: {habit_data}")  # NUEVO DEBUG
+
         for habit in user_habits:
             key = f"habit_{habit.id}"
+            print(f"🔍 DEBUG: Procesando hábito {habit.name} ({key})")  # NUEVO DEBUG
+            
             if habit.type == 'boolean':
-                habit_data[key] = key in request.POST
+                value = key in request.POST
+                habit_data[key] = value
+                print(f"  └─ Boolean: {value}")  # NUEVO DEBUG
             else:
                 val = request.POST.get(key)
+                print(f"  └─ Valor raw: '{val}'")  # NUEVO DEBUG
+                
                 if val is None or val == '':
                     habit_data[key] = None
+                    print(f"  └─ Guardado como: None")  # NUEVO DEBUG
                 else:
-                    # try convert integer if expected
+                        # try convert integer if expected
                     if habit.type == 'integer':
                         try:
-                            habit_data[key] = int(val)
-                        except Exception:
+                            converted_val = int(val)
+                            habit_data[key] = converted_val
+                            print(f"  └─ Convertido a int: {converted_val}")  # NUEVO DEBUG
+                        except Exception as e:
                             habit_data[key] = val
+                            print(f"  └─ Error convirtiendo, guardado como string: {val}")  # NUEVO DEBUG
                     else:
                         habit_data[key] = val
+                        print(f"  └─ Guardado como string: {val}")  # NUEVO DEBUG
+
         journal.custom_habits_data = habit_data
+        print(f"🔍 DEBUG: Habit data final: {habit_data}")  # NUEVO DEBUG
 
         # save journal
         journal.save()
+        print(f"✅ DEBUG: Journal guardado con hábitos: {journal.custom_habits_data}")  # NUEVO DEBUG
+
         messages.success(request, "Diario actualizado correctamente.")
         return redirect('journal_list')
+    
+    print(f"🔍 DEBUG: GET - Journal custom_habits_data: {journal.custom_habits_data}")  # NUEVO DEBUG
 
+    for habit in user_habits:
+        field_name = f'habit_{habit.id}'
+        if journal.custom_habits_data and field_name in journal.custom_habits_data:
+            habit.current_value = journal.custom_habits_data[field_name]
+            print(f"🔍 DEBUG: {habit.name} valor actual: {habit.current_value}")  # NUEVO DEBUG
+        else:
+            habit.current_value = None
+            print(f"🔍 DEBUG: {habit.name} sin valor previo")  # NUEVO DEBUG
+            
     # GET: render form with journal + habits
     return render(request, 'bullet_journal/journal/edit_journal.html', {
         'journal': journal,
