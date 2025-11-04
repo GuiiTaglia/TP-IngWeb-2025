@@ -822,17 +822,20 @@ a[href*="password"] {
 .custom-header {
   background-color: #ff9f6c;  
   color: white;
-  padding: 10px 15px;
+  padding: 0 8px !important;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
+  align-items: center; 
+  overflow: visible; 
 }
 
 .logo-img {
-  width: 150px;
+  width: 120px;
   height: auto;
+  padding: 0%;
 }
 
 .nav-links {
@@ -869,7 +872,7 @@ a[href*="password"] {
 
   /* Aumentar tamaño del logo */
   .logo-img {
-    width: 120px !important; /* antes 120px */
+    width: 130px !important; /* antes 120px */
   }
 
   /* Tamaño del botón menú (icono) */
