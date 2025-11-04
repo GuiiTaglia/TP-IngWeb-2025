@@ -163,31 +163,21 @@ def journal_create(request):
 @login_required
 def journal_edit(request, pk):
     journal = get_object_or_404(Journal, pk=pk, user=request.user)
-    
-    if request.method == "POST":
-        form = JournalForm(request.POST, request.FILES, instance=journal, user=request.user)
-        
+    if request.method == 'POST':
+        form = JournalForm(request.POST, request.FILES, instance=journal)
         if form.is_valid():
-            custom_habits_data = {} 
-            for field_name, value in form.cleaned_data.items():
-                if field_name.startswith('habit_'):
-                    custom_habits_data[field_name] = value
-                
-            journal = form.save()
-            journal.custom_habits_data = custom_habits_data
-            journal.save()
-
-            messages.success(request, "Journal actualizado correctamente 🎉")
-            return redirect('journal_list')
+            new_date = form.cleaned_data.get('date')
+            # comprobar conflicto
+            conflict = Journal.objects.filter(user=request.user, date=new_date).exclude(pk=journal.pk).first()
+            if conflict:
+                messages.error(request, "Ya existe otro diario en la fecha seleccionada.")
+            else:
+                form.save()
+                messages.success(request, "Diario actualizado.")
+                return redirect('journal_list')
     else:
-        form = JournalForm(instance=journal, user=request.user)
-        load_custom_habits_data(form, request.user, journal.date)
-    
-    return render(request, 'bullet_journal/journal/edit_journal.html', {
-        'form': form,
-        'journal': journal,
-        'custom_habits': CustomHabit.objects.filter(user=request.user, is_active=True)
-        })
+        form = JournalForm(instance=journal)
+    return render(request, 'bullet_journal/journal/edit_journal.html', {'form': form, 'journal': journal})
 
 
 @login_required

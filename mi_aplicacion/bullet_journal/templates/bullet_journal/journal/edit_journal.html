@@ -10,18 +10,18 @@
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
+            <!-- <input type="hidden" id="date" name="date" value="{{ journal.date|date:'Y-m-d' }}">
 
                 {% load i18n %}
                 {% language 'es' %}
                 <p style="font-size: 19px">Día: {{ journal.date|date:"l, j \\d\\e F \\d\\e Y" }}</p>
-                {% endlanguage %}
+                {% endlanguage %} -->
             
-            <!---div class="mb-3">
+            <div class="mb-3">
                 <label for="date" class="form-label">Fecha:</label>
                 <input type="date" class="form-control" id="date" name="date" maxlength="50"
                     value="{{ journal.date|date:'Y-m-d' }}">
-            </div>--->
+            </div>
 
 
             <div class="mb-3">
@@ -113,9 +113,10 @@
                 {% endif %}
             </div>
 
+            <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
         </form>
 
-        <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
+    
 
         <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
     </div>
