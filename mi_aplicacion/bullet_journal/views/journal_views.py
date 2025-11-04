@@ -30,7 +30,7 @@ def journal_list(request):
 
     date_filter = request.GET.get('date')
     mood_filter = request.GET.get('mood')
-    exercise_filter = request.GET.get('exercise')
+    exercise_filter = request.GET.get('excercise')
     horas_sueno = request.GET.get('sleep_hours')
 
     if date_filter:
@@ -193,6 +193,12 @@ def stadistics(request):
     """Vista para mostrar estadísticas del journal y hábitos personalizados"""
     user = request.user
     period = request.GET.get('period', 'weekly')  
+
+    specific_year = request.GET.get('year')
+    specific_month = request.GET.get('month')
+
+    if period not in ['weekly', 'monthly', 'yearly', 'specific_month']:
+        period = 'weekly'
     
     journals = Journal.objects.filter(user=user)
     print(f"DEBUG: Journals encontrados: {journals.count()}")
@@ -202,7 +208,15 @@ def stadistics(request):
             print(f"  Hábitos: {j.custom_habits_data}")
     
     try:
-        all_stats = Journal.get_all_stats_for_user(user, period=period)
+        if period == 'specific_month' and specific_year and specific_month:
+            all_stats = Journal.get_all_stats_for_user(
+                user, 
+                period=period,
+                year=int(specific_year),
+                month=int(specific_month)
+            )
+        else:
+            all_stats = Journal.get_all_stats_for_user(user, period=period)
         print(f"DEBUG: Stats generadas: {len(all_stats)} estadísticas")
         
         for stat in all_stats:
@@ -213,15 +227,62 @@ def stadistics(request):
         import traceback
         traceback.print_exc()
         all_stats = []
+
+    import calendar 
+    from datetime import datetime
+
+    current_year = datetime.now().year
+    months_data = []
+
+    years_with_data = journals.dates('date', 'year', order='DESC')
+    available_years = [d.year for d in years_with_data] if years_with_data else [current_year]
+   
+    print(f"DEBUG: Años con datos: {available_years}")
+
+    if years_with_data:
+        for year_obj in years_with_data:
+            year = year_obj.year
+            print(f"DEBUG: Procesando año {year}")
+            
+            # Obtener meses con datos para este año
+            months_in_year = journals.filter(date__year=year).dates('date', 'month', order='DESC')
+            print(f"DEBUG: Meses en {year}: {[m.month for m in months_in_year]}")
+
+            for month_obj in months_in_year:
+                month = month_obj.month
+                count = journals.filter(date__year=year, date__month=month).count()
+                
+                months_data.append({
+                    'year': year,
+                    'month': month,
+                    'month_name': calendar.month_name[month],
+                    'display': f"{calendar.month_name[month]} {year}",
+                    'count': count
+                })
+                print(f"DEBUG: Agregado mes: {calendar.month_name[month]} {year} ({count} entradas)")
+    
+    print(f"DEBUG: Months_data generado: {months_data}")
     
     stats_json = json.dumps(all_stats, default=str)
     print(f"DEBUG: JSON final: {stats_json}")
+
+    period_info = {
+        'period': period,
+        'year': specific_year,
+        'month': specific_month,
+        'month_name': calendar.month_name[int(specific_month)] if specific_month else None
+    }
 
     return render(request, 'bullet_journal/journal/stadistics.html', {
         'stats': all_stats,
         'stats_json': stats_json,
         'journals_count': journals.count(),
         'current_period': period,
+        'available_years': available_years,
+        'months_data': months_data,
+        'current_year': current_year,
+        'period_info': period_info,
+
     })
 
 @login_required
