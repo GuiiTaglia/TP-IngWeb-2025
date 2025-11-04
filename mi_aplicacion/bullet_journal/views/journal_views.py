@@ -226,11 +226,18 @@ def journal_edit(request, pk):
                 else:
                     habit.current_value = None
 
+            sleep_hours_options = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12]
+            water_glasses_options = list(range(1, 13))  # [1, 2, 3, ..., 12]
+
             # re-render with existing data
             return render(request, 'bullet_journal/journal/edit_journal.html', {
                 'journal': journal,
                 'custom_habits': user_habits,
+                'sleep_hours_options': sleep_hours_options,  # ← AGREGAR
+                'water_glasses_options': water_glasses_options,  # ← AGREGAR
             })
+        
+
 
         # assign simple fields
         journal.date = new_date
@@ -301,10 +308,14 @@ def journal_edit(request, pk):
             habit.current_value = None
             print(f"🔍 DEBUG: {habit.name} sin valor previo")  # NUEVO DEBUG
             
+    sleep_hours_options = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12]
+    water_glasses_options = list(range(1, 13))  # [1, 2, 3, ..., 12]
     # GET: render form with journal + habits
     return render(request, 'bullet_journal/journal/edit_journal.html', {
         'journal': journal,
         'custom_habits': user_habits,
+        'sleep_hours_options': sleep_hours_options,  # ← AGREGAR
+        'water_glasses_options': water_glasses_options,  # ← AGREGAR
     })
 
 
