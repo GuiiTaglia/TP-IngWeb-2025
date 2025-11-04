@@ -23,13 +23,13 @@ Gestionar hábitos personalizados
     <div class="journal-form">
         <h1> Gestionar mis hábitos</h1>
         <p class="fs-5 mb-4">
+
+        {% if habits %}
         <div class="mb-4">
             <a href="{% url 'add_habit_quick' %}" class="btn btn-primary btn-lg">
                  Crear Nuevo Hábito
             </a>
         </div>
-
-        {% if habits %}
             <div class="row">
                 {% for habit in habits %}
                 <div class="col-md-6 mb-4">
@@ -101,24 +101,12 @@ Gestionar hábitos personalizados
                         <strong>Total de hábitos:</strong> {{ habits|length }}
                     </div>
                     <div class="col-md-4">
-                        <strong>Activos:</strong> 
-                        {% with active_count=habits|length %}
-                            {% for habit in habits %}
-                                {% if habit.is_active %}{{ forloop.counter0|add:1 }}{% endif %}
-                            {% empty %}
-                                0
-                            {% endfor %}
-                        {% endwith %}
-                    </div>
-                    <div class="col-md-4">
-                        <strong>Inactivos:</strong>
-                        {% with inactive_count=0 %}
-                            {% for habit in habits %}
-                                {% if not habit.is_active %}{{ forloop.counter0|add:1 }}{% endif %}
-                            {% empty %}
-                                0
-                            {% endfor %}
-                        {% endwith %}
+                        <div class="col-md-4">
+                            <strong>Activos:</strong> {{ active_count }}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Inactivos:</strong> {{ inactive_count }}
+                        </div>
                     </div>
                 </div>
             </div>

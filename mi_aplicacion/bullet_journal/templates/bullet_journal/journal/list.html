@@ -225,10 +225,37 @@
                             <p><strong>Vasos de agua:</strong> {{ journal.water_glasses }}</p>
                             <p><strong>Ejercicio:</strong> {% if journal.exercise %}Sí{% else %}No{% endif %}</p>
 
-                            {% if journal.image %}
+                            <!-- {% if journal.image %}
                                 <p><strong>Imagen:</strong></p>
                                 <img src="{{ journal.image.url }}" alt="Imagen del journal" style="max-width: 90px;">
-                            {% endif %}
+                            {% endif %} -->
+                            
+                            <div class="habit-status">
+                            <strong>Hábitos:</strong>
+                            <ul class="list-unstyled mb-0">
+                                {% if habits_display %}
+                                    {% for h in habits_display %}
+                                        <li class="d-flex justify-content-between align-items-center">
+                                            <div>{{ h.name }}</div>
+
+                                            <div>
+                                                {% if h.type == 'boolean' %}
+                                                    {% if h.value %}
+                                                        <span class="badge bg-success">Cumplido</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">No</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="fw-bold">{{ h.value|default:"-" }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="text-muted">Sin hábitos</li>
+                                {% endif %}
+                            </ul>
+                        </div>
 
                             <p></p>
                             <a href="{% url 'journal_edit' journal.pk %}" style="color: #ff6a19;">Editar Journal</a>

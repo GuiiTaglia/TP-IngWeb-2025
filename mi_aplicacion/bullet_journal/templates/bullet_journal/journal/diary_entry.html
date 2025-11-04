@@ -20,16 +20,15 @@
     
 
 <div class="container mt-4">
-    <div class = "journal">
     <div class="diary-container">
-        <div class="diary-header">
+        
+            <div class="journal-form">
+                <h1>Mi Diario Personal</h1>
+                    <div class="diary-date">
+                        <p id="hoy-texto" class="fs-5 mb-3">Hoy:</p>
+                    </div>
             
-            <h2>Mi Diario Personal</h2>
-
-            <div class="diary-date">
-                <p id="hoy-texto" class="fs-5 mb-3">Hoy:</p>
-            </div>
-        </div>
+            
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -85,8 +84,8 @@
                      Ver mis diarios
                 </a>
             </div>
+            </div>
         </form>
-    </div>
     </div>
 </div>
 </body>

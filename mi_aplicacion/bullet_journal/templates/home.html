@@ -21,40 +21,49 @@
 {% endblock %}
 
 {% block contenido %}
+  <div class="bienvenida-container">
     <p class="bienvenida">¡Esperamos tengas un hermoso día!</p>
-    
-    <div class="columns_home">
+    <p class="pregunta-reflexiva" id="preguntaReflexiva"></p>
+  </div>
+
+  <div class="columns_home">
     <div class="column">
       <div class="postit" id="postit"></div>
     </div>
 
-    <!---div class="column">
-        <h1>To do list for today</h1>
-    </div--->
-
-
     <div class="column">
-        {% if not existe_hoy %}
-          <div class="journal_create">
-              <a href="{% url 'journal_create' %}">¡Registrar mi día!</a>
-          </div>
-        {% endif %}
+      {% if not existe_hoy %}
+        <button class="boton-interactivo" onclick="abrirModal('modalDia')">¡Registrar mi día!</button>
+      {% endif %}
     </div>
 
     <div class="column">
-        {% if not existe_hoy %}
-          <div class="journal_create">
-              <a href="{% url 'diary_entry' %}">¡Registrar diario hoy!</a>
-          </div>
-        {% endif %}
+      {% if not existe_hoy %}
+        <button class="boton-interactivo" onclick="abrirModal('modalDiario')">¡Registrar diario hoy!</button>
+      {% endif %}
     </div>
-
-
-
   </div>
 
+  <!-- Modal Día -->
+  <div id="modalDia" class="modal">
+    <div class="modal-content">
+      <h3>¿Cómo estuvo tu día?</h3>
+      <textarea rows="6" placeholder="Escribe aquí tu resumen..."></textarea>
+      <button onclick="cerrarModal('modalDia')">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Modal Diario -->
+  <div id="modalDiario" class="modal">
+    <div class="modal-content">
+      <h3>Tu espacio personal</h3>
+      <textarea rows="6" placeholder="¿Qué sentiste hoy? ¿Qué aprendiste?"></textarea>
+      <button onclick="cerrarModal('modalDiario')">Guardar</button>
+    </div>
+  </div>
 
   <script>
+    // Frases motivadoras
     const frases = [
       "Hoy es un nuevo día lleno de oportunidades, ¡aprovéchalas todas!",
       "Cada amanecer es una nueva página en tu historia. ¡Haz que valga la pena!",
@@ -68,13 +77,56 @@
       "Hoy es un buen día para empezar a construir la vida que sueñas."
     ];
 
+    // Preguntas reflexivas
+    const preguntas = [
+      "¿Qué aprendiste hoy?",
+      "¿Qué te hizo sonreír?",
+      "¿Qué agradeces hoy?",
+      "¿Qué te gustaría mejorar mañana?",
+      "¿Qué emoción predominó en tu día?"
+    ];
+
+    // Mostrar frase motivadora
     const postit = document.getElementById("postit");
-    const randomIndex = Math.floor(Math.random() * frases.length);
-    postit.textContent = frases[randomIndex];
+    const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+    postit.textContent = "";
+    escribirTexto(fraseAleatoria, postit);
 
+    // Mostrar pregunta reflexiva
+    const preguntaReflexiva = document.getElementById("preguntaReflexiva");
+    preguntaReflexiva.textContent = preguntas[Math.floor(Math.random() * preguntas.length)];
+
+    // Efecto máquina de escribir
+    function escribirTexto(texto, elemento, i = 0) {
+      if (i < texto.length) {
+        elemento.textContent += texto.charAt(i);
+        setTimeout(() => escribirTexto(texto, elemento, i + 1), 40);
+      }
+    }
+
+    // Fondo dinámico según hora
+    const hora = new Date().getHours();
+    if (hora < 12) {
+      document.body.style.backgroundColor = "#FFF8E1"; // mañana
+    } else if (hora < 18) {
+      document.body.style.backgroundColor = "#FFE0B2"; // tarde
+    } else {
+      document.body.style.backgroundColor = "#D7CCC8"; // noche
+    }
+
+    // Abrir y cerrar modales
+    function abrirModal(id) {
+      document.getElementById(id).style.display = "block";
+    }
+
+    function cerrarModal(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    // Animación de entrada
+    window.addEventListener("DOMContentLoaded", () => {
+      postit.classList.add("visible");
+    });
   </script>
-
-
 {% endblock %}
-
 

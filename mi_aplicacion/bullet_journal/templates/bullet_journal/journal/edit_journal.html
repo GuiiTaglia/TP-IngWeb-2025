@@ -48,70 +48,72 @@
                 <label class="form-check-label" for="exercise">¿Hiciste ejercicio hoy?</label>
             </div>
 
-            <!-- SECCIÓN DE HÁBITOS PERSONALIZADOS -->
             {% if custom_habits %}
             <div class="card mb-4 border-orange">
                 <div class="card-header bg-orange-light">
-                    <h5 class="mb-0"> Mis Hábitos Personalizados</h5>
+                    <h5 class="mb-0">Mis Hábitos Personalizados</h5>
                 </div>
-                {% for habit in custom_habits %}
-                <div class="mb-3">
-                    {% if habit.type == 'boolean' %}
-                        <!-- Hábito Sí/No -->
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input form-check-input-orange" 
-                                   id="habit_{{ habit.id }}" 
-                                   name="habit_{{ habit.id }}"
-                                   value="true"
-                                   {% if journal.custom_habits_data %}
-                                       {% for key, value in journal.custom_habits_data.items %}
-                                           {% if key == "habit_"|add:habit.id|stringformat:"s" and value %}checked{% endif %}
-                                       {% endfor %}
-                                   {% endif %}>
-                            <label class="form-check-label" for="habit_{{ habit.id }}">
+                <div class="card-body">
+                    {% for habit in custom_habits %}
+                    <div class="mb-3">
+                        {% with field_name="habit_"|add:habit.id %}
+
+                        {% if habit.type == 'boolean' %}
+                            <div class="form-check">
+                                <input type="checkbox"
+                                    class="form-check-input form-check-input-orange"
+                                    id="{{ field_name }}"
+                                    name="{{ field_name }}"
+                                    {% if habit.current_value %}checked{% endif %}>
+                                <label class="form-check-label" for="{{ field_name }}">
+                                    <strong>{{ habit.name }}</strong>
+                                    {% if habit.description %}
+                                        <small class="text-muted d-block">{{ habit.description }}</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+
+                        {% elif habit.type == 'integer' %}
+                            <label for="{{ field_name }}" class="form-label">
                                 <strong>{{ habit.name }}</strong>
-                                {% if habit.description %}
-                                    <small class="text-muted d-block">{{ habit.description }}</small>
+                                {% if habit.goal_value %}
+                                    <span class="badge badge-orange">
+                                        Meta: {{ habit.goal_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}
+                                    </span>
                                 {% endif %}
                             </label>
-                        </div>
-                    {% elif habit.type == 'integer' %}
-                        <!-- Hábito Numérico -->
-                        <label for="habit_{{ habit.id }}" class="form-label">
-                            <strong>{{ habit.name }}</strong>
-                            {% if habit.goal_value %}
-                                <span class="badge badge-orange">Meta: {{ habit.goal_value }}{% if habit.unit %} {{ habit.unit }}{% endif %}</span>
+
+                            <input 
+                                type="number"
+                                class="form-control"
+                                id="{{ field_name }}"
+                                name="{{ field_name }}"
+                                min="0"
+                                value="{{ habit.current_value }}"
+                                placeholder="{{ habit.goal_value|default:0 }} {% if habit.unit %}{{ habit.unit }}{% endif %}">
+                            
+                            {% if habit.description %}
+                                <small class="form-text text-muted">{{ habit.description }}</small>
                             {% endif %}
-                        </label>
-                        <input type="number" 
-                               class="form-control" 
-                               id="habit_{{ habit.id }}" 
-                               name="habit_{{ habit.id }}"
-                               min="0"
-                               placeholder="{% if habit.goal_value %}{{ habit.goal_value }}{% else %}0{% endif %}{% if habit.unit %} {{ habit.unit }}{% endif %}"
-                               {% if journal.custom_habits_data %}
-                                   {% for key, value in journal.custom_habits_data.items %}
-                                       {% if key == "habit_"|add:habit.id|stringformat:"s" %}value="{{ value }}"{% endif %}
-                                   {% endfor %}
-                               {% endif %}>
-                        {% if habit.description %}
-                            <small class="form-text text-muted">{{ habit.description }}</small>
                         {% endif %}
-                    {% endif %}
+
+                        {% endwith %}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             {% endif %}
 
 
+
             <!-- Imagen -->           
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="image" class="form-label">¿Querés cambiar la foto?</label>
                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
                 {% if journal.image %}
                     <p class="mt-2">Foto actual: <img src="{{ journal.image.url }}" alt="Imagen Journal" style="max-width:150px;"></p>
                 {% endif %}
-            </div>
+            </div> -->
 
             <button type="submit" class="btn btn-primary">¡Guardar mi día!</button>
         </form>

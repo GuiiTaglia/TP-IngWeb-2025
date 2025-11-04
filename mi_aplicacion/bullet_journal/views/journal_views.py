@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from bullet_journal.models import Journal, CustomHabit, StatsPreference as models
 from bullet_journal.forms import JournalForm, CustomHabitForm, StatsPreferenceForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -160,24 +160,115 @@ def journal_create(request):
     })
 
 
+# @login_required
+# def journal_edit(request, pk):
+#     journal = get_object_or_404(Journal, pk=pk, user=request.user)
+#     user_habits = CustomHabit.objects.filter(user=request.user, is_active=True)
+
+#     habit_values = journal.custom_habits_data or {}
+#     for habit in user_habits:
+#         key = f"habit_{habit.id}"
+#         habit.current_value = habit_values.get(key, "")
+
+#     if request.method == 'POST':
+#         form = JournalForm(request.POST, request.FILES, instance=journal, user=request.user)
+#         if form.is_valid():
+#             new_date = form.cleaned_data.get('date')
+#             conflict = Journal.objects.filter(user=request.user, date=new_date).exclude(pk=journal.pk).first()
+#             if conflict:
+#                 messages.error(request, "Ya existe otro diario en la fecha seleccionada.")
+#             else:
+#                 habit_data = {}
+#                 for habit in user_habits:
+#                     field = f"habit_{habit.id}"
+#                     if habit.type == "boolean":
+#                         habit_data[field] = field in request.POST
+#                     else:
+#                         val = request.POST.get(field, "")
+#                         habit_data[field] = int(val) if val.isdigit() else val
+
+#                 journal.custom_habits_data = habit_data
+#                 form.save()
+#                 messages.success(request, "Diario actualizado.")
+#                 return redirect('journal_list')
+#     else:
+#         form = JournalForm(instance=journal, user=request.user)
+
+#     return render(request, 'bullet_journal/journal/edit_journal.html', {
+#         'form': form,
+#         'journal': journal,
+#         'custom_habits': user_habits,
+#     })
+
 @login_required
 def journal_edit(request, pk):
     journal = get_object_or_404(Journal, pk=pk, user=request.user)
+    user_habits = CustomHabit.objects.filter(user=request.user, is_active=True)
+
     if request.method == 'POST':
-        form = JournalForm(request.POST, request.FILES, instance=journal)
-        if form.is_valid():
-            new_date = form.cleaned_data.get('date')
-            # comprobar conflicto
-            conflict = Journal.objects.filter(user=request.user, date=new_date).exclude(pk=journal.pk).first()
-            if conflict:
-                messages.error(request, "Ya existe otro diario en la fecha seleccionada.")
+        # Parse date safely
+        date_str = request.POST.get('date') or ''
+        try:
+            new_date = datetime.fromisoformat(date_str).date() if date_str else journal.date
+        except Exception:
+            new_date = journal.date
+
+        # check conflict (another journal same user + date)
+        conflict = Journal.objects.filter(user=request.user, date=new_date).exclude(pk=journal.pk).first()
+        if conflict:
+            messages.error(request, "Ya existe otro diario en la fecha seleccionada.")
+            # re-render with existing data
+            return render(request, 'bullet_journal/journal/edit_journal.html', {
+                'journal': journal,
+                'custom_habits': user_habits,
+            })
+
+        # assign simple fields
+        journal.date = new_date
+        journal.mood = request.POST.get('mood', journal.mood)
+        # numeric fields: try to parse, keep existing if invalid
+        try:
+            journal.sleep_hours = float(request.POST.get('sleep_hours')) if request.POST.get('sleep_hours') not in (None, '') else journal.sleep_hours
+        except Exception:
+            pass
+        try:
+            journal.water_glasses = int(request.POST.get('water_glasses')) if request.POST.get('water_glasses') not in (None, '') else journal.water_glasses
+        except Exception:
+            pass
+        # checkbox
+        journal.exercise = True if request.POST.get('exercise') in ('on', 'true', '1') else False
+
+        # build custom_habits_data from POST using habit ids
+        habit_data = journal.custom_habits_data or {}
+        for habit in user_habits:
+            key = f"habit_{habit.id}"
+            if habit.type == 'boolean':
+                habit_data[key] = key in request.POST
             else:
-                form.save()
-                messages.success(request, "Diario actualizado.")
-                return redirect('journal_list')
-    else:
-        form = JournalForm(instance=journal)
-    return render(request, 'bullet_journal/journal/edit_journal.html', {'form': form, 'journal': journal})
+                val = request.POST.get(key)
+                if val is None or val == '':
+                    habit_data[key] = None
+                else:
+                    # try convert integer if expected
+                    if habit.type == 'integer':
+                        try:
+                            habit_data[key] = int(val)
+                        except Exception:
+                            habit_data[key] = val
+                    else:
+                        habit_data[key] = val
+        journal.custom_habits_data = habit_data
+
+        # save journal
+        journal.save()
+        messages.success(request, "Diario actualizado correctamente.")
+        return redirect('journal_list')
+
+    # GET: render form with journal + habits
+    return render(request, 'bullet_journal/journal/edit_journal.html', {
+        'journal': journal,
+        'custom_habits': user_habits,
+    })
 
 
 @login_required
@@ -300,10 +391,14 @@ def manage_habits(request):
         form = CustomHabitForm()
     
     habits = CustomHabit.objects.filter(user=request.user).order_by('-created_at')
-    
+
+    active_count = habits.filter(is_active=True).count()
+    inactive_count = habits.count() - active_count
     return render(request, 'bullet_journal/journal/manage_habits.html', {
         'form': form,
-        'habits': habits
+        'habits': habits,
+        'active_count': active_count,
+        'inactive_count': inactive_count,
     })
 
 @login_required
@@ -316,7 +411,7 @@ def add_habit_quick(request):
             habit.user = request.user
             habit.save()
             messages.success(request, f'¡Hábito "{habit.name}" agregado! Ya aparece en tu formulario diario.')
-            return redirect('journal_create')  # Volver al formulario del journal
+            return redirect('manage_habits')  
         else:
             messages.error(request, 'Error creando el hábito. Revisa los datos.')
     else:
@@ -386,7 +481,7 @@ def diary_entry(request):
         'today': today,
     })
 
-@login_required
+#@login_required
 # def diary_list(request):
 #     """Vista para listar todas las entradas de diario"""
 #     # Solo mostrar entradas que tengan título o texto de diario
