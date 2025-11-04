@@ -22,16 +22,42 @@
                     value="{{ journal.mood }}">
             </div>
 
-            <div class="mb-3">
-                <label for="sleep_hours" class="form-label">¿Cuántas horas dormiste?</label>
-                <input type="number" class="form-control" id="sleep_hours" name="sleep_hours" step="0.1"
-                    value="{{ journal.sleep_hours }}">
+            <!-- NUEVA SECCIÓN DE HORAS DE SUEÑO -->
+            <div class="mb-4">
+                <label class="form-label">¿Cuántas horas dormiste?</label>
+                
+                <input type="hidden" id="sleep_hours" name="sleep_hours" value="{{ journal.sleep_hours }}">
+                <div class="sleep-selector">
+                    <div class="hours-grid">
+                        {% for hour in sleep_hours_options %}
+                        <div class="hour-option" data-value="{{ hour }}">
+                            <div class="hour-circle">
+                                <span>{{ hour }}</span>
+                            </div>
+                            <small>hrs</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="water_glasses" class="form-label">¿Cuántos vasos de agua tomaste?</label>
-                <input type="number" class="form-control" id="water_glasses" name="water_glasses"
-                    value="{{ journal.water_glasses }}">
+            <!-- NUEVA SECCIÓN DE VASOS DE AGUA -->
+            <div class="mb-4">
+                <label class="form-label">¿Cuántos vasos de agua tomaste?</label>
+                  
+                <input type="hidden" id="water_glasses" name="water_glasses" value="{{ journal.water_glasses }}">
+                <div class="water-selector">
+                    <div class="glasses-grid">
+                        {% for glass in water_glasses_options %}
+                        <div class="glass-option" data-value="{{ glass }}">
+                            <div class="glass-circle">
+                                <span>{{ glass }}</span>
+                            </div>
+                            <small>vasos</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3 form-check">
@@ -98,40 +124,167 @@
 
         <a href="{% url 'journal_list' %}" class="link-orange">Volver</a>
     </div>
+<!-- En edit_journal.html - AGREGAR después de </div> y antes de <script>: -->
+
 </div>
 
+<style>
+/* Estilos para el selector de horas de sueño */
+.sleep-selector, .water-selector {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.hours-grid, .glasses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+    max-width: 100%;
+}
+
+.hour-option, .glass-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hour-circle, .glass-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6;
+    background-color: white;
+    margin-bottom: 5px;
+}
+
+/* Colores para horas de sueño */
+.hour-circle {
+    color: #ff6614;
+    border-color: #ff6614;
+}
+
+.hour-option:hover .hour-circle {
+    background-color: #ff6614;
+    color: white;
+    transform: scale(1.1);
+}
+
+.hour-option.selected .hour-circle {
+    background-color: #ff6614;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(207, 154, 56, 0.3);
+}
+
+/* Colores para vasos de agua */
+.glass-circle {
+    color: #ff6614;
+    border-color: #ff6614;
+}
+
+.glass-option:hover .glass-circle {
+    background-color: #ff6614;
+    color: white;
+    transform: scale(1.1);
+}
+
+.glass-option.selected .glass-circle {
+    background-color: #ff6614;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(207, 154, 56, 0.3);
+}
+
+.hour-option small, .glass-option small {
+    color: #ff6614;
+    font-size: 0.75rem;
+}
+</style>
+<!-- En edit_journal.html - REEMPLAZAR todo el <script>: -->
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    
-    // ARREGLADO: Buscar dinámicamente todos los checkboxes de hábitos
-    const habitCheckboxes = document.querySelectorAll('input[name^="habit_"]');
-    
-    console.log('🔍 DEBUG: Checkboxes de hábitos encontrados:', habitCheckboxes.length);
-    
-    habitCheckboxes.forEach(checkbox => {
-        console.log(`🔍 DEBUG: Checkbox ${checkbox.name} está marcado:`, checkbox.checked);
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            
+            // Selector de horas de sueño
+            const sleepHiddenInput = document.getElementById('sleep_hours');
+            const hourOptions = document.querySelectorAll('.hour-option');
+            
+            // Marcar la opción actual de sueño
+            const currentSleepValue = sleepHiddenInput.value;
+            hourOptions.forEach(option => {
+                if (option.dataset.value == currentSleepValue) {
+                    option.classList.add('selected');
+                }
+                
+                option.addEventListener('click', function() {
+                    // Remover selección anterior
+                    hourOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Agregar selección actual
+                    this.classList.add('selected');
+                    // Actualizar valor oculto
+                    sleepHiddenInput.value = this.dataset.value;
+                });
+            });
         
-        checkbox.addEventListener('change', function() {
-            console.log(`🔍 DEBUG: ${this.name} cambió a:`, this.checked);
+            // Selector de vasos de agua
+            const waterHiddenInput = document.getElementById('water_glasses');
+            const glassOptions = document.querySelectorAll('.glass-option');
+            
+            // Marcar la opción actual de agua
+            const currentWaterValue = waterHiddenInput.value;
+            glassOptions.forEach(option => {
+                if (option.dataset.value == currentWaterValue) {
+                    option.classList.add('selected');
+                }
+                
+                option.addEventListener('click', function() {
+                    // Remover selección anterior
+                    glassOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Agregar selección actual
+                    this.classList.add('selected');
+                    // Actualizar valor oculto
+                    waterHiddenInput.value = this.dataset.value;
+                });
+            });
+        
+            // Debug de hábitos
+            const habitCheckboxes = document.querySelectorAll('input[name^="habit_"]');
+            
+            console.log('🔍 DEBUG: Checkboxes de hábitos encontrados:', habitCheckboxes.length);
+            
+            habitCheckboxes.forEach(checkbox => {
+                console.log(`🔍 DEBUG: Checkbox ${checkbox.name} está marcado:`, checkbox.checked);
+                
+                checkbox.addEventListener('change', function() {
+                    console.log(`🔍 DEBUG: ${this.name} cambió a:`, this.checked);
+                });
+            });
+            
+            form.addEventListener('submit', function(e) {
+                console.log('🔍 DEBUG: Formulario enviándose...');
+                console.log('🔍 DEBUG: Horas de sueño:', sleepHiddenInput.value);
+                console.log('🔍 DEBUG: Vasos de agua:', waterHiddenInput.value);
+                
+                const formData = new FormData(form);
+                
+                console.log('🔍 DEBUG: Datos del formulario:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`  ${key}: ${value}`);
+                }
+                
+                habitCheckboxes.forEach(checkbox => {
+                    console.log(`🔍 DEBUG: ¿${checkbox.name} está en FormData?`, formData.has(checkbox.name));
+                });
+            });
         });
-    });
-    
-    form.addEventListener('submit', function(e) {
-        console.log('🔍 DEBUG: Formulario enviándose...');
-        const formData = new FormData(form);
-        
-        console.log('🔍 DEBUG: Datos del formulario:');
-        for (let [key, value] of formData.entries()) {
-            console.log(`  ${key}: ${value}`);
-        }
-        
-        // Verificar hábitos específicos
-        habitCheckboxes.forEach(checkbox => {
-            console.log(`🔍 DEBUG: ¿${checkbox.name} está en FormData?`, formData.has(checkbox.name));
-        });
-    });
-});
 </script>
 
 {% endblock contenido %}
