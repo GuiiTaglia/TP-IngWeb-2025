@@ -1,101 +1,4 @@
-/* Header principal */
-.custom-header {
-  background-color: #ff9f6c;  
-  color: white;
-  padding: 10px 15px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
 
-/* Logo */
-.logo-img {
-  width: 150px;
-  height: auto;
-}
-
-/* Links en escritorio */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-  align-items: center;
-}
-
-/* Estilos generales de links */
-.nav-links a,
-.dropdown-item {
-  text-decoration: none;
-  color: white !important;
-  font-weight: bold;
-  font-family: 'Amatic SC', cursive;
-  font-size: 27px;
-}
-
-.nav-links a:hover,
-.dropdown-item:hover {
-  color: #ff6614 !important;
-}
-
-@media (max-width: 992px) { 
-  .custom-header {
-    height: auto;
-    padding: 10px;
-  }
-
-  .logo-img {
-    width: 120px;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px 0;
-  }
-
-  .nav-links a,
-  .dropdown-item {
-    font-size: 24px;
-  }
-
-  #navbarContent {
-    background-color: #ff9f6c; /* mismo color del header */
-    padding: 15px 0;
-  }
-
-  .nav-links a {
-    color: white !important;
-    text-align: center;
-    width: 100%;
-  }
-
-  .dropdown-menu {
-    background-color: #ff9f6c !important;
-  }
-
-  .dropdown-item {
-    color: white !important;
-    text-align: center;
-  }
-}
-
-.navbar-toggler {
-  border: none;
-}
-
-.navbar-toggler:focus {
-  box-shadow: none;
-}
-
-@media (max-width: 992px) {
-  .nav-links {
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-  }
-}
 
 
 /* .custom-header {
@@ -247,7 +150,7 @@ h1 {
     color: #ff7c35;
     column-gap: #ff7c35;
     font-size: 35px;
-    margin-top: 20px;
+    margin-top: 15px;
     margin-bottom: none;
     font-weight: bold;
 }
@@ -913,5 +816,123 @@ h1 {
 
 a[href*="password"] {
     display: none;
+}
+
+/* Header principal */
+.custom-header {
+  background-color: #ff9f6c;  
+  color: white;
+  padding: 10px 15px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo-img {
+  width: 150px;
+  height: auto;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links a,
+.dropdown-item {
+  text-decoration: none;
+  color: white !important;
+  font-weight: bold;
+  font-family: 'Amatic SC', cursive;
+  font-size: 27px;
+}
+
+.nav-links a:hover,
+.dropdown-item:hover {
+  color: #ff6614 !important;
+}
+
+@media (max-width: 400px) { 
+  .custom-header {
+    height: auto;
+    padding: 10px;
+  }
+
+  .logo-img {
+    width: 120px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 0;
+  }
+
+  .nav-links a,
+  .dropdown-item {
+    font-size: 24px;
+  }
+
+  #navbarContent {
+    background-color: #ff9f6c; /* mismo color del header */
+    padding: 15px 0;
+  }
+
+  .nav-links a {
+    color: white !important;
+    text-align: center;
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    background-color: #ff9f6c !important;
+  }
+
+  .dropdown-item {
+    color: white !important;
+    text-align: center;
+  }
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* ===== Mejorar header en celulares ===== */
+@media (max-width: 430px) {
+  
+  /* Aumentar tamaño del logo */
+  .logo-img {
+    width: 170px !important; /* antes 120px */
+  }
+
+  /* Tamaño del botón menú (icono) */
+  .navbar-toggler i {
+    font-size: 34px !important; /* más grande */
+  }
+
+  /* Links del menú */
+  .nav-links a,
+  .dropdown-item,
+  #userDropdown {
+    font-size: 30px !important; /* Antes 24px */
+  }
+
+  /* Más espacio entre opciones 
+  .nav-links {
+    gap: 22px !important;
+  }*/
+
+  .custom-header {
+    padding: 15px !important;
+  }
 }
 
