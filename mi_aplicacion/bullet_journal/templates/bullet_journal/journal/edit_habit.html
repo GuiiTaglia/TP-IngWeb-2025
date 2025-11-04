@@ -1,0 +1,93 @@
+<!-- Crear archivo: bullet_journal/templates/bullet_journal/journal/edit_habit.html -->
+
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}Editar Hábito{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <div class="journal-form">
+        <h1>Editar Hábito</h1>
+        <p class="text-muted">Modifica los detalles de tu hábito personalizado</p>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre del hábito *</label>
+                <input type="text" class="form-control" id="name" name="name" 
+                       value="{{ habit.name }}" required maxlength="100"
+                       placeholder="Ej: Meditar, Leer, Hacer ejercicio...">
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Descripción (opcional)</label>
+                <textarea class="form-control" id="description" name="description" 
+                          rows="3" placeholder="Describe tu hábito...">{{ habit.description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="type" class="form-label">Tipo de seguimiento *</label>
+                <select class="form-control" id="type" name="type" required>
+                    <option value="boolean" {% if habit.type == 'boolean' %}selected{% endif %}>
+                        Sí/No (¿Lo hiciste hoy?)
+                    </option>
+                    <option value="integer" {% if habit.type == 'integer' %}selected{% endif %}>
+                        Numérico (¿Cuántas veces/cuánto?)
+                    </option>
+                </select>
+                <small class="form-text text-muted">
+                    El tipo de seguimiento no se puede cambiar después de crear el hábito
+                </small>
+            </div>
+
+            <div class="mb-3" id="goal-section" {% if habit.type == 'boolean' %}style="display: none;"{% endif %}>
+                <label for="goal_value" class="form-label">Meta diaria (opcional)</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" id="goal_value" name="goal_value" 
+                               value="{{ habit.goal_value }}" min="1" placeholder="Ej: 8">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="unit" name="unit" 
+                               value="{{ habit.unit }}" maxlength="20" placeholder="Unidad (ej: vasos, páginas, km)">
+                    </div>
+                </div>
+                <small class="form-text text-muted">
+                    Define una meta diaria para tu hábito (ej: 8 vasos de agua, 30 minutos de ejercicio)
+                </small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'manage_habits' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typeSelect = document.getElementById('type');
+    const goalSection = document.getElementById('goal-section');
+    
+    // Deshabilitar cambio de tipo si ya existe el hábito
+    typeSelect.disabled = true;
+    
+    function toggleGoalSection() {
+        if (typeSelect.value === 'boolean') {
+            goalSection.style.display = 'none';
+        } else {
+            goalSection.style.display = 'block';
+        }
+    }
+    
+    // Inicializar
+    toggleGoalSection();
+    
+    // No necesitamos event listener ya que está deshabilitado
+});
+</script>
+
+{% endblock %}

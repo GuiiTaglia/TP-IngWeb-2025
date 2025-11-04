@@ -438,6 +438,56 @@ def manage_habits(request):
         'inactive_count': inactive_count,
     })
 
+# En bullet_journal/views/habit_views.py - AGREGAR nueva vista
+
+@login_required
+def edit_habit(request, habit_id):
+    """Vista para editar un hábito personalizado"""
+    habit = get_object_or_404(CustomHabit, id=habit_id, user=request.user)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        
+        goal_value = request.POST.get('goal_value')
+        unit = request.POST.get('unit', '').strip()
+        
+        # Validaciones
+        if not name:
+            messages.error(request, 'El nombre del hábito es obligatorio.')
+            return render(request, 'bullet_journal/journal/edit_habit.html', {'habit': habit})
+        
+        # Verificar que no exista otro hábito con el mismo nombre (excepto el actual)
+        if CustomHabit.objects.filter(user=request.user, name=name).exclude(id=habit.id).exists():
+            messages.error(request, 'Ya tienes un hábito con ese nombre.')
+            return render(request, 'bullet_journal/journal/edit_habit.html', {'habit': habit})
+        
+        # Validar goal_value
+        if goal_value:
+            try:
+                goal_value = int(goal_value)
+                if goal_value <= 0:
+                    messages.error(request, 'El valor de la meta debe ser mayor a 0.')
+                    return render(request, 'bullet_journal/journal/edit_habit.html', {'habit': habit})
+            except ValueError:
+                messages.error(request, 'El valor de la meta debe ser un número válido.')
+                return render(request, 'bullet_journal/journal/edit_habit.html', {'habit': habit})
+        else:
+            goal_value = None
+        
+        # Actualizar el hábito
+        habit.name = name
+        habit.description = description if description else None
+        
+        habit.goal_value = goal_value
+        habit.unit = unit if unit else None
+        habit.save()
+        
+        messages.success(request, f'Hábito "{habit.name}" actualizado correctamente.')
+        return redirect('manage_habits')
+    
+    return render(request, 'bullet_journal/journal/edit_habit.html', {'habit': habit})
+
 @login_required
 def add_habit_quick(request):
     """Vista rápida para agregar un hábito desde el formulario del journal"""
