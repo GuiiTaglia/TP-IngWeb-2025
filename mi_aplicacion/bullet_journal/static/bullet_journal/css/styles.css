@@ -856,48 +856,6 @@ a[href*="password"] {
   color: #ff6614 !important;
 }
 
-@media (max-width: 400px) { 
-  .custom-header {
-    height: auto;
-    padding: 10px;
-  }
-
-  .logo-img {
-    width: 120px;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px 0;
-  }
-
-  .nav-links a,
-  .dropdown-item {
-    font-size: 24px;
-  }
-
-  #navbarContent {
-    background-color: #ff9f6c; /* mismo color del header */
-    padding: 15px 0;
-  }
-
-  .nav-links a {
-    color: white !important;
-    text-align: center;
-    width: 100%;
-  }
-
-  .dropdown-menu {
-    background-color: #ff9f6c !important;
-  }
-
-  .dropdown-item {
-    color: white !important;
-    text-align: center;
-  }
-}
-
 .navbar-toggler {
   border: none;
 }
@@ -908,10 +866,10 @@ a[href*="password"] {
 
 /* ===== Mejorar header en celulares ===== */
 @media (max-width: 430px) {
-  
+
   /* Aumentar tamaño del logo */
   .logo-img {
-    width: 100px !important; /* antes 120px */
+    width: 120px !important; /* antes 120px */
   }
 
   /* Tamaño del botón menú (icono) */
@@ -919,11 +877,18 @@ a[href*="password"] {
     font-size: 29px !important; /* más grande */
   }
 
+  .nav-links {
+    flex-direction: column;
+    padding: 15px 0;
+  }
+
   /* Links del menú */
   .nav-links a,
   .dropdown-item,
   #userDropdown {
-    font-size: 30px !important; /* Antes 24px */
+    font-size: 30px !important; 
+    text-align: center;
+    width: 100%;
   }
 
   /* Más espacio entre opciones 
@@ -933,6 +898,15 @@ a[href*="password"] {
 
   .custom-header {
     padding: 10px !important;
+  }
+
+  #navbarContent {
+    background-color: #ff9f6c;
+    padding: 14px 0;
+  }
+
+  .dropdown-menu {
+    background-color: #ff9f6c !important;
   }
 }
 
