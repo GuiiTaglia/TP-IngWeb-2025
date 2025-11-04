@@ -26,7 +26,7 @@
         </div>
 
         {% if diary_entry.diary_image %}
-        <div class="text-center mb-4">
+        <div class="text-center mb-4" style="height: 150px">
             <img src="{{ diary_entry.diary_image.url }}" 
                  alt="Imagen del diario" 
                  class="diary-image-preview img-fluid">
@@ -54,7 +54,7 @@
     </div>
     
     <a href="{% url 'diary_list' %}" class="link-orange">
-        Ver todas los diarios
+        Ver todos los diarios
     </a>
 </div>
 {% endblock %}
