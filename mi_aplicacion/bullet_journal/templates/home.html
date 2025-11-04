@@ -5,128 +5,167 @@
 
 {% block extra_head %}
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- GENERAL LAYOUT ---------- */
+body {
+  background-color: white; /* ejemplo pastel */
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: none;
+}
+
+/* fade animation for page entrance */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn .9s ease forwards;
+}
+@keyframes fadeIn {
+  0% {opacity: 0; transform: translateY(10px);}
+  100% {opacity: 1; transform: translateY(0);}
+}
+
+/* ---------- TITLES ---------- */
+.greeting {
+  font-size: 3rem;
+  font-family: 'Amatic SC', cursive;
+  animation: fadeIn 1.3s ease;
+}
+
+.heart {
+  display:inline-block;
+  animation: heartbeat 1.5s infinite;
+}
+@keyframes heartbeat {
+  0% {transform: scale(1);}
+  25% {transform: scale(1.2);}
+  40% {transform: scale(1);}
+}
+
+/* ---------- POST-IT ---------- */
+.postit {
+  width: 260px;
+  background: #ffe7c7;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 20px;
+  font-family: "Forum", serif;
+  box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+  transform: rotate(-2deg);
+  opacity:0;
+  transition: .8s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 15px;
+}
+
+.postit.visible {
+  opacity:1;
+  transform: rotate(0deg);
+}
+
+/* ---------- BUTTONS ---------- */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-cute {
+  padding: 12px 26px;
+  font-size: 24px;
+  font-family: "Amatic SC", cursive;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: .3s ease;
+  color: #ff7f4d;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 26px;
+    text-align: center;
+    font-family: "Amatic SC", sans-serif;
+    font-weight: bold;
+    border: 1px solid  #ff7f4d;
+    position: center;
+}
+.btn-cute:hover {
+  transform: scale(1.05);
+  background: #fdd3c1;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (min-width: 768px) {
+  .actions {
+    flex-direction: row;
+  }
+  .btn-cute {
+    font-size: 26px;
+  }
+}
+</style>
 {% endblock %}
+
+<body>
+  
 
 {% block subtitulo %}
 {% if user.is_authenticated %}
-    <h1>Hola {{ user.username }} &#x2665</h1>
-    
+<div class="bienvenida"></div>
+  <h1>Hola {{ user.username }} <span class="heart">♥</span></h1>
 {% else %}
-<p>You are not logged in</p>
-<a href="{% url 'users:login' %}">Log In</a>
+  <p>You are not logged in</p>
+  <a href="{% url 'users:login' %}">Log In</a>
 {% endif %}
 {% endblock %}
 
 {% block contenido %}
-  <div class="bienvenida-container">
-    <p class="bienvenida">¡Esperamos tengas un hermoso día!</p>
-    <p class="pregunta-reflexiva" id="preguntaReflexiva"></p>
+
+<div class="home-container fade-in">
+  <p class="bienvenida">¡Esperamos tengas un hermoso día!</p>
+  <div class="postit" id="postit"></div>
+  {% if not existe_hoy %}
+  <div class="actions">
+      <a class="btn-cute" href="{% url 'journal_create' %}">¡Registrar mi día!</a>
+      <a class="btn-cute" href="{% url 'diary_entry' %}">¡Registrar diario hoy!</a>
   </div>
+  {% endif %}
+</div>
 
-  <div class="columns_home">
-    <div class="column">
-      <div class="postit" id="postit"></div>
-    </div>
+<script>
+const frases = [
+"Hoy es un nuevo día lleno de oportunidades, ¡aprovéchalas todas!",
+"Cada amanecer es una nueva página en tu historia. ¡Haz que valga la pena!",
+"Levántate con determinación y acuéstate con satisfacción.",
+"Lo que hagas hoy puede cambiar tu mañana.",
+"Sonríe, respira y recuerda que tienes todo lo necesario para lograrlo.",
+"No importa cuántas veces caigas, lo importante es levantarse una vez más.",
+"Confía en tu proceso: cada paso te acerca a tu meta.",
+"Hoy es un buen día para empezar a construir la vida que sueñas."
+];
 
-    <div class="column">
-      {% if not existe_hoy %}
-        <button class="boton-interactivo" onclick="abrirModal('modalDia')">¡Registrar mi día!</button>
-      {% endif %}
-    </div>
+const postit = document.getElementById("postit");
+postit.textContent = frases[Math.floor(Math.random() * frases.length)];
 
-    <div class="column">
-      {% if not existe_hoy %}
-        <button class="boton-interactivo" onclick="abrirModal('modalDiario')">¡Registrar diario hoy!</button>
-      {% endif %}
-    </div>
-  </div>
+window.addEventListener("DOMContentLoaded", () => {
+  postit.classList.add("visible");
+});
+</script>
 
-  <!-- Modal Día -->
-  <div id="modalDia" class="modal">
-    <div class="modal-content">
-      <h3>¿Cómo estuvo tu día?</h3>
-      <textarea rows="6" placeholder="Escribe aquí tu resumen..."></textarea>
-      <button onclick="cerrarModal('modalDia')">Guardar</button>
-    </div>
-  </div>
-
-  <!-- Modal Diario -->
-  <div id="modalDiario" class="modal">
-    <div class="modal-content">
-      <h3>Tu espacio personal</h3>
-      <textarea rows="6" placeholder="¿Qué sentiste hoy? ¿Qué aprendiste?"></textarea>
-      <button onclick="cerrarModal('modalDiario')">Guardar</button>
-    </div>
-  </div>
-
-  <script>
-    // Frases motivadoras
-    const frases = [
-      "Hoy es un nuevo día lleno de oportunidades, ¡aprovéchalas todas!",
-      "Cada amanecer es una nueva página en tu historia. ¡Haz que valga la pena!",
-      "Levántate con determinación y acuéstate con satisfacción.",
-      "Lo que hagas hoy puede cambiar tu mañana.",
-      "Sonríe, respira y recuerda que tienes todo lo necesario para lograrlo.",
-      "No importa cuántas veces caigas, lo importante es levantarse una vez más.",
-      "El éxito no es para los que nunca fallan, sino para los que nunca se rinden.",
-      "Confía en tu proceso: cada paso, aunque pequeño, te acerca a tu meta.",
-      "Tú eres más fuerte de lo que crees y capaz de más de lo que imaginas.",
-      "Hoy es un buen día para empezar a construir la vida que sueñas."
-    ];
-
-    // Preguntas reflexivas
-    const preguntas = [
-      "¿Qué aprendiste hoy?",
-      "¿Qué te hizo sonreír?",
-      "¿Qué agradeces hoy?",
-      "¿Qué te gustaría mejorar mañana?",
-      "¿Qué emoción predominó en tu día?"
-    ];
-
-    // Mostrar frase motivadora
-    const postit = document.getElementById("postit");
-    const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
-    postit.textContent = "";
-    escribirTexto(fraseAleatoria, postit);
-
-    // Mostrar pregunta reflexiva
-    const preguntaReflexiva = document.getElementById("preguntaReflexiva");
-    preguntaReflexiva.textContent = preguntas[Math.floor(Math.random() * preguntas.length)];
-
-    // Efecto máquina de escribir
-    function escribirTexto(texto, elemento, i = 0) {
-      if (i < texto.length) {
-        elemento.textContent += texto.charAt(i);
-        setTimeout(() => escribirTexto(texto, elemento, i + 1), 40);
-      }
-    }
-
-    // Fondo dinámico según hora
-    const hora = new Date().getHours();
-    if (hora < 12) {
-      document.body.style.backgroundColor = "#FFF8E1"; // mañana
-    } else if (hora < 18) {
-      document.body.style.backgroundColor = "#FFE0B2"; // tarde
-    } else {
-      document.body.style.backgroundColor = "#D7CCC8"; // noche
-    }
-
-    // Abrir y cerrar modales
-    function abrirModal(id) {
-      document.getElementById(id).style.display = "block";
-    }
-
-    function cerrarModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
-
-    // Animación de entrada
-    window.addEventListener("DOMContentLoaded", () => {
-      postit.classList.add("visible");
-    });
-  </script>
 {% endblock %}
+
+</body>
 
