@@ -984,3 +984,14 @@ a[href*="password"] {
   background: #ff6614;
   border-radius: 10px;
 }
+
+.diary-image-preview {
+  max-width: 300px; /* ajustá este valor al tamaño deseado */
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  border-radius: 10px; /* opcional para que quede más linda */
+  display: block;
+  margin: 0 auto; /* la mantiene centrada */
+}
+

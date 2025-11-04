@@ -26,12 +26,13 @@
         </div>
 
         {% if diary_entry.diary_image %}
-        <div class="text-center mb-4" style="height: 150px">
+        <div class="text-center mb-4">
             <img src="{{ diary_entry.diary_image.url }}" 
-                 alt="Imagen del diario" 
-                 class="diary-image-preview img-fluid">
+                alt="Imagen del diario" 
+                class="diary-image-preview img-fluid">
         </div>
         {% endif %}
+
 
         <div class="diary-content-display">
             {% if diary_entry.diary_entry %}
